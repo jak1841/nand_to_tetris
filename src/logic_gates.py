@@ -1,4 +1,8 @@
+"""
 
+    Implementing low level logic gates 
+
+"""
 class gate:
     def __init__(self):
         pass
