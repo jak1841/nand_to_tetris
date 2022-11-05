@@ -25,6 +25,18 @@ class Test(unittest.TestCase):
         self.assertEqual("0", gate.and_("0", "1"))
         self.assertEqual("0", gate.and_("0", "0"))
 
+    def test_or(self):
+        self.assertEqual("1", gate.or_("1", "1"))
+        self.assertEqual("1", gate.or_("1", "0"))
+        self.assertEqual("1", gate.or_("0", "1"))
+        self.assertEqual("0", gate.or_("0", "0"))
+
+    def test_xor(self):
+        self.assertEqual("0", gate.xor("1", "1"))
+        self.assertEqual("1", gate.xor("1", "0"))
+        self.assertEqual("1", gate.xor("0", "1"))
+        self.assertEqual("0", gate.xor("0", "0"))
+
 
 
 
