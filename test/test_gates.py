@@ -19,6 +19,12 @@ class Test(unittest.TestCase):
         self.assertEqual("0", gate.not_("1"))
         self.assertEqual("1", gate.not_("0"))
 
+    def test_and(self):
+        self.assertEqual("1", gate.and_("1", "1"))
+        self.assertEqual("0", gate.and_("1", "0"))
+        self.assertEqual("0", gate.and_("0", "1"))
+        self.assertEqual("0", gate.and_("0", "0"))
+
 
 
 
