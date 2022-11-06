@@ -50,12 +50,22 @@ class gate:
 
         return self.or_(not_ab, b_nota)
 
-    # a!sel or bsel
+    # a!sel or bsel -> 1
     # Given 2 single bit and a selector bit will return a bit of the multiplexor operation
+    # sel = 0 -> output equal a
+    # sel = 1 -> output equal b
     def multiplexor(self, a, b, sel):
         a_not_sel = self.and_(a, self.not_(sel))
         b_sel = self.and_(b, sel)
         return self.or_(a_not_sel, b_sel)
+
+    # given a single input bit and a selector bit will return two bits of the form of string doing demultiplexor operation
+    # in!sel -> a
+    # insel -> b
+    def demultiplexor(self, input, sel):
+        a = self.and_(input, self.not_(sel))
+        b = self.and_(input, sel)
+        return a + b
 
 
 def main():

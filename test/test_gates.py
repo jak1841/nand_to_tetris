@@ -48,6 +48,11 @@ class Test(unittest.TestCase):
         self.assertEqual("1", gate.multiplexor("1", "1", "1"))
 
 
+    def test_demultiplexor(self):
+        self.assertEqual("01", gate.demultiplexor("1", "1"))
+        self.assertEqual("10", gate.demultiplexor("1", "0"))
+        self.assertEqual("00", gate.demultiplexor("0", "1"))
+        self.assertEqual("00", gate.demultiplexor("0", "0"))
 
 if __name__ == '__main__':
     unittest.main()
