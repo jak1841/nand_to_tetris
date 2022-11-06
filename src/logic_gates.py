@@ -50,6 +50,14 @@ class gate:
 
         return self.or_(not_ab, b_nota)
 
+    # a!sel or bsel
+    # Given 2 single bit and a selector bit will return a bit of the multiplexor operation
+    def multiplexor(self, a, b, sel):
+        a_not_sel = self.and_(a, self.not_(sel))
+        b_sel = self.and_(b, sel)
+        return self.or_(a_not_sel, b_sel)
+
+
 def main():
     print("start of a journey")
     pass

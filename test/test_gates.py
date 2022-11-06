@@ -37,6 +37,15 @@ class Test(unittest.TestCase):
         self.assertEqual("1", gate.xor("0", "1"))
         self.assertEqual("0", gate.xor("0", "0"))
 
+    def test_multiplexor(self):
+        self.assertEqual("0", gate.multiplexor("0", "0", "0"))
+        self.assertEqual("0", gate.multiplexor("0", "1", "0"))
+        self.assertEqual("1", gate.multiplexor("1", "0", "0"))
+        self.assertEqual("1", gate.multiplexor("1", "1", "0"))
+        self.assertEqual("0", gate.multiplexor("0", "0", "1"))
+        self.assertEqual("1", gate.multiplexor("0", "1", "1"))
+        self.assertEqual("0", gate.multiplexor("1", "0", "1"))
+        self.assertEqual("1", gate.multiplexor("1", "1", "1"))
 
 
 
