@@ -32,13 +32,13 @@ class alu():
     # Does not handle overflow
     def adder_16_bit(self, a, b):
         carry_bit = 0
-        result = "0000000000000000"
+        result = ["0" for x in range(16)]
         for x in range(16):
-            carry_bit, summ = self.full_adder(b[16 - x], a[16 - x], carry_bit)
-            result[16 - x] = summ
+            carry_bit, summ = self.full_adder(b[15 - x], a[15 - x], carry_bit)
+            result[15 - x] = summ
 
-        return result
-        
+        return "".join(result)
+
 
 
 

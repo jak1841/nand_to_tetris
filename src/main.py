@@ -1,4 +1,6 @@
 from arithemtic_logic_unit import alu
 
 j = alu()
-print(j.full_adder("1", "1", "0"))
+a = "0000000000000000"
+b = "0000000000000001"
+print(j.adder_16_bit(a, b))
