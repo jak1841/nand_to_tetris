@@ -68,10 +68,6 @@ class gate:
         return a + b
 
 
-def main():
-    print("start of a journey")
-    pass
 
-main()
 
 
