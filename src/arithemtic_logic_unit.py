@@ -39,6 +39,11 @@ class alu():
 
         return "".join(result)
 
+    # Given a 16 bit binary number represented as a string will return the increment of that number
+    # Does not handle overflow
+    def increment_16_bit(self, a):
+        one = "0000000000000001"
+        return self.adder_16_bit(one, a)
 
 
 

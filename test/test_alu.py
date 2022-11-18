@@ -50,9 +50,27 @@ class Test(unittest.TestCase):
         b = "1111111100001111"
         self.assertEqual("1010010001100100", alu.adder_16_bit(a, b))
 
+    def test_incrementer_16_bit (self):
+        a = "1010101101101011"
+        self.assertEqual("1010101101101100", alu.increment_16_bit(a))
 
+        a = "1110010101011111"
+        self.assertEqual("1110010101100000", alu.increment_16_bit(a))
 
+        a = "1111111111111111"
+        self.assertEqual("0000000000000000", alu.increment_16_bit(a))
 
+        a = "0000000000000000"
+        self.assertEqual("0000000000000001", alu.increment_16_bit(a))
+
+        a = "1011101010110010"
+        self.assertEqual("1011101010110011", alu.increment_16_bit(a))
+
+        a = "1111111101111000"
+        self.assertEqual("1111111101111001", alu.increment_16_bit(a))
+
+        a = "0111111111111111"
+        self.assertEqual("1000000000000000", alu.increment_16_bit(a))
 
 if __name__ == '__main__':
     unittest.main()
