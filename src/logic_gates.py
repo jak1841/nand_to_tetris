@@ -100,8 +100,8 @@ class gate:
 
         return result
 
-    # Input: 2 binary numbers (Length N)
-    # Ouput: binary number (Length N)
+    # Input:    2 binary numbers (Length N)
+    # Ouput:    binary number (Length N)
     # OR of two binary numbers
     def n_bit_or(self, a, b):
         result = ""
@@ -110,3 +110,13 @@ class gate:
 
         return result
 
+    # Input:    2 binary numbers (Length N)
+    # Output:   binary number (Length N)
+    # And of two binary numbers
+    def n_bit_and(self, a, b):
+        result = ""
+        for x in range(len(a)):
+            result+= self.and_(a[x], b[x])
+
+        return result
+        

@@ -132,7 +132,30 @@ class Test(unittest.TestCase):
         b = "1100101001011000"
         self.assertEqual("1100111001011010", gate.n_bit_or(a, b))
 
+    def test_n_bit_and(self):
+        a = "0"
+        b = "1"
+        self.assertEqual("0", gate.n_bit_and(a, b))
 
+        a = "0"
+        b = "0"
+        self.assertEqual("0", gate.n_bit_and(a, b))
+
+        a = "1"
+        b = "0"
+        self.assertEqual("0", gate.n_bit_and(a, b))
+
+        a = "1"
+        b = "1"
+        self.assertEqual("1", gate.n_bit_and(a, b))
+
+        a = "01110011"
+        b = "01011101"
+        self.assertEqual("01010001", gate.n_bit_and(a, b))
+
+        a = "0000110001010010"
+        b = "1100101001011000"
+        self.assertEqual("0000100001010000", gate.n_bit_and(a, b))
 
 if __name__ == '__main__':
     unittest.main()
