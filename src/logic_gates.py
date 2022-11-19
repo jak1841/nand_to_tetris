@@ -65,7 +65,7 @@ class gate:
     def demultiplexor(self, input, sel):
         a = self.and_(input, self.not_(sel))
         b = self.and_(input, sel)
-        return a + b
+        return [a, b]
 
     # Input:    2 Binary number(both length N), selector bit
     # Ouput:    Binary number
