@@ -77,5 +77,17 @@ class gate:
 
         return result
 
+    # Input:    Binary number (length N), selector bit
+    # Ouput:    List of two binary numbers (Length N), Where first Index = a, 2nd index = b.
+    # Demultiplexor with n bit input
+    def n_bit_demultplexor(self, input, sel):
+        a = ""
+        b = ""
+        for x in input:
+            result = self.demultiplexor(x, sel)
+            a += result[0]
+            b += result[1]
+
+        return [a, b]
 
 

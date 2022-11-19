@@ -69,6 +69,18 @@ class Test(unittest.TestCase):
         self.assertEqual("0000100001100000", gate.n_bit_multipexor(a, b, "0"))
         self.assertEqual("1111111011111110", gate.n_bit_multipexor(a, b, "1"))
 
+    def test_n_bit_demultiplexor(self):
+        input = "1"
+        self.assertEqual(["1", "0"], gate.n_bit_demultplexor(input, "0"))
+        self.assertEqual(["0", "1"], gate.n_bit_demultplexor(input, "1"))
+
+        input = "10101010"
+        self.assertEqual(["10101010", "00000000"], gate.n_bit_demultplexor(input, "0"))
+        self.assertEqual(["00000000", "10101010"], gate.n_bit_demultplexor(input, "1"))
+
+        input = "1111000011110001"
+        self.assertEqual(["1111000011110001", "0000000000000000"], gate.n_bit_demultplexor(input, "0"))
+        self.assertEqual(["0000000000000000", "1111000011110001"], gate.n_bit_demultplexor(input, "1"))
 
 if __name__ == '__main__':
     unittest.main()
