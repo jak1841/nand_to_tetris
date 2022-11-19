@@ -67,7 +67,15 @@ class gate:
         b = self.and_(input, sel)
         return a + b
 
+    # Input:    2 Binary number(both length N), selector bit
+    # Ouput:    Binary number
+    # Mulitplexor but with n bit data.
+    def n_bit_multipexor (self, a, b, sel):
+        result = ""
+        for x in range(len(a)):
+            result += self.multiplexor(a[x], b[x], sel)
 
+        return result
 
 
 

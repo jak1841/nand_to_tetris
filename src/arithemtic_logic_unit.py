@@ -45,6 +45,8 @@ class alu():
         one = "0000000000000001"
         return self.adder_16_bit(one, a)
 
+    # Inputs: x[16] y[16]       Two 16-bit data inputs
+    #         zx,               Zero the x input 
 
 
 
