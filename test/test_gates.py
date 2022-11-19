@@ -82,5 +82,33 @@ class Test(unittest.TestCase):
         self.assertEqual(["1111000011110001", "0000000000000000"], gate.n_bit_demultplexor(input, "0"))
         self.assertEqual(["0000000000000000", "1111000011110001"], gate.n_bit_demultplexor(input, "1"))
 
+    def test_n_bit_xor (self):
+        a = "0"
+        b = "1"
+        self.assertEqual("1", gate.n_bit_xor(a, b))
+
+        a = "0"
+        b = "0"
+        self.assertEqual("0", gate.n_bit_xor(a, b))
+
+        a = "1"
+        b = "0"
+        self.assertEqual("1", gate.n_bit_xor(a, b))
+
+        a = "1"
+        b = "1"
+        self.assertEqual("0", gate.n_bit_xor(a, b))
+
+        a = "01110100"
+        b = "10001111"
+        self.assertEqual("11111011", gate.n_bit_xor(a, b))
+
+        a = "1011100101011110"
+        b = "1111000000101001"
+        self.assertEqual("0100100101110111", gate.n_bit_xor(a, b))
+
+
+
+
 if __name__ == '__main__':
     unittest.main()

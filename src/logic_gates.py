@@ -90,4 +90,14 @@ class gate:
 
         return [a, b]
 
+    # Input:    2 binary numbers (Length N)
+    # output:   binary number (Length N)
+    # xor of both binary number
+    def n_bit_xor(self, a, b):
+        result = ""
+        for x in range(len(a)):
+            result += self.xor(a[x], b[x])
+
+        return result
+
 
