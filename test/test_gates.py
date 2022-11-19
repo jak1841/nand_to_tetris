@@ -107,6 +107,30 @@ class Test(unittest.TestCase):
         b = "1111000000101001"
         self.assertEqual("0100100101110111", gate.n_bit_xor(a, b))
 
+    def test_n_bit_or(self):
+        a = "0"
+        b = "1"
+        self.assertEqual("1", gate.n_bit_or(a, b))
+
+        a = "0"
+        b = "0"
+        self.assertEqual("0", gate.n_bit_or(a, b))
+
+        a = "1"
+        b = "0"
+        self.assertEqual("1", gate.n_bit_or(a, b))
+
+        a = "1"
+        b = "1"
+        self.assertEqual("1", gate.n_bit_or(a, b))
+
+        a = "01110011"
+        b = "01011101"
+        self.assertEqual("01111111", gate.n_bit_or(a, b))
+
+        a = "0000110001010010"
+        b = "1100101001011000"
+        self.assertEqual("1100111001011010", gate.n_bit_or(a, b))
 
 
 

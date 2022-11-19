@@ -100,4 +100,13 @@ class gate:
 
         return result
 
+    # Input: 2 binary numbers (Length N)
+    # Ouput: binary number (Length N)
+    # OR of two binary numbers
+    def n_bit_or(self, a, b):
+        result = ""
+        for x in range(len(a)):
+            result+= self.or_(a[x], b[x])
+
+        return result
 
