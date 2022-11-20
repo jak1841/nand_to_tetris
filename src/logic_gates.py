@@ -129,3 +129,14 @@ class gate:
             result += self.not_(a[x])
 
         return result
+
+    # Input:    2 Binary number (Length N)
+    # Output:   Binary number (Length N)
+    # NAND of binary numbers
+    def n_bit_nand(self, a, b):
+        result = ""
+        for x in range(len(a)):
+            result+= self.nand(a[x], b[x])
+
+        return result
+

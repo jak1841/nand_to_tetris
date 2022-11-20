@@ -173,6 +173,34 @@ class Test(unittest.TestCase):
         a = "1111001011101010"
         self.assertEqual("0000110100010101", gate.n_bit_not(a))
 
+    def test_n_bit_nand(self):
+        a = "0"
+        b = "1"
+        self.assertEqual("1", gate.n_bit_nand(a, b))
+
+        a = "0"
+        b = "0"
+        self.assertEqual("1", gate.n_bit_nand(a, b))
+
+        a = "1"
+        b = "0"
+        self.assertEqual("1", gate.n_bit_nand(a, b))
+
+        a = "1"
+        b = "1"
+        self.assertEqual("0", gate.n_bit_nand(a, b))
+
+        a = "0001111100000100"
+        b = "0000010101001001"
+        self.assertEqual("1111101011111111", gate.n_bit_nand(a, b))
+
+        a = "10011111"
+        b = "01100100"
+        self.assertEqual("11111011", gate.n_bit_nand(a, b))
+
+        a = "00011111010110001010100011111111"
+        b = "00001011100010110011110100100100"
+        self.assertEqual("11110100111101111101011111011011", gate.n_bit_nand(a, b))
 
 
 
