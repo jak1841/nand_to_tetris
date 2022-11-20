@@ -119,4 +119,13 @@ class gate:
             result+= self.and_(a[x], b[x])
 
         return result
-        
+
+    # Input:    Binary number (Length N)
+    # Output:   Binary number (Length N)
+    # NOT of binary number
+    def n_bit_not(self, a):
+        result = ""
+        for x in range(len(a)):
+            result += self.not_(a[x])
+
+        return result
