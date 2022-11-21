@@ -140,3 +140,15 @@ class gate:
 
         return result
 
+
+    # Input: Binary number (Length N)
+    # Output Single bit
+    # if all bits are 0 -> 1
+    # else -> 0
+    def n_bit_all_zeros(self, a):
+        result = a[0]
+        for x in range(1, len(a)):
+            result = self.or_(result, a[x])
+
+        return self.not_(result)
+

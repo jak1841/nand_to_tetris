@@ -202,6 +202,23 @@ class Test(unittest.TestCase):
         b = "00001011100010110011110100100100"
         self.assertEqual("11110100111101111101011111011011", gate.n_bit_nand(a, b))
 
+    def test_n_bit_all_zeros(self):
+        self.assertEqual("1", gate.n_bit_all_zeros("0"))
+        self.assertEqual("0", gate.n_bit_all_zeros("1"))
+
+        self.assertEqual("1", gate.n_bit_all_zeros("000000000000000000"))
+        self.assertEqual("0", gate.n_bit_all_zeros("10000000000000000"))
+        self.assertEqual("0", gate.n_bit_all_zeros("000000000000000001"))
+
+        self.assertEqual("1", gate.n_bit_all_zeros("000000"))
+        self.assertEqual("0", gate.n_bit_all_zeros("110101010"))
+        self.assertEqual("0", gate.n_bit_all_zeros("1111111111111"))
+
+
+
+
+
+
 
 
 if __name__ == '__main__':
