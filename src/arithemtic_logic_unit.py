@@ -61,22 +61,55 @@ class alu():
         zeroed_x = self.gate.n_bit_xor(x, x)
         x1 = self.gate.n_bit_multipexor(x, zeroed_x, zx)
         negated_x = self.gate.n_bit_not(x1)
-        x2 = self.gate.n_bit_multipexor(x1, negated_x)
+        x2 = self.gate.n_bit_multipexor(x1, negated_x, nx)
 
         zeroed_y = self.gate.n_bit_xor(y, y)
-        y1 = self.gate.n_bit_multipexor(y, zeroed_y)
+        y1 = self.gate.n_bit_multipexor(y, zeroed_y, zy)
         negated_y = self.gate.n_bit_not(y1)
-        y2 = self.gate.n_bit_multipexor(y1, negated_y)
+        y2 = self.gate.n_bit_multipexor(y1, negated_y, ny)
 
         added_x_y = self.adder_16_bit(x2, y2)
         and_x_y = self.gate.n_bit_and(x2, y2)
 
-        output  = self.gate.n_bit_multipexor(and_x_y, added_x_y)
+        output  = self.gate.n_bit_multipexor(and_x_y, added_x_y, f)
         negated_output = self.gate.n_bit_not(output)
 
-        out = self.gate.n_bit_multipexor(output, negated_output)
+        out = self.gate.n_bit_multipexor(output, negated_output, no)
 
-    
+        zr = self.gate.n_bit_all_zeros(out)
+        ng = out[0]
+
+        return [out, zr, ng]
+
+    # Instead of individual bits put into the ALU we will use defined variables
+    ZERO = "101010"                     # 0000000000000000
+    ONE = "111111"                      # 0000000000000001
+    NEGATIVE_ONE = "111010"             # 1111111111111111
+    X = "001100"                        # X
+    Y = "110000"                        # Y
+    BITWISE_NEGATION_X = "001101"       # !X
+    BITWISE_NEGATION_Y = "110001"       # !Y
+    NEGATIVE_X = "001111"               # -X
+    NEGATIVE_Y = "110011"               # -Y
+    INCREMENT_X = "011111"              # X+1
+    INCREMENT_Y = "110111"              # Y + 1
+    DECREMENT_X = "001110"              # X - 1
+    DECREMENT_Y = "110010"              # Y - 1
+    ADD = "000010"                      # X + Y
+    SUB_X_Y = "010011"                  # X - Y
+    SUB_Y_X = "000111"                  # Y - X
+    BITWISE_AND = "000000"              # X&Y
+    BITWISE_OR = "010101"               # X|Y
+
+    # Input:    2 binary numbers (16 bits)
+    #           6 digit binary number
+    # Output:   binary number (16 bits)
+
+    # Function: Inputs 2 binary number and 6 bit operation into alu
+    def alu_16_bit_operation(self, x, y, operation):
+        return self.alu_16_bit(x, y, operation[0], operation[1], operation[2], operation[3], operation[4], operation[5])
+
+
 
 
 
