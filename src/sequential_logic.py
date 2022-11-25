@@ -22,4 +22,18 @@ class seq(gate):
         self.previous_output = self.and_(not_r, or_result)
         return self.previous_output
 
+    # Input:        2 Binary bit
+    # Output:       Binary bit
+    # Function:     D: 0 enable: 0 -> no change
+    #               D: 1 enable: 0 -> no change
+    #               D: 0 enable: 1 -> Q = 0
+    #               D: 1 enable: 1 -> Q = 1
+    def d_latch(self, d, enable):
+        d_not = self.not_(d)
+        not_and = self.and_(d_not, enable)
+        and_ = self.and_(d, enable)
+        return self.SR_AND_OR_latch(and_, not_and)
+
+
+
 

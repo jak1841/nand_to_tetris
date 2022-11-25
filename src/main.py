@@ -7,7 +7,11 @@ from arithemtic_logic_unit import alu
 
 from sequential_logic import seq
 s = seq("0")
+print(s.d_latch("0", "0"))
 
-print(s.SR_AND_OR_latch("1", "0"))
-print(s.SR_AND_OR_latch("0", "1"))
+s = seq("1")
+print(s.d_latch("0", "0"))
+
+
+
 

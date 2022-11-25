@@ -28,6 +28,34 @@ class Test(unittest.TestCase):
         seq = s("1")
         self.assertEqual("0", seq.SR_AND_OR_latch("1", "1"))
 
+    def test_d_latch(self):
+        seq = s("0")
+        self.assertEqual("0", seq.d_latch("0", "0"))
+
+        seq = s("0")
+        self.assertEqual("0", seq.d_latch("1", "0"))
+
+        seq = s("0")
+        self.assertEqual("1", seq.d_latch("1", "1"))
+
+        seq = s("0")
+        self.assertEqual("0", seq.d_latch("0", "1"))
+
+        seq = s("1")
+        self.assertEqual("1", seq.d_latch("0", "0"))
+
+        seq = s("1")
+        self.assertEqual("1", seq.d_latch("1", "0"))
+
+        seq = s("1")
+        self.assertEqual("1", seq.d_latch("1", "1"))
+
+        seq = s("1")
+        self.assertEqual("0", seq.d_latch("0", "1"))
+
+
+
+
 
 
 if __name__ == '__main__':
