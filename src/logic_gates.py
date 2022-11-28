@@ -152,3 +152,33 @@ class gate:
 
         return self.not_(result)
 
+"""
+    Implements the most primitive sequential element of a computer
+    Data Flip Flop
+    out(t) = in(t - 1),
+    where in and out are the gate’s input and output values and t is the current clock cycle.
+"""
+class sequential(gate):
+    def __init__(self):
+        self.out = "0"
+
+    # Data Flip Flop
+    # out(t) = in(t - 1),
+    # where in and out are the gate’s input and output values and t is the current clock cycle
+    def dff(self, input):
+        self.out = input
+        return self.out
+
+    # Input:        In, load (2 Binary bit)
+    # Output:       out (Binary bit)
+    # Function:     if load(t - 1), then out(t) = in(t - 1)
+    #               else out(t) = out(t - 1)
+    def bit(self, input, load):
+        result = self.multiplexor(self.out, input, load)
+        return self.dff(result)
+
+
+
+
+
+
