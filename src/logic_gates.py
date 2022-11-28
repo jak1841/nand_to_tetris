@@ -159,13 +159,14 @@ class gate:
     where in and out are the gate’s input and output values and t is the current clock cycle.
 """
 class sequential(gate):
+    # Assuming always the output bit is always 0
     def __init__(self):
         self.out = "0"
 
     # Data Flip Flop
     # out(t) = in(t - 1),
     # where in and out are the gate’s input and output values and t is the current clock cycle
-    def dff(self, input):
+    def n_bit_dff(self, input):
         self.out = input
         return self.out
 
@@ -175,7 +176,32 @@ class sequential(gate):
     #               else out(t) = out(t - 1)
     def bit(self, input, load):
         result = self.multiplexor(self.out, input, load)
-        return self.dff(result)
+        return self.n_bit_dff(result)
+
+
+    # Input:        In (n bit), load (one bit)
+    # Output:       out (n bit )
+    # Function:     if load(t - 1), then out(t) = input(t - 1)
+    #               else out(t) = out(t - 1)
+    def register_n_bit(self, input, load):
+        # Guarntees that the length of output is equal to input
+        # May have unforseen errors in future but whaetevers :/
+        if (len(self.out) != len(input)):
+            self.out = ""
+            for x in range(len(input)):
+                self.out+= "0"
+
+        result = self.n_bit_multipexor(self.out, input, load)
+        return self.n_bit_dff(result)
+
+
+
+
+
+
+
+
+
 
 
 
