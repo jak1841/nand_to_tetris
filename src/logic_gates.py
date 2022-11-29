@@ -152,6 +152,22 @@ class gate:
 
         return self.not_(result)
 
+
+    # Input:    4 Binary number(both length N), selector binary number (length 2)
+    # Ouput:    Binary number (Length N)
+    # 4 way Mulitplexor but with n bit data.
+    # sel = 00 -> a
+    # sel = 01 -> b
+    # sel = 10 -> c
+    # sel = 11 -> d
+    def n_bit_4_way_multiplexor(self, a, b, c, d, sel):
+        result_1 = self.n_bit_multipexor(a, b, sel[1])
+        result_2 = self.n_bit_multipexor(c, d, sel[1])
+
+        return self.n_bit_multipexor(result_1, result_2, sel[0])
+
+
+
 """
     Implements the most primitive sequential element of a computer
     Data Flip Flop

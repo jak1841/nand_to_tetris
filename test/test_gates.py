@@ -214,8 +214,36 @@ class Test(unittest.TestCase):
         self.assertEqual("0", gate.n_bit_all_zeros("110101010"))
         self.assertEqual("0", gate.n_bit_all_zeros("1111111111111"))
 
+    def test_n_bit_4_way_multiplexor(self):
+        a = "0000"
+        b = "1010"
+        c = "0101"
+        d = "1111"
+        self.assertEqual("0000", gate.n_bit_4_way_multiplexor(a, b, c, d, "00"))
+        self.assertEqual("1010", gate.n_bit_4_way_multiplexor(a, b, c, d, "01"))
+        self.assertEqual("0101", gate.n_bit_4_way_multiplexor(a, b, c, d, "10"))
+        self.assertEqual("1111", gate.n_bit_4_way_multiplexor(a, b, c, d, "11"))
 
 
+
+        a = "00011011011011011000111101001001"
+        b = "11011001000111011011101001001100"
+        c = "10100100100100100000110001101100"
+        d = "10010011111010011101101001110010"
+        self.assertEqual(a, gate.n_bit_4_way_multiplexor(a, b, c, d, "00"))
+        self.assertEqual(b, gate.n_bit_4_way_multiplexor(a, b, c, d, "01"))
+        self.assertEqual(c, gate.n_bit_4_way_multiplexor(a, b, c, d, "10"))
+        self.assertEqual(d, gate.n_bit_4_way_multiplexor(a, b, c, d, "11"))
+
+
+        a = "000100001010000"
+        b = "111010111111101"
+        c = "110110100001011"
+        d = "100110100110010"
+        self.assertEqual(a, gate.n_bit_4_way_multiplexor(a, b, c, d, "00"))
+        self.assertEqual(b, gate.n_bit_4_way_multiplexor(a, b, c, d, "01"))
+        self.assertEqual(c, gate.n_bit_4_way_multiplexor(a, b, c, d, "10"))
+        self.assertEqual(d, gate.n_bit_4_way_multiplexor(a, b, c, d, "11"))
 
 
 
