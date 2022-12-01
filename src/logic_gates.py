@@ -153,7 +153,7 @@ class gate:
         return self.not_(result)
 
 
-    # Input:    4 Binary number(both length N), selector binary number (length 2)
+    # Input:    4 Binary number(all length N), selector binary number (length 2)
     # Ouput:    Binary number (Length N)
     # 4 way Mulitplexor but with n bit data.
     # sel = 00 -> a
@@ -165,6 +165,18 @@ class gate:
         result_2 = self.n_bit_multipexor(c, d, sel[1])
 
         return self.n_bit_multipexor(result_1, result_2, sel[0])
+
+    # Input:    array of length n, such that n = 2^x for some x (all length N), selector binary (length x)
+    # output:   Binary number (length n)
+    # n way multiplexor but with n bit data
+    def n_bit_n_way_multiplexor(self, list_n_binary_nums, sel):
+        if (len(list_n_binary_nums) == 2):
+            return self.n_bit_multipexor(list_n_binary_nums[0], list_n_binary_nums[1], sel[0])
+
+        midpoint = int(len(list_n_binary_nums)/2)
+        r1 = self.n_bit_n_way_multiplexor(list_n_binary_nums[0:midpoint], sel[1:])
+        r2 = self.n_bit_n_way_multiplexor(list_n_binary_nums[midpoint:], sel[1:])
+        return self.n_bit_multipexor(r1, r2, sel[0])
 
 
 

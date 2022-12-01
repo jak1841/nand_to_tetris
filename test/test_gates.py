@@ -245,8 +245,33 @@ class Test(unittest.TestCase):
         self.assertEqual(c, gate.n_bit_4_way_multiplexor(a, b, c, d, "10"))
         self.assertEqual(d, gate.n_bit_4_way_multiplexor(a, b, c, d, "11"))
 
+    def test_n_bit_n_way_multiplexor(self):
+        list_binary_number = ["0000", "1010", "0101", "1111"]
+        self.assertEqual("0000", gate.n_bit_n_way_multiplexor(list_binary_number,  "00"))
+        self.assertEqual("1010", gate.n_bit_n_way_multiplexor(list_binary_number, "01"))
+        self.assertEqual("0101", gate.n_bit_n_way_multiplexor(list_binary_number, "10"))
+        self.assertEqual("1111", gate.n_bit_n_way_multiplexor(list_binary_number, "11"))
+
+        list_binary_number = ["00011011011011011000111101001001", "11011001000111011011101001001100", "10100100100100100000110001101100", "10010011111010011101101001110010"]
+        self.assertEqual("00011011011011011000111101001001", gate.n_bit_n_way_multiplexor(list_binary_number,  "00"))
+        self.assertEqual("11011001000111011011101001001100", gate.n_bit_n_way_multiplexor(list_binary_number, "01"))
+        self.assertEqual("10100100100100100000110001101100", gate.n_bit_n_way_multiplexor(list_binary_number, "10"))
+        self.assertEqual("10010011111010011101101001110010", gate.n_bit_n_way_multiplexor(list_binary_number, "11"))
 
 
+        list_binary_number = ["01100111", "01110010", "00001110", "01011010", "01100010", "00101100", "10110011", "01010110"]
+        self.assertEqual(list_binary_number[0], gate.n_bit_n_way_multiplexor(list_binary_number,  "000"))
+        self.assertEqual(list_binary_number[1], gate.n_bit_n_way_multiplexor(list_binary_number, "001"))
+        self.assertEqual(list_binary_number[2], gate.n_bit_n_way_multiplexor(list_binary_number, "010"))
+        self.assertEqual(list_binary_number[3], gate.n_bit_n_way_multiplexor(list_binary_number, "011"))
+        self.assertEqual(list_binary_number[4], gate.n_bit_n_way_multiplexor(list_binary_number,  "100"))
+        self.assertEqual(list_binary_number[5], gate.n_bit_n_way_multiplexor(list_binary_number, "101"))
+        self.assertEqual(list_binary_number[6], gate.n_bit_n_way_multiplexor(list_binary_number, "110"))
+        self.assertEqual(list_binary_number[7], gate.n_bit_n_way_multiplexor(list_binary_number, "111"))
+
+
+
+        
 
 
 if __name__ == '__main__':

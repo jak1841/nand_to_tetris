@@ -4,7 +4,7 @@ class alu():
     def __init__(self):
         self.gate = gate()
         pass
-
+    
     # Given two binary bits as strings adds them and returns a string of sum and carry bit
     # return is carry bit followed by sum bit
     # 0, 0 -> 00
