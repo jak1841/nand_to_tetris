@@ -269,10 +269,26 @@ class Test(unittest.TestCase):
         self.assertEqual(list_binary_number[6], gate.n_bit_n_way_multiplexor(list_binary_number, "110"))
         self.assertEqual(list_binary_number[7], gate.n_bit_n_way_multiplexor(list_binary_number, "111"))
 
+    def test_n_bit_n_way_demultiplexor(self):
+        input = "1"
+        self.assertEqual(["1", "0"], gate.n_bit_n_way_demultiplexor(input, "0"))
+        self.assertEqual(["0", "1"], gate.n_bit_n_way_demultiplexor(input, "1"))
 
+        input = "1001"
+        self.assertEqual(["1001", "0000", "0000", "0000"], gate.n_bit_n_way_demultiplexor(input, "00"))
+        self.assertEqual(["0000", "1001", "0000", "0000"], gate.n_bit_n_way_demultiplexor(input, "01"))
+        self.assertEqual(["0000", "0000", "1001", "0000"], gate.n_bit_n_way_demultiplexor(input, "10"))
+        self.assertEqual(["0000", "0000", "0000", "1001"], gate.n_bit_n_way_demultiplexor(input, "11"))
 
-        
-
+        input = "01011011"
+        self.assertEqual(["01011011", "00000000", "00000000", "00000000", "00000000", "00000000", "00000000", "00000000"], gate.n_bit_n_way_demultiplexor(input, "000"))
+        self.assertEqual(["00000000", "01011011", "00000000", "00000000", "00000000", "00000000", "00000000", "00000000"], gate.n_bit_n_way_demultiplexor(input, "001"))
+        self.assertEqual(["00000000", "00000000", "01011011", "00000000", "00000000", "00000000", "00000000", "00000000"], gate.n_bit_n_way_demultiplexor(input, "010"))
+        self.assertEqual(["00000000", "00000000", "00000000", "01011011", "00000000", "00000000", "00000000", "00000000"], gate.n_bit_n_way_demultiplexor(input, "011"))
+        self.assertEqual(["00000000", "00000000", "00000000", "00000000", "01011011", "00000000", "00000000", "00000000"], gate.n_bit_n_way_demultiplexor(input, "100"))
+        self.assertEqual(["00000000", "00000000", "00000000", "00000000", "00000000", "01011011", "00000000", "00000000"], gate.n_bit_n_way_demultiplexor(input, "101"))
+        self.assertEqual(["00000000", "00000000", "00000000", "00000000", "00000000", "00000000", "01011011", "00000000"], gate.n_bit_n_way_demultiplexor(input, "110"))
+        self.assertEqual(["00000000", "00000000", "00000000", "00000000", "00000000", "00000000", "00000000", "01011011"], gate.n_bit_n_way_demultiplexor(input, "111"))
 
 if __name__ == '__main__':
     unittest.main()

@@ -179,6 +179,19 @@ class gate:
         return self.n_bit_multipexor(r1, r2, sel[0])
 
 
+    # Input:        input (n bit), address
+    # output:       output_array (2^len(address) in length)     
+    # n way demultiplexor with n bit data 
+    def n_bit_n_way_demultiplexor(self, input, address):
+        if (len(address) == 1):
+            return self.n_bit_demultplexor(input, address[0])
+
+        result = self.n_bit_demultplexor(input, address[0])
+        return self.n_bit_n_way_demultiplexor(result[0], address[1:]) + self.n_bit_n_way_demultiplexor(result[1], address[1:])
+        
+
+
+
 
 """
     Implements the most primitive sequential element of a computer
@@ -211,6 +224,8 @@ class sequential(gate):
     # Output:       out (n bit )
     # Function:     if load(t - 1), then out(t) = input(t - 1)
     #               else out(t) = out(t - 1)
+    # Read:         length n input, load = 0
+    # Write:        input, load = 1  
     def register_n_bit(self, input, load):
         # Guarntees that the length of output is equal to input
         # May have unforseen errors in future but whaetevers :/
@@ -221,6 +236,7 @@ class sequential(gate):
 
         result = self.n_bit_multipexor(self.out, input, load)
         return self.n_bit_dff(result)
+
 
 
 
