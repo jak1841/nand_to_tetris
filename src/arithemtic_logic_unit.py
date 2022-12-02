@@ -81,7 +81,7 @@ class alu():
 
         return [out, zr, ng]
 
-    # Instead of individual bits put into the ALU we will use defined variables
+    # Instead of individual bits put into the ALU we will use defined variables for all the operation
     ZERO = "101010"                     # 0000000000000000
     ONE = "111111"                      # 0000000000000001
     NEGATIVE_ONE = "111010"             # 1111111111111111
@@ -106,11 +106,87 @@ class alu():
     # Output:   binary number (16 bits)
 
     # Function: Inputs 2 binary number and 6 bit operation into alu
-    def alu_16_bit_operation(self, x, y, operation):
+    def alu_n_bit_operation(self, x, y, operation):
         return self.alu_16_bit(x, y, operation[0], operation[1], operation[2], operation[3], operation[4], operation[5])
 
 
 
+
+    """
+
+
+
+        N BIT ALU DOWN BELOW
+
+
+
+    """
+
+    # Input:            a (n bit), b(n bit)
+    # Output:           a+b (n bit) 
+    # **Does not handle overflow**
+    def adder_n_bit(self, a, b):
+        num_bit = len(a)
+        carry_bit = 0
+        result = ["0" for x in range(num_bit)]
+        for x in range(num_bit):
+            carry_bit, summ = self.full_adder(b[num_bit - x - 1], a[num_bit - x - 1], carry_bit)
+            result[num_bit - x - 1] = summ
+
+        return "".join(result)
+    
+    # Input:            a (n bit)
+    # Output:           a + 1 (n bit)
+    # **Does not handle overflow**
+    def increment_n_bit(self, a):
+        one = ""
+        for x in range(len(a) - 1):
+            one += "0"
+        one += "1"
+        return self.adder_n_bit(one, a)
+    
+    # Inputs: x[n] y[n]         Two n-bit data inputs
+    #         zx,               Zero the x input
+    #         nx,               negate the x input
+    #         zy,               zero the y input
+    #         ny,               negate the y input
+    #         f,                Function code: 1 for Add, 0 for And
+    #         no,               negate the output
+
+    # Outputs:  out[n]          n bit data output
+    #           zr,             true iff out = 0
+    #           ng,             true iff out < 0
+    def alu_n_bit(self, x, y, zx, nx, zy, ny, f, no):
+        zeroed_x = self.gate.n_bit_xor(x, x)
+        x1 = self.gate.n_bit_multipexor(x, zeroed_x, zx)
+        negated_x = self.gate.n_bit_not(x1)
+        x2 = self.gate.n_bit_multipexor(x1, negated_x, nx)
+
+        zeroed_y = self.gate.n_bit_xor(y, y)
+        y1 = self.gate.n_bit_multipexor(y, zeroed_y, zy)
+        negated_y = self.gate.n_bit_not(y1)
+        y2 = self.gate.n_bit_multipexor(y1, negated_y, ny)
+
+        added_x_y = self.adder_n_bit(x2, y2)
+        and_x_y = self.gate.n_bit_and(x2, y2)
+
+        output  = self.gate.n_bit_multipexor(and_x_y, added_x_y, f)
+        negated_output = self.gate.n_bit_not(output)
+
+        out = self.gate.n_bit_multipexor(output, negated_output, no)
+
+        zr = self.gate.n_bit_all_zeros(out)
+        ng = out[0]
+
+        return [out, zr, ng]
+
+    # Input:    x (n-bit), y (n-bit)
+    #           operation (6 digit binary number)
+    # Output:   binary number (n bits)
+
+    # Function: Inputs 2 binary number and 6 bit operation into alu
+    def alu_n_bit_operation(self, x, y, operation):
+        return self.alu_n_bit(x, y, operation[0], operation[1], operation[2], operation[3], operation[4], operation[5])
 
 
 
