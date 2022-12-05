@@ -340,6 +340,11 @@ class Test(unittest.TestCase):
         self.assertEqual(["10000000000000000000000000000000", "0", "1"], alu.alu_n_bit_operation(x, y, alu.INCREMENT_Y))
 
 
+        x = "0"
+        y = "1"
+        self.assertEqual(["1", "0", "1"], alu.alu_n_bit_operation(x, y, alu.INCREMENT_X))
+        self.assertEqual(["0", "1", "0"], alu.alu_n_bit_operation(x, y, alu.INCREMENT_Y))
+
 
         x = "01011111001011010101111100101101"
         y = "01111100111100000111110011110000"

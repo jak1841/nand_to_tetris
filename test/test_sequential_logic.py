@@ -3,7 +3,7 @@ import sys
 
 # allows use of moducles
 sys.path.append('/mnt/c/Users/Jaskarn Dhillon/projects/nand_to_tetris/src')
-from logic_gates import sequential as seq
+from sequential_logic import sequential as seq
 from random_access_memory import Ram_n
 
 class Test(unittest.TestCase):
@@ -95,6 +95,47 @@ class Test(unittest.TestCase):
 
         self.assertEqual([  "10101111", "00000000", "00000000", "00000000", "00000000", "00000000", "00000000", "00000000", 
                             "01111111", "00000000", "00000000", "00001110", "00000000", "00000000", "01001110", "11001110"  ], ram.get_list_of_all_register_values())
+
+    def test_PC_counter(self):
+        s = seq()
+
+        input, inc, load, reset = "1", "0", "0", "0"
+        self.assertEqual("0", s.PC_counter_n_bit(input, inc, load, reset))
+
+        input, inc, load, reset = "1", "0", "0", "0"
+        self.assertEqual("0", s.PC_counter_n_bit(input, inc, load, reset))
+
+        input, inc, load, reset = "1", "1", "0", "0"
+        self.assertEqual("1", s.PC_counter_n_bit(input, inc, load, reset))
+
+        input, inc, load, reset = "1", "0", "0", "0"
+        self.assertEqual("1", s.PC_counter_n_bit(input, inc, load, reset))
+
+        input, inc, load, reset = "1", "1", "0", "0"
+        self.assertEqual("0", s.PC_counter_n_bit(input, inc, load, reset))
+
+        input, inc, load, reset = "1", "0", "0", "0"
+        self.assertEqual("0", s.PC_counter_n_bit(input, inc, load, reset))
+
+        input, inc, load, reset = "1000100110001010", "0", "1", "0"
+        self.assertEqual("1000100110001010", s.PC_counter_n_bit(input, inc, load, reset))
+
+        input, inc, load, reset = "1000100110001010", "1", "0", "0"
+        self.assertEqual("1000100110001011", s.PC_counter_n_bit(input, inc, load, reset))
+
+        input, inc, load, reset = "1000100110001011", "0", "0", "0"
+        self.assertEqual("1000100110001011", s.PC_counter_n_bit(input, inc, load, reset))
+
+        input, inc, load, reset = "1000100110001011", "0", "0", "1"
+        self.assertEqual("0000000000000000", s.PC_counter_n_bit(input, inc, load, reset))
+
+        input, inc, load, reset = "1000100110001011", "1", "0", "0"
+        self.assertEqual("0000000000000001", s.PC_counter_n_bit(input, inc, load, reset))
+
+        input, inc, load, reset = "1000100110001011", "0", "0", "0"
+        self.assertEqual("0000000000000001", s.PC_counter_n_bit(input, inc, load, reset))
+
+
 
 
 

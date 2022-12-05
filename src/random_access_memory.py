@@ -1,5 +1,5 @@
 
-from logic_gates import sequential as seq
+from sequential_logic import sequential as seq
 from logic_gates import gate as g
 
 gate = g()
