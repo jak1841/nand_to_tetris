@@ -5,7 +5,7 @@ from logic_gates import gate as g
 gate = g()
 
 
-# Given an n, n = s^x for some n implements the RAM part of the computer
+# Given an n, n = 2^x for some n implements the RAM part of the computer
 # Where n is the number of registers in the operation
 class Ram_n:
     def __init__(self, N, width):
