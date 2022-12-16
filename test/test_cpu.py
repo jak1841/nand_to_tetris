@@ -222,7 +222,133 @@ class Test(unittest.TestCase):
         self.assertEqual("0000000000000001", cpu.D_register.register_n_bit("0000000000000000", "0"))
         pass
         
-    
+    def test_cpu_jump_operation(self):
+        cpu = cpu_16_bit()
+        inM, reset = "0000000000000000", "0"
+
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("null=0;null")
+        self.assertEqual(["0000000000000000", "0", "0000000000000000", "0000000000000001"], cpu.execute_instruction(inM, instruction, reset))
+        self.assertEqual("0000000000000000", cpu.A_register.register_n_bit("0000000000000000", "0"))
+        self.assertEqual("0000000000000001", cpu.PC.register_n_bit("0000000000000000", "0"))
+
+
+
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("@1802")
+        self.assertEqual(["1111111111111111", "0", "0000011100001010", "0000000000000010"], cpu.execute_instruction(inM, instruction, reset))
+        self.assertEqual("0000011100001010", cpu.A_register.register_n_bit("0000000000000000", "0"))
+        self.assertEqual("0000000000000010", cpu.PC.register_n_bit("0000000000000000", "0"))
+
+
+        # !JEQ
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("D=1;JEQ")
+        self.assertEqual(["0000000000000001", "0", "0000011100001010", "0000000000000011"], cpu.execute_instruction(inM, instruction, reset))
+        self.assertEqual("0000011100001010", cpu.A_register.register_n_bit("0000000000000000", "0"))
+        self.assertEqual("0000000000000011", cpu.PC.register_n_bit("0000000000000000", "0"))
+
+        # JEQ
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("D=D-1;JEQ")
+        self.assertEqual(["0000000000000000", "0", "0000011100001010", "0000011100001010"], cpu.execute_instruction(inM, instruction, reset))
+        self.assertEqual("0000011100001010", cpu.A_register.register_n_bit("0000000000000000", "0"))
+        self.assertEqual("0000011100001010", cpu.PC.register_n_bit("0000000000000000", "0"))
+
+        # !JGT
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("D=D;JGT")
+        self.assertEqual(["0000000000000000", "0", "0000011100001010", "0000011100001011"], cpu.execute_instruction(inM, instruction, reset))
+        self.assertEqual("0000011100001010", cpu.A_register.register_n_bit("0000000000000000", "0"))
+        self.assertEqual("0000011100001011", cpu.PC.register_n_bit("0000000000000000", "0"))
+
+        # !JGT 
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("null=D-1;JGT")
+        self.assertEqual(["1111111111111111", "0", "0000011100001010", "0000011100001100"], cpu.execute_instruction(inM, instruction, reset))
+
+
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("@9210")
+        cpu.execute_instruction(inM, instruction, reset)
+
+
+        # JGT
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("null=1;JGT")
+        self.assertEqual(["0000000000000001", "0", "0010001111111010", "0010001111111010"], cpu.execute_instruction(inM, instruction, reset))
+
+        # !JGE
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("null=D-1;JGE")
+        self.assertEqual(["1111111111111111", "0", "0010001111111010", "0010001111111011"], cpu.execute_instruction(inM, instruction, reset))
+
+        # JGE
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("null=0;JGE")
+        self.assertEqual(["0000000000000000", "0", "0010001111111010", "0010001111111010"], cpu.execute_instruction(inM, instruction, reset))
+
+        # JGE
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("null=1;JGE")
+        self.assertEqual(["0000000000000001", "0", "0010001111111010", "0010001111111010"], cpu.execute_instruction(inM, instruction, reset))
+
+        # !JLT 
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("null=0;JLT")
+        self.assertEqual(["0000000000000000", "0", "0010001111111010", "0010001111111011"], cpu.execute_instruction(inM, instruction, reset))
+
+        # !JLT 
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("null=1;JLT")
+        self.assertEqual(["0000000000000001", "0", "0010001111111010", "0010001111111100"], cpu.execute_instruction(inM, instruction, reset))
+
+        # JLT
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("null=D-1;JLT")
+        self.assertEqual(["1111111111111111", "0", "0010001111111010", "0010001111111010"], cpu.execute_instruction(inM, instruction, reset))
+
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("@2002")
+        cpu.execute_instruction(inM, instruction, reset)
+
+        # !JNE 
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("null=0;JNE")
+        self.assertEqual(["0000000000000000", "0", "0000011111010010", "0010001111111100"], cpu.execute_instruction(inM, instruction, reset))
+
+        # JNE
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("null=1;JNE")
+        self.assertEqual(["0000000000000001", "0", "0000011111010010", "0000011111010010"], cpu.execute_instruction(inM, instruction, reset))
+
+        # JNE 
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("null=D-1;JNE")
+        self.assertEqual(["1111111111111111", "0", "0000011111010010", "0000011111010010"], cpu.execute_instruction(inM, instruction, reset))
+
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("@60000")
+        cpu.execute_instruction(inM, instruction, reset)
+        
+
+        # !JLE
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("null=1;JLE")
+        self.assertEqual(["0000000000000001", "0", "0110101001100000", "0000011111010100"], cpu.execute_instruction(inM, instruction, reset))
+
+        # JLE
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("null=0;JLE")
+        self.assertEqual(["0000000000000000", "0", "0110101001100000", "0110101001100000"], cpu.execute_instruction(inM, instruction, reset))
+
+        # JLE
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("null=D-1;JLE")
+        self.assertEqual(["1111111111111111", "0", "0110101001100000", "0110101001100000"], cpu.execute_instruction(inM, instruction, reset))
+
+
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("@32000")
+        cpu.execute_instruction(inM, instruction, reset)
+
+        
+
+        # JMP 
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("null=D-1;JMP")
+        self.assertEqual(["1111111111111111", "0", "0111110100000000", "0111110100000000"], cpu.execute_instruction(inM, instruction, reset))
+
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("null=1;JMP")
+        self.assertEqual(["0000000000000001", "0", "0111110100000000", "0111110100000000"], cpu.execute_instruction(inM, instruction, reset))
+
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("null=0;JMP")
+        self.assertEqual(["0000000000000000", "0", "0111110100000000", "0111110100000000"], cpu.execute_instruction(inM, instruction, reset))
+
+
+
+
+
+
+        
+
+        
 
         
 

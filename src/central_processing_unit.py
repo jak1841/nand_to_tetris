@@ -91,7 +91,7 @@ class cpu_16_bit:
 
         new_j1 = gate.and_(j1,  ng)
         new_j2 = gate.and_(j2, zr)
-        new_j3 = gate.and_(j3, gate.not_(ng))
+        new_j3 = gate.and_(j3, gate.and_(gate.not_(ng), gate.not_(zr)))
 
         r1 = gate.or_(gate.or_(new_j1, new_j2), new_j3)
 
