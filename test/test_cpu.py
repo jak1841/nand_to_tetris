@@ -7,11 +7,12 @@ sys.path.append('/mnt/c/Users/Jaskarn Dhillon/projects/nand_to_tetris/src')
 from central_processing_unit import cpu_16_bit
 from hack_assembler import assembler
 
-cpu = cpu_16_bit()
 assem = assembler()
 
 class Test(unittest.TestCase):
     def test_cpu_comp_operation(self):
+        cpu = cpu_16_bit()
+
         # Initial Register and PC test 
         self.assertEqual("0000000000000000", cpu.A_register.register_n_bit("0000000000000000", "0"))
         self.assertEqual("0000000000000000", cpu.D_register.register_n_bit("0000000000000000", "0"))
@@ -151,9 +152,79 @@ class Test(unittest.TestCase):
         instruction = assem.hack_assembly_instruction_to_binary_instruction("null=D|M;null")
         self.assertEqual(["1101011010111111", "0", "0000001110001111", "0000000000011111"], cpu.execute_instruction(inM, instruction, reset))
 
+    def test_cpu_store_operation(self):
+        cpu = cpu_16_bit()
+        self.assertEqual("0000000000000000", cpu.A_register.register_n_bit("0000000000000000", "0"))
+        self.assertEqual("0000000000000000", cpu.D_register.register_n_bit("0000000000000000", "0"))
 
-        # M: 1101011010011111
-        # D: 0000000010101001
+        inM, reset = "1110101000000000", "0"
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("@993")
+        cpu.execute_instruction(inM, instruction, reset)
+
+        self.assertEqual("0000001111100001", cpu.A_register.register_n_bit("0000000000000000", "0"))
+        self.assertEqual("0000000000000000", cpu.D_register.register_n_bit("0000000000000000", "0"))
+
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("D=A;null")
+        cpu.execute_instruction(inM, instruction, reset)
+
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("@21902")
+        cpu.execute_instruction(inM, instruction, reset)
+    
+        self.assertEqual("0101010110001110", cpu.A_register.register_n_bit("0000000000000000", "0"))
+        self.assertEqual("0000001111100001", cpu.D_register.register_n_bit("0000000000000000", "0"))
+
+
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("M=A;null")
+        self.assertEqual(["0101010110001110", "1", "0101010110001110", "0000000000000100"], cpu.execute_instruction(inM, instruction, reset))
+    
+        self.assertEqual("0101010110001110", cpu.A_register.register_n_bit("0000000000000000", "0"))
+        self.assertEqual("0000001111100001", cpu.D_register.register_n_bit("0000000000000000", "0"))
+        
+
+
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("D=D+1;null")
+        self.assertEqual(["0000001111100010", "0", "0101010110001110", "0000000000000101"], cpu.execute_instruction(inM, instruction, reset))
+    
+        self.assertEqual("0101010110001110", cpu.A_register.register_n_bit("0000000000000000", "0"))
+        self.assertEqual("0000001111100010", cpu.D_register.register_n_bit("0000000000000000", "0"))
+
+        inM = "0101010110001110"
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("MD=D&A;null")
+        self.assertEqual(["0000000110000010", "1", "0101010110001110", "0000000000000110"], cpu.execute_instruction(inM, instruction, reset))
+    
+        self.assertEqual("0101010110001110", cpu.A_register.register_n_bit("0000000000000000", "0"))
+        self.assertEqual("0000000110000010", cpu.D_register.register_n_bit("0000000000000000", "0"))
+
+
+        inM = "1101010110001110"
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("A=A+1;null")
+        self.assertEqual(["0101010110001111", "0", "0101010110001111", "0000000000000111"], cpu.execute_instruction(inM, instruction, reset))
+        self.assertEqual("0101010110001111", cpu.A_register.register_n_bit("0000000000000000", "0"))
+        self.assertEqual("0000000110000010", cpu.D_register.register_n_bit("0000000000000000", "0"))
+
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("AM=D|M;null")
+        self.assertEqual(["1101010110001110", "1", "1101010110001110", "0000000000001000"], cpu.execute_instruction(inM, instruction, reset))
+        self.assertEqual("1101010110001110", cpu.A_register.register_n_bit("0000000000000000", "0"))
+        self.assertEqual("0000000110000010", cpu.D_register.register_n_bit("0000000000000000", "0"))
+
+
+        inM = "1111110000000111"
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("AD=M;null")
+        self.assertEqual(["1111110000000111", "0", "1111110000000111", "0000000000001001"], cpu.execute_instruction(inM, instruction, reset))
+        self.assertEqual("1111110000000111", cpu.A_register.register_n_bit("0000000000000000", "0"))
+        self.assertEqual("1111110000000111", cpu.D_register.register_n_bit("0000000000000000", "0"))
+
+
+        inM = "1111110000000111"
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("AMD=1;null")
+        self.assertEqual(["0000000000000001", "1", "0000000000000001", "0000000000001010"], cpu.execute_instruction(inM, instruction, reset))
+        self.assertEqual("0000000000000001", cpu.A_register.register_n_bit("0000000000000000", "0"))
+        self.assertEqual("0000000000000001", cpu.D_register.register_n_bit("0000000000000000", "0"))
+        pass
+        
+    
+
+        
 
 
 

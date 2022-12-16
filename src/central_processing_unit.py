@@ -13,10 +13,10 @@ Inputs:             inM[16],             // M value input (M = contents of RAM[A
                                          // Or continue the program (reset = 0)       
 
 
-Outputs:            outM[16],           // M value output
-                    writeM,             // Write M?
-                    addressM[15],       // Address of M in data memory 
-                    pc[15],             // Address of next instruction
+Outputs:            outM[16],           // alu output
+                    writeM,             // Write to memory?
+                    addressM[15],       // Address of where to write 
+                    pc[15],             // updated PC counter
 
 Function: Executes the instruction according to the Hack machine language specefication 
 (SEE The Elements of Computing Systems: Building a Modern Computer from First Principles)
