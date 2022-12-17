@@ -342,6 +342,13 @@ class Test(unittest.TestCase):
         self.assertEqual(["0000000000000000", "0", "0111110100000000", "0111110100000000"], cpu.execute_instruction(inM, instruction, reset))
 
 
+        # Reset 
+        reset = "1"
+        instruction = assem.hack_assembly_instruction_to_binary_instruction("null=D-1;JMP")
+        self.assertEqual(["1111111111111111", "0", "0111110100000000", "0000000000000000"], cpu.execute_instruction(inM, instruction, reset))
+
+
+
 
 
 
