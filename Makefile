@@ -7,3 +7,5 @@ run_test: test
 run: src/main.py
 	python3 src/main.py
 
+gui_run: src/GUI.py
+	python3 src/GUI.py
