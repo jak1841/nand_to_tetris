@@ -1,7 +1,11 @@
 """
     This class is used to convert a file with hack cpu language to 
     its binary represetation cpu instruction  
+
+    BASIC FORMAT 
+    DEST=COMP;JUMP
 """
+from arithemtic_logic_unit import alu
 class assembler:
     def __init__(self):
         self.init_comp_hashmap()
@@ -90,12 +94,78 @@ class assembler:
             equal_index = assembly_instruction.find("=")
             semi_colon_index = assembly_instruction.find(";")
 
-            dest_token = assembly_instruction[:equal_index]
-            comp_token = assembly_instruction[equal_index + 1: semi_colon_index]
-            jump_token = assembly_instruction[semi_colon_index+1:]
-            return "111" + self.comp_hashmap[comp_token] + self.dest_hashmap[dest_token] + self.jump_hashmap[jump_token]
 
-             
+            dest_token = assembly_instruction[:equal_index]
+            comp_token = assembly_instruction
+            jump_token = assembly_instruction[semi_colon_index+1:]
+
+            dest_binary = "000"
+            jump_binary = "000"
+
+            if (dest_token in self.dest_hashmap):
+                dest_binary = self.dest_hashmap[dest_token]
+                comp_token = comp_token[equal_index+1:]
+            
+            if (jump_token in self.jump_hashmap):
+                semi_colon_index = comp_token.find(";")
+                jump_binary = self.jump_hashmap[jump_token]
+                comp_token = comp_token[:semi_colon_index]
+
+            return "111" + self.comp_hashmap[comp_token] + dest_binary + jump_binary
+
+    # Input:        Array of Hack assembly instruction 
+    # Output:       Array of binary instructions translated 
+    def array_hack_assembly_instruction_to_binary_instruction(self, array_instructions):
+        ret = []
+        symbol_table = {}
+
+
+        a = alu()
+        position = "0000000000000000"
+        # Does first pass which will get all the labels into symbol table 
+        for x in array_instructions:
+            # Label 
+            if (x[0] == "(" and x[-1] == ")"):
+                symbol = x[1:-1]
+                symbol_table[symbol] = position
+            # A or C instruction
+            else:
+                position = a.increment_n_bit(position)
+
+            
+
+
+        # Second pass which goes through and checks for every A instruction if symbol is in it, 
+        # if it is then replace instruction with value in symbol table 
+        # if not then a new symbol and add it to symbol table displacement
+        
+        symbol_table_displacement = "0000010000000000"      # Where symbol table will be stored in memory
+        for x in array_instructions:
+            # Variable
+            if (x[0] == "@" and x[1] not in "0123456789"):
+                symbol = x[1:]
+                if (symbol not in symbol_table):
+                    symbol_table[symbol] = symbol_table_displacement
+                    ret.append(symbol_table_displacement)
+                    symbol_table_displacement = a.increment_n_bit(symbol_table_displacement)
+                    
+                else:
+                    ret.append(symbol_table[symbol])
+
+            # Label  
+            elif (x[0] == "(" and x [-1] == ")"):
+                pass
+            else: 
+                ret.append(self.hack_assembly_instruction_to_binary_instruction(x))
+                
+        return ret
+
+
+
+
+   
+
+        
 
 
         
