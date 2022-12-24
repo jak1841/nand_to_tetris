@@ -12,6 +12,8 @@
     @total
     M=D
 (update_previous_two_values)
+
+
     @second_num
     D=M
     @first_num
@@ -20,6 +22,7 @@
     D=M
     @second_num
     M=D
+// This is extended due to no reason lol 
 (a_has_first_and_d_has_second)
     @second_num
     D=M

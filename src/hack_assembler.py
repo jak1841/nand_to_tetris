@@ -120,6 +120,8 @@ class assembler:
         symbol_table = {}
 
 
+        array_instructions = self.remove_comment_and_whitespace_from_array_assembly_instruction(array_instructions)
+
         a = alu()
         position = "0000000000000000"
         # Does first pass which will get all the labels into symbol table 
@@ -160,6 +162,18 @@ class assembler:
                 
         return ret
 
+    # Removes all lines of code that contain comments and empty whitespace from array
+    def remove_comment_and_whitespace_from_array_assembly_instruction(self, array_instructions):
+        ret = []
+        for x in array_instructions:
+            if (x == ""):
+                pass
+            elif (x[0] == "/" and x[1] == "/"):
+                pass
+            else:
+                ret.append(x)
+        
+        return ret
 
 
 
