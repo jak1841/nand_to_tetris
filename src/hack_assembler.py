@@ -175,6 +175,35 @@ class assembler:
         
         return ret
 
+    # Adds the predefined symbols to the given symbol table refering to the apporpiate positions in data memory
+    def add_predefined_symbols_to_symbol_table(self, symboltable):
+        symboltable["SP"] = "0000000000000000" 
+        symboltable["LCL"] = "0000000000000001" 
+        symboltable["ARG"] = "0000000000000010" 
+        symboltable["THIS"] = "0000000000000011" 
+        symboltable["THAT"] = "0000000000000100" 
+
+        symboltable["R0"] = "0000000000000000" 
+        symboltable["R1"] = "0000000000000001" 
+        symboltable["R2"] = "0000000000000010" 
+        symboltable["R3"] = "0000000000000011" 
+        symboltable["R4"] = "0000000000000100" 
+        symboltable["R5"] = "0000000000000101" 
+        symboltable["R6"] = "0000000000000110" 
+        symboltable["R7"] = "0000000000000111" 
+        symboltable["R8"] = "0000000000001000" 
+        symboltable["R9"] = "0000000000001001" 
+        symboltable["R10"] = "0000000000001010" 
+        symboltable["R11"] = "000000000001011" 
+        symboltable["R12"] = "000000000001100" 
+        symboltable["R13"] = "000000000001101" 
+        symboltable["R14"] = "000000000001110" 
+        symboltable["R15"] = "0000000000001111" 
+
+        symboltable["SCREEN"] = "0100000000000001" 
+
+
+
 
 
    
