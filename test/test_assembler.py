@@ -31,6 +31,26 @@ class Test(unittest.TestCase):
                 cmptr.run_a_instruction("0")
             self.assertEqual(fibonacci[y], cmptr.cpu.D_register.register_n_bit("0000000000000000", "0"))
 
+    def test_predefined_symbols(self):
+        predefined_symbol_addresses = ['0000000000000000', '0000000000000001', '0000000000000010', 
+        '0000000000000011', '0000000000000100', '0000000000000000', '0000000000000001', '0000000000000010', 
+        '0000000000000011', '0000000000000100', '0000000000000101', '0000000000000110', '0000000000000111', 
+        '0000000000001000', '0000000000001001', '0000000000001010', '0000000000001011', '0000000000001100', 
+        '0000000000001101', '0000000000001110', '0000000000001111', '0100000000000001']
+
+        program = ['// We will be using each of the predefined symbols to check they work properyl', '', '@SP', 
+        '@LCL', '@ARG', '@THIS', '@THAT', '', '', "// Bunch of R's", '@R0', '@R1', '@R2', '@R3', '@R4', '@R5', 
+        '@R6', '@R7', '@R8', '@R9', '@R10', '@R11', '@R12', '@R13', '@R14', '@R15', '', '// Screen', '@SCREEN']
+
+        ass = assembler()
+        cmptr = computer()
+
+        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(program)
+        cmptr.load_program(binary_program)
+
+        for x in range(22):
+            cmptr.run_a_instruction("0")
+            self.assertEqual(predefined_symbol_addresses[x], cmptr.cpu.A_register.register_n_bit("0000000000000000", "0"))
 
 
 if __name__ == '__main__':

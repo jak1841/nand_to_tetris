@@ -118,7 +118,7 @@ class assembler:
     def array_hack_assembly_instruction_to_binary_instruction(self, array_instructions):
         ret = []
         symbol_table = {}
-
+        self.add_predefined_symbols_to_symbol_table(symbol_table)
 
         array_instructions = self.remove_comment_and_whitespace_from_array_assembly_instruction(array_instructions)
 
@@ -194,13 +194,14 @@ class assembler:
         symboltable["R8"] = "0000000000001000" 
         symboltable["R9"] = "0000000000001001" 
         symboltable["R10"] = "0000000000001010" 
-        symboltable["R11"] = "000000000001011" 
-        symboltable["R12"] = "000000000001100" 
-        symboltable["R13"] = "000000000001101" 
-        symboltable["R14"] = "000000000001110" 
+        symboltable["R11"] = "0000000000001011" 
+        symboltable["R12"] = "0000000000001100" 
+        symboltable["R13"] = "0000000000001101" 
+        symboltable["R14"] = "0000000000001110" 
         symboltable["R15"] = "0000000000001111" 
 
         symboltable["SCREEN"] = "0100000000000001" 
+
 
 
 
