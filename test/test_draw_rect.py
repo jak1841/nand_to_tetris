@@ -1,12 +1,17 @@
+import sys
+
+
+# allows use of moducles
+sys.path.append('/mnt/c/Users/Jaskarn Dhillon/projects/nand_to_tetris/src')
+
 from hack_assembler import assembler
 from hack_computer import computer
 
-
 ass = assembler()
 cmptr = computer()
-
+print("Should be a rectangle drawn here")
 program = None
-with open('src/program.asm') as my_file:
+with open('test/rect.asm') as my_file:
     program = my_file.readlines()
 
 
@@ -14,8 +19,6 @@ with open('src/program.asm') as my_file:
 no_whitespace_program = []
 for x in program:
     no_whitespace_program.append(x.strip())
-
-print(no_whitespace_program)
 
 
 binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(no_whitespace_program)

@@ -4,6 +4,7 @@ run_test: test
 	pypy test/test_sequential_logic.py
 	pypy test/test_cpu.py
 	pypy test/test_assembler.py
+	pypy test/test_draw_rect.py
 	
 slow_run: src/main.py
 	python3 src/main.py

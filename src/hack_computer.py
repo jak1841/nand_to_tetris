@@ -58,6 +58,32 @@ class computer:
             position = a.increment_n_bit(position)
 
         
+    # Prints the RAM contents to the screen 
+    def display_screen(self):
+
+        # Gets all Ram values responsible for screen info and puts it into an screen
+        display_screen = ""
+        for x in range(19):
+            for y in range(10):
+                display_screen+= self.data_memory.memory[16385 + (10*x) + y]
+            display_screen+= "\n"
+        
+        # Convert all ones and zeros to pixels 
+        pixel_screen = ""
+        for x in display_screen:
+            if (x == "1"):
+                pixel_screen+= "■"
+            elif(x == "\n"):
+                pixel_screen+="\n"
+            else:
+                pixel_screen += " "
+        
+
+        
+        print(pixel_screen)
+            
+
+
 
         
         
