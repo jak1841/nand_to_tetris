@@ -141,7 +141,7 @@ class assembler:
         # if it is then replace instruction with value in symbol table 
         # if not then a new symbol and add it to symbol table displacement
         
-        symbol_table_displacement = "0000010000000000"      # Where symbol table will be stored in memory
+        symbol_table_displacement = "0000000000010000"      # Where symbol table will be stored in memory
         for x in array_instructions:
             # Variable
             if (x[0] == "@" and x[1] not in "0123456789"):
