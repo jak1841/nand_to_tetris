@@ -19,17 +19,13 @@ vm = Vm()
     # print(no_whitespace_program)
 
 
-for x in range(100, 200):
-    vm.add_push_constant_hack_assembly(x)
+vm_instructions_array = ["push constant " + str(x) for x in range(100)]
+vm_instructions_array.append("not")
+
+hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
 
 
-
-vm.add_less_than_hack_assembly()
-
-hack_assembly_instructions = vm.get_assembly_instruction()
-
-
-binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions)
+binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
 cmptr.load_program(binary_program)
 
 

@@ -154,7 +154,7 @@ class Vm:
         self.add_push_d_register_value_to_stack_hack_assembly()
 
     # appends all instructions which pops x, y from stack and pushs x-y to stack 
-    def add_substraction_hack_assembly(self):
+    def add_subtraction_hack_assembly(self):
         self.add_pop_value_from_stack_to_register_d_hack_assembly()
 
         # Store Y into R13
@@ -322,9 +322,49 @@ class Vm:
         ]
 
 
-
     # returns the assembly instruction
     def get_assembly_instruction(self):
         return self.assembly_instructions
 
+    # Given an array of VM instructions appends all instructions that are asscoiated with that particular VM instruction
+    # to an array and returns the result
+    def get_hack_assembly_instructions_from_VM_instructions(self, VM_instructions_array):
+        # Clears array of assembly instructions
+        self.assembly_instructions = []
+        self.add_set_sp_hack_assembly()
+        self.label_num = 0  
+
+        for x in VM_instructions_array:
+            if ("push constant " == x[:14]):
+                number = int(x[14:])
+                self.add_push_constant_hack_assembly(number)
+            elif (x == "add"):
+                self.add_addition_hack_assembly()
+            elif (x == "sub"):
+                self.add_subtraction_hack_assembly()
+            elif (x == "neg"):
+                self.add_negative_hack_assembly()
+            elif (x == "eq"):
+                self.add_equal_hack_assembly()
+            elif (x == "gt"):
+                self.add_greater_than_hack_assembly()
+            elif (x == "lt"):
+                self.add_less_than_hack_assembly()
+            elif (x == "and"):
+                self.add_and_hack_assembly()
+            elif (x == "or"):
+                self.add_or_hack_assembly()
+            elif (x == "not"):
+                self.add_not_hack_assembly()
+            else:
+                raise Exception("Unexpected VM instruction:", x)
+        
+        
+        return self.get_assembly_instruction()
+
+
+
+
+
+        
 
