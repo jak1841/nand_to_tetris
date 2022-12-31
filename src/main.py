@@ -19,8 +19,12 @@ vm = Vm()
     # print(no_whitespace_program)
 
 
-for x in range(100):
+for x in range(100, 200):
     vm.add_push_constant_hack_assembly(x)
+
+
+
+vm.add_less_than_hack_assembly()
 
 hack_assembly_instructions = vm.get_assembly_instruction()
 
