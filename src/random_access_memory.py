@@ -10,12 +10,12 @@ gate = g()
 class Ram_n:
     def __init__(self, N, width):
         self.width = width
-        self.memory = []
         self.init_memory(N, self.width)
 
     # Makes N registers with width:= width and puts it into registers_array 
     # All registers will be be initialized to 0. 
     def init_memory(self, N, width):
+        self.memory = []
         zero = ""
         for y in range(width):
             zero+="0"

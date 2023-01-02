@@ -48,9 +48,13 @@ class computer:
 
     # Loads the program into instructions memory to be ready to executre
     def load_program(self, array_instruction):
-
+        self.run_a_instruction("1")     # reset program counter
         a = alu()
         position = "000000000000000"
+
+        # reset data memory and instruction memory
+        self.data_memory = Ram_n(32768, 16) # in: 15 bit address, out: 16 bit address
+        self.instruction_memory = Ram_n(32768, 16) # in: 15 bit address, out: 16 bit address
 
         for x in array_instruction:
             binary_instruction = x
@@ -83,6 +87,10 @@ class computer:
         print(pixel_screen)
             
 
+    # Runs computer how ever many instruction given
+    def run_N_number_instructions(self, N):
+        for x in range(N):
+            self.run_a_instruction("0")
 
 
         
