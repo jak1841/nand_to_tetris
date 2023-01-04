@@ -49,6 +49,25 @@
             assuming x is in decimal form will push binary representation of x 
             onto the stack  
     
+    Memory access VM commands:
+
+         pop memorySegment index
+         push memorySegment index
+
+        Where memorySegment is static, this, local, argument, that, constant, pointer, or temp
+        And index is a non-negative integer
+     
+        Static will be stored 16-255 
+        local, argument, this, that will be stored in the heap (2048 - onward)
+
+        The base addresses of these segments are kept in RAM
+        addresses LCL, ARG, THIS, and THAT. Access to
+        the i-th entry of any of these segments is
+        implemented by accessing RAM[segmentBase + i]
+
+        ptr, temp: 3-4 and 5-12 ram address respectively 
+
+    
 
 """
 
@@ -322,6 +341,115 @@ class Vm:
         ]
 
 
+    # appends all the hack instructions required to pop a value off the stack into the speceified memory segment
+    # which will be in String format
+        # "static" -> static 
+        # "LCL" -> local 
+        # "THIS" -> this 
+        # "THAT" -> that 
+        # "ARG" -> argument 
+        # "temp" -> temp 
+        # "ptr" -> pointer
+    # into the given index
+    def add_pop_value_from_stack_to_memory_segment_hack_instructions(self, instruction):
+        instruction = instruction.split()
+        index = int(instruction[2])
+        memory_segment = instruction[1]
+
+        
+
+        if (memory_segment == "static"):
+            self.add_pop_value_from_stack_to_register_d_hack_assembly()
+            self.assembly_instructions+= [
+            "@" + str(index + 16), 
+            "M=D"
+            ]
+        elif (memory_segment in ["LCL", "THIS", "THAT", "ARG"]):
+            # Store the address of where to store popped value from stack into R13
+            self.assembly_instructions+= [
+                "@" + memory_segment, 
+                "D=M", 
+                "@" + str(index), 
+                "D=D+A",
+                "@R13", 
+                "M=D", 
+            ]
+
+            self.add_pop_value_from_stack_to_register_d_hack_assembly()
+
+            self.assembly_instructions += [
+                "@R13", 
+                "A=M", 
+                "M=D"
+            ]
+            
+        elif (memory_segment == "PTR"):
+            self.add_pop_value_from_stack_to_register_d_hack_assembly()
+            self.assembly_instructions+= [
+            "@" + str(3 + index), 
+            "M=D"
+            ]
+        elif (memory_segment == "TEMP"):
+            self.add_pop_value_from_stack_to_register_d_hack_assembly()
+            self.assembly_instructions+= [
+            "@" + str(5 + index), 
+            "M=D"
+            ]
+        else:
+            raise Exception("unknown memory segment", memory_segment)
+        
+    # appends all the hack instructions required to push a value from a speceficed memory segment and index 
+    # to the stack 
+        # "static" -> static 
+        # "LCL" -> local 
+        # "THIS" -> this 
+        # "THAT" -> that 
+        # "ARG" -> argument 
+        # "temp" -> temp 
+        # "ptr" -> pointer
+    def add_push_memory_segment_to_stack_hack_instructions(self, vm_instruction):
+        instruction = vm_instruction.split()
+        index = int(instruction[2])
+        memory_segment = instruction[1]
+
+        if (memory_segment == "static"):
+            self.assembly_instructions+= [
+            "@" + str(index + 16), 
+            "D=M"
+            ]
+            self.add_push_d_register_value_to_stack_hack_assembly()
+        elif (memory_segment in ["LCL", "THIS", "THAT", "ARG"]):
+            self.assembly_instructions+= [
+                "@" + memory_segment, 
+                "D=M", 
+                "@" + str(index), 
+                "D=D+A",
+                "D=M", 
+            ]
+            self.add_push_d_register_value_to_stack_hack_assembly()
+        elif (memory_segment == "PTR"):
+            self.assembly_instructions+= [
+            "@" + str(3 + index), 
+            "D=M"
+            ]
+            self.add_push_d_register_value_to_stack_hack_assembly()
+        elif (memory_segment == "TEMP"):
+            self.assembly_instructions+= [
+            "@" + str(5 + index), 
+            "D=M"
+            ]
+            self.add_push_d_register_value_to_stack_hack_assembly()
+        else:
+            raise Exception("Unexepected memory segment", memory_segment)
+
+
+        
+        
+        
+
+
+
+
     # returns the assembly instruction
     def get_assembly_instruction(self):
         return self.assembly_instructions
@@ -356,6 +484,10 @@ class Vm:
                 self.add_or_hack_assembly()
             elif (x == "not"):
                 self.add_not_hack_assembly()
+            elif (x[:3] == "pop"):
+                self.add_pop_value_from_stack_to_memory_segment_hack_instructions(x)
+            elif (x[:4] == "push"):
+                self.add_push_memory_segment_to_stack_hack_instructions(x)
             else:
                 raise Exception("Unexpected VM instruction:", x)
         

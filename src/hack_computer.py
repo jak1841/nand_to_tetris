@@ -93,7 +93,15 @@ class computer:
             self.run_a_instruction("0")
 
 
-        
+    # Gets the SP value 
+    def get_sp_value(self):
+        return self.data_memory.memory[0]
+    
+    # peeks at the top of the stack for and returns value that is on it 
+    def peek_stack(self):
+        a = alu()
+        top_stack_address = a.alu_n_bit_operation("1111111111111111", self.get_sp_value(), a.ADD)[0]
+        return self.data_memory.do_operation(top_stack_address, top_stack_address,  "0")
         
 
 

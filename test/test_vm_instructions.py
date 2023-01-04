@@ -232,6 +232,26 @@ class Test(unittest.TestCase):
         cmptr.run_N_number_instructions(1000)
         self.assertEqual("1100001011110101", cmptr.data_memory.memory[256])
 
+    def test_memory_access_push_constant(self):
+        ass = assembler()
+        cmptr = computer()
+        vm = Vm()
+
+
+        vm_instructions_array = ["push constant " + str(x) for x in range(1000)]
+
+
+        hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
+
+        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        cmptr.load_program(binary_program)
+
+
+        for x in range(10000):
+            cmptr.run_a_instruction("0")
+        
+        self.assertEqual("0000010011101000", cmptr.get_sp_value())
+        self.assertEqual("0000001111100111", cmptr.peek_stack())
         
         
 
