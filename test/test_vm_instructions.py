@@ -13,6 +13,16 @@ from Virtual_machine import Vm
 
 
 class Test(unittest.TestCase):
+
+    # converts a decimal number to its sixteen bit representation 
+    def convert_decimal_to_16_bit(self, decimal):
+        result = list(str(bin(decimal)))[2:]
+        empty_instruction = ["0" for x in range(16)]
+        for x in range(min(len(result), 15)):
+            empty_instruction[-x - 1] = result[-x - 1]
+        
+        return ''.join(empty_instruction)
+
     def test_arithmetic(self):
         ass = assembler()
         cmptr = computer()
@@ -253,7 +263,48 @@ class Test(unittest.TestCase):
         self.assertEqual("0000010011101000", cmptr.get_sp_value())
         self.assertEqual("0000001111100111", cmptr.peek_stack())
         
+    # tests the push and static options 
+    def test_memory_access_static(self):
+        ass = assembler()
+        cmptr = computer()
+        vm = Vm()
+
+
+        vm_instructions_array = ["push constant " + str(x) for x in range(240)]
+        vm_instructions_array += ["pop static " + str(x) for x in range(240)]
+
+        hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
+
+        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        cmptr.load_program(binary_program)
+
+
+        for x in range(10000):
+            cmptr.run_a_instruction("0")
         
+        self.assertEqual("0000000100000000", cmptr.get_sp_value())
+        self.assertEqual("0000000000000000", cmptr.peek_stack())
+        self.assertEqual([self.convert_decimal_to_16_bit(x) for x in range(240)], cmptr.data_memory.memory[16:256][::-1])
+
+
+        vm_instructions_array = ["push constant " + str(x) for x in range(240)]
+        vm_instructions_array += ["pop static " + str(x) for x in range(240)]
+        vm_instructions_array += ["push static " + str(239 - x) for x in range(240)]
+        hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
+
+        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        cmptr.load_program(binary_program)
+
+
+        for x in range(10000):
+            cmptr.run_a_instruction("0")
+
+        self.assertEqual("0000000111110000", cmptr.get_sp_value())
+        self.assertEqual("0000000011101111", cmptr.peek_stack())
+        self.assertEqual([self.convert_decimal_to_16_bit(x) for x in range(240)], cmptr.data_memory.memory[16:256][::-1])
+        
+
+
 
 if __name__ == '__main__':
     unittest.main()

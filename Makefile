@@ -1,8 +1,10 @@
-run_test: test
+run_test_hardware: test
 	pypy test/test_gates.py
 	pypy test/test_alu.py
 	pypy test/test_sequential_logic.py
 	pypy test/test_cpu.py
+
+run_test_software: test
 	pypy test/test_assembler.py
 	pypy test/test_draw_rect.py
 	pypy test/test_vm_instructions.py
