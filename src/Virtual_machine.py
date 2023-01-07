@@ -59,13 +59,16 @@
      
         Static will be stored 16-255 
         local, argument, this, that will be stored in the heap (2048 - onward)
+        but registers will be located at 1, 2, 3, 4 respectivivly
 
         The base addresses of these segments are kept in RAM
         addresses LCL, ARG, THIS, and THAT. Access to
         the i-th entry of any of these segments is
         implemented by accessing RAM[segmentBase + i]
 
-        ptr, temp: 3-4 and 5-12 ram address respectively 
+        PTR, TEMP: 3-4 and 5-12 ram address respectively 
+        They only edit the values at these locations
+        
 
     
 
@@ -424,6 +427,7 @@ class Vm:
                 "D=M", 
                 "@" + str(index), 
                 "D=D+A",
+                "A=D",
                 "D=M", 
             ]
             self.add_push_d_register_value_to_stack_hack_assembly()

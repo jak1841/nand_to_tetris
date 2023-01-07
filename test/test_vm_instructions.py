@@ -390,6 +390,87 @@ class Test(unittest.TestCase):
         ]), cmptr.data_memory.memory[2048:2088])
 
 
+        """
+            TESTING PUSHING of the function 
+        
+        """
+
+        vm_instructions_array = ["push constant " + str(x) for x in range(69, 79)]
+        vm_instructions_array += ["pop LCL " + str(x) for x in range(10)]
+        vm_instructions_array += ["push constant " + str(x) for x in range(420, 430)]
+        vm_instructions_array += ["pop ARG " + str(x) for x in range(10)]
+        vm_instructions_array += ["push constant " + str(x) for x in range(911, 921)]
+        vm_instructions_array += ["pop THIS " + str(x) for x in range(10)]
+        vm_instructions_array += ["push constant " + str(x) for x in range(8008, 8018)]
+        vm_instructions_array += ["pop THAT " + str(x) for x in range(10)]
+
+        vm_instructions_array += ["push LCL " + str(9-x) for x in range(10)]
+        vm_instructions_array += ["push ARG " + str(9-x) for x in range(10)]
+        vm_instructions_array += ["push THIS " + str(9-x) for x in range(10)]
+        vm_instructions_array += ["push THAT " + str(9-x) for x in range(10)]
+
+
+
+        hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
+
+
+
+
+        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        cmptr.load_program(binary_program)
+
+        # init the values inside the registers 
+        cmptr.data_memory.memory[1] = self.convert_decimal_to_16_bit(2048)  # LCL
+        cmptr.data_memory.memory[2] = self.convert_decimal_to_16_bit(2058)  # ARG
+        cmptr.data_memory.memory[3] = self.convert_decimal_to_16_bit(2068)  # THIS
+        cmptr.data_memory.memory[4] = self.convert_decimal_to_16_bit(2078)  # THAT
+
+
+        
+
+
+        for x in range(20000):
+            cmptr.run_a_instruction("0")
+
+        self.assertEqual(self.convert_decimal_to_16_bit(296), cmptr.get_sp_value())
+        self.assertEqual(["0000000100101000", "0000100000000000", "0000100000001010", "0000100000010100", "0000100000011110"], cmptr.data_memory.memory[0:5])
+        self.assertEqual(self.convert_decimal_list_to_16_bit([
+            69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 
+            420, 421, 422, 423, 424, 425, 426, 427, 428, 429, 
+            911, 912, 913, 914, 915, 916, 917, 918, 919, 920, 
+            8008, 8009, 8010, 8011, 8012, 8013, 8014, 8015, 8016, 8017  
+            ]), cmptr.data_memory.memory[256:296])
+
+        
+
+    def test_memory_access_ptr_memory_segment(self):
+        # ass = assembler()
+        # cmptr = computer()
+        # vm = Vm()
+
+
+        # vm_instructions_array = [
+        #     "push constant 8213",
+        #     "push constant 912", 
+        #     "pop" 
+        # ]
+        # hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
+
+
+
+
+        # binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        # cmptr.load_program(binary_program)
+
+
+        # self.assertEqual(self.convert_decimal_list_to_16_bit(0, 0), cmptr.data_memory.memory[3:5])
+
+
+        # for x in range(5000):
+        #     cmptr.run_a_instruction("0")
+        pass
+
+        
         
 
 
