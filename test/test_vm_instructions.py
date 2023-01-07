@@ -14,7 +14,7 @@ from Virtual_machine import Vm
 
 class Test(unittest.TestCase):
 
-    # converts a decimal number to its sixteen bit representation 
+    # converts a decimal number to its sixteen bit representation and return that binary number
     def convert_decimal_to_16_bit(self, decimal):
         result = list(str(bin(decimal)))[2:]
         empty_instruction = ["0" for x in range(16)]
@@ -22,6 +22,14 @@ class Test(unittest.TestCase):
             empty_instruction[-x - 1] = result[-x - 1]
         
         return ''.join(empty_instruction)
+
+    # converts a list of decimal number to its sixteen bit representation and return that array
+    def convert_decimal_list_to_16_bit(self, list_decimal):
+        ret = []
+        for x in list_decimal:
+            ret.append(self.convert_decimal_to_16_bit(x))
+        
+        return ret
 
     def test_arithmetic(self):
         ass = assembler()
@@ -262,8 +270,26 @@ class Test(unittest.TestCase):
         
         self.assertEqual("0000010011101000", cmptr.get_sp_value())
         self.assertEqual("0000001111100111", cmptr.peek_stack())
+
+
+        vm_instructions_array = ["push constant " + str(x) for x in range(420, 912)]
+
+
+        hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
+
+        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        cmptr.load_program(binary_program)
+
+
+        for x in range(10000):
+            cmptr.run_a_instruction("0")
         
-    # tests the push and static options 
+        self.assertEqual("0000001011101100", cmptr.get_sp_value())
+        self.assertEqual("0000001110001111", cmptr.peek_stack())
+
+
+        
+    # tests the push and static vm comands  
     def test_memory_access_static(self):
         ass = assembler()
         cmptr = computer()
@@ -303,6 +329,69 @@ class Test(unittest.TestCase):
         self.assertEqual("0000000011101111", cmptr.peek_stack())
         self.assertEqual([self.convert_decimal_to_16_bit(x) for x in range(240)], cmptr.data_memory.memory[16:256][::-1])
         
+    def test_memory_access_LCL_ARG_THIS_THAT_memory_segment(self):
+        ass = assembler()
+        cmptr = computer()
+        vm = Vm()
+        # This will be where in data memory the corresponding register will be located 
+        # REGISTER -> INDEX
+        # SP -> 0
+        # LCL -> 1 
+        # ARG -> 2
+        # THIS -> 3
+        # THAT -> 4
+
+
+        self.assertEqual([self.convert_decimal_to_16_bit(0) for x in range(40)], cmptr.data_memory.memory[2048:2088])
+        
+
+        vm_instructions_array = ["push constant " + str(x) for x in range(69, 79)]
+        vm_instructions_array += ["pop LCL " + str(x) for x in range(10)]
+
+        vm_instructions_array += ["push constant " + str(x) for x in range(420, 430)]
+        vm_instructions_array += ["pop ARG " + str(x) for x in range(10)]
+
+        vm_instructions_array += ["push constant " + str(x) for x in range(911, 921)]
+        vm_instructions_array += ["pop THIS " + str(x) for x in range(10)]
+
+        vm_instructions_array += ["push constant " + str(x) for x in range(8008, 8018)]
+        vm_instructions_array += ["pop THAT " + str(x) for x in range(10)]
+
+
+
+        hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
+
+
+
+
+        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        cmptr.load_program(binary_program)
+
+        # init the values inside the registers 
+        cmptr.data_memory.memory[1] = self.convert_decimal_to_16_bit(2048)  # LCL
+        cmptr.data_memory.memory[2] = self.convert_decimal_to_16_bit(2058)  # ARG
+        cmptr.data_memory.memory[3] = self.convert_decimal_to_16_bit(2068)  # THIS
+        cmptr.data_memory.memory[4] = self.convert_decimal_to_16_bit(2078)  # THAT
+
+
+        for x in range(20000):
+            cmptr.run_a_instruction("0")
+        
+        
+
+
+        self.assertEqual(self.convert_decimal_to_16_bit(256), cmptr.get_sp_value())
+        self.assertEqual(["0000000100000000", "0000100000000000", "0000100000001010", "0000100000010100", "0000100000011110"], cmptr.data_memory.memory[0:5])
+        self.assertEqual(self.convert_decimal_list_to_16_bit([
+            78, 77, 76, 75, 74, 73, 72, 71, 70, 69, 
+            429, 428, 427, 426, 425, 424, 423, 422, 421, 420, 
+            920, 919, 918, 917, 916, 915, 914, 913, 912, 911, 
+            8017, 8016, 8015, 8014, 8013, 8012, 8011, 8010, 8009, 8008
+        ]), cmptr.data_memory.memory[2048:2088])
+
+
+        
+
 
 
 
