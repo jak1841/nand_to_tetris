@@ -286,9 +286,7 @@ class Test(unittest.TestCase):
         
         self.assertEqual("0000001011101100", cmptr.get_sp_value())
         self.assertEqual("0000001110001111", cmptr.peek_stack())
-
-
-        
+  
     # tests the push and static vm comands  
     def test_memory_access_static(self):
         ass = assembler()
@@ -441,34 +439,67 @@ class Test(unittest.TestCase):
             8008, 8009, 8010, 8011, 8012, 8013, 8014, 8015, 8016, 8017  
             ]), cmptr.data_memory.memory[256:296])
 
-        
-
     def test_memory_access_ptr_memory_segment(self):
-        # ass = assembler()
-        # cmptr = computer()
-        # vm = Vm()
+        ass = assembler()
+        cmptr = computer()
+        vm = Vm()
 
 
-        # vm_instructions_array = [
-        #     "push constant 8213",
-        #     "push constant 912", 
-        #     "pop" 
-        # ]
-        # hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
+        vm_instructions_array = [
+            "push constant 8213",
+            "push constant 2069", 
+            "pop PTR 0", 
+            "pop PTR 1"
+        ]
+        hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
 
 
 
 
-        # binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
-        # cmptr.load_program(binary_program)
+        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        cmptr.load_program(binary_program)
 
 
-        # self.assertEqual(self.convert_decimal_list_to_16_bit(0, 0), cmptr.data_memory.memory[3:5])
+        self.assertEqual(self.convert_decimal_list_to_16_bit([0, 0]), cmptr.data_memory.memory[3:5])
 
 
-        # for x in range(5000):
-        #     cmptr.run_a_instruction("0")
-        pass
+        for x in range(1000):
+            cmptr.run_a_instruction("0")
+
+        
+        self.assertEqual(self.convert_decimal_list_to_16_bit([2069, 8213]), cmptr.data_memory.memory[3:5])
+        self.assertEqual(self.convert_decimal_to_16_bit(256), cmptr.get_sp_value())
+
+        vm_instructions_array = [
+            "push constant 9210",
+            "push constant 2100", 
+            "pop PTR 0", 
+            "pop PTR 1", 
+            "push PTR 1", 
+            "push PTR 0", 
+            "push PTR 1"
+        ]
+        hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
+
+
+
+
+        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        cmptr.load_program(binary_program)
+
+
+        self.assertEqual(self.convert_decimal_list_to_16_bit([0, 0]), cmptr.data_memory.memory[3:5])
+
+
+        for x in range(1000):
+            cmptr.run_a_instruction("0")
+
+        
+        self.assertEqual(self.convert_decimal_list_to_16_bit([2100, 9210]), cmptr.data_memory.memory[3:5])
+        self.assertEqual(self.convert_decimal_to_16_bit(259), cmptr.get_sp_value())
+        self.assertEqual(self.convert_decimal_to_16_bit(9210), cmptr.peek_stack())
+        self.assertEqual(self.convert_decimal_list_to_16_bit([9210, 2100, 9210]), cmptr.data_memory.memory[256:259])
+        
 
         
         
