@@ -500,6 +500,96 @@ class Test(unittest.TestCase):
         self.assertEqual(self.convert_decimal_to_16_bit(9210), cmptr.peek_stack())
         self.assertEqual(self.convert_decimal_list_to_16_bit([9210, 2100, 9210]), cmptr.data_memory.memory[256:259])
         
+    def test_memory_acccess_temp_memory_segment(self):
+        ass = assembler()
+        cmptr = computer()
+        vm = Vm()
+
+        vm_instructions_array = [
+            "push constant 9688",
+            "push constant 15868", 
+            "push constant 5806", 
+            "push constant 12661", 
+            "push constant 14612", 
+            "push constant 129", 
+            "push constant 19462", 
+            "push constant 13738", 
+            "pop TEMP 0", 
+            "pop TEMP 1", 
+            "pop TEMP 2", 
+            "pop TEMP 3",
+            "pop TEMP 4",
+            "pop TEMP 5",
+            "pop TEMP 6",
+            "pop TEMP 7" 
+
+        ]
+        hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
+
+
+
+
+        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        cmptr.load_program(binary_program)
+
+        self.assertEqual(self.convert_decimal_list_to_16_bit([0, 0, 0, 0, 0, 0, 0, 0]), cmptr.data_memory.memory[5:13])
+
+
+        for x in range(1000):
+            cmptr.run_a_instruction("0")
+        
+        array = [9688, 15868, 5806, 12661, 14612, 129, 19462, 13738]
+        self.assertEqual(self.convert_decimal_list_to_16_bit(array[::-1]), cmptr.data_memory.memory[5:13])
+        self.assertEqual(self.convert_decimal_to_16_bit(256), cmptr.get_sp_value())
+
+        vm_instructions_array = [
+            "push constant 9688",
+            "push constant 15868", 
+            "push constant 5806", 
+            "push constant 12661", 
+            "push constant 14612", 
+            "push constant 129", 
+            "push constant 19462", 
+            "push constant 13738", 
+            "pop TEMP 0", 
+            "pop TEMP 1", 
+            "pop TEMP 2", 
+            "pop TEMP 3",
+            "pop TEMP 4",
+            "pop TEMP 5",
+            "pop TEMP 6",
+            "pop TEMP 7", 
+            "push TEMP 7", 
+            "push TEMP 6", 
+            "push TEMP 5", 
+            "push TEMP 4", 
+            "push TEMP 3", 
+            "push TEMP 2", 
+            "push TEMP 1", 
+            "push TEMP 0"
+
+        ]
+        hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
+
+
+
+
+        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        cmptr.load_program(binary_program)
+
+        self.assertEqual(self.convert_decimal_list_to_16_bit([0, 0, 0, 0, 0, 0, 0, 0]), cmptr.data_memory.memory[5:13])
+
+
+        for x in range(1000):
+            cmptr.run_a_instruction("0")
+        
+        array = [9688, 15868, 5806, 12661, 14612, 129, 19462, 13738]
+        self.assertEqual(self.convert_decimal_list_to_16_bit(array[::-1]), cmptr.data_memory.memory[5:13])
+        self.assertEqual(self.convert_decimal_list_to_16_bit(array), cmptr.data_memory.memory[256:264])
+        self.assertEqual(self.convert_decimal_to_16_bit(264), cmptr.get_sp_value())
+        self.assertEqual(self.convert_decimal_to_16_bit(13738), cmptr.peek_stack())
+
+
 
         
         
