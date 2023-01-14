@@ -589,9 +589,61 @@ class Test(unittest.TestCase):
         self.assertEqual(self.convert_decimal_to_16_bit(264), cmptr.get_sp_value())
         self.assertEqual(self.convert_decimal_to_16_bit(13738), cmptr.peek_stack())
 
+    # basic loop which calculates value for 1 + 2 + ... + n 
+    def test_basic_loop_program(self):
+        ass = assembler()
+        cmptr = computer()
+        vm = Vm()
+        n = "50"
+        vm_instructions_array = [
+            "label push_value_n",
+            "push constant " + n,
+            "push constant " + n,
+            "pop TEMP 0", 
+            "pop TEMP 1", 
+
+            "label store_one_less_in_0_add",
+            "push TEMP 0", 
+            "push constant 1", 
+            "sub", 
+            "pop TEMP 0", 
+            "push TEMP 0", 
+            "push TEMP 1", 
+            "add", 
+            "pop TEMP 1",
+            
+            "label comparison", 
+            "push TEMP 0", 
+            "push constant 0", 
+            "eq", 
+            "if-goto bruh", 
+            "pop TEMP 2",
+            "goto store_one_less_in_0_add",
+
+            "label bruh", 
+            "pop TEMP 2",
+            "push TEMP 1",
+            "label end", 
+            "goto end"
+
+        ]
+
+        hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
 
 
+
+
+        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        cmptr.load_program(binary_program)
+
+        for x in range(9000):
+            cmptr.run_a_instruction("0")
         
+        self.assertEqual("0000010011111011", cmptr.data_memory.memory[6])
+        self.assertEqual("0000000100000001", cmptr.get_sp_value())
+        self.assertEqual("0000010011111011", cmptr.peek_stack())
+
+    # 
         
 
 

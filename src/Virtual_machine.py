@@ -271,7 +271,7 @@ class Vm:
         self.label_num+= 1              # Increment it to make sure all comparison labels are unique
         self.add_push_d_register_value_to_stack_hack_assembly()
 
-
+    # appends all instructions which pops x, y from stack and pushes true if x < y else false 
     def add_less_than_hack_assembly(self):
         self.add_pop_value_from_stack_to_register_d_hack_assembly()
 
@@ -450,6 +450,44 @@ class Vm:
         
         
         
+    """
+      The purpose of the function_name_scope parameter is that labels have function level scopes so we are able 
+      to use the same label name inside of different functions. We will have a variable to keep track of which 
+      function we are currently writing VM instructions in. We will prepend this to label_name to create a unique 
+      label name for that particular function scope. 
+
+    """
+
+    # VM instruction: label [label_name]
+    def add_label_hack_assembly(self, vm_instruction):
+        x = vm_instruction.split()
+        Label_name = self.current_function_scope + ":" + x[1]
+        self.assembly_instructions += ["(" + Label_name + ")"]
+
+    # VM instruction: goto [label_name]
+    def add_goto_label_hack_assembly(self, vm_instruction):
+        x = vm_instruction.split()
+        label_name = self.current_function_scope + ":" + x[1]
+        self.assembly_instructions += [
+        "@" + label_name,
+        "0;JMP"
+    ] 
+
+    # if top of stack not zero, jump to the specified destination; otherwise, execute the next command in the program.
+    # VM instruction: if-goto [label_name]	
+    def add_if_goto_hack_assembly(self, vm_instruction):
+        x = vm_instruction.split()
+        label_name = self.current_function_scope + ":" + x[1]
+        self.assembly_instructions += [
+            "@SP", 
+            "D=M-1", 
+            "A=D", 
+            "D=M", 
+            "@" + label_name, 
+            "D;JNE"
+                ]
+
+
 
 
 
@@ -465,6 +503,7 @@ class Vm:
         self.assembly_instructions = []
         self.add_set_sp_hack_assembly()
         self.label_num = 0  
+        self.current_function_scope = "Sys.init"    # This will tell us which function we are currently in inside the vm_file
 
         for x in VM_instructions_array:
             if ("push constant " == x[:14]):
@@ -492,6 +531,12 @@ class Vm:
                 self.add_pop_value_from_stack_to_memory_segment_hack_instructions(x)
             elif (x[:4] == "push"):
                 self.add_push_memory_segment_to_stack_hack_instructions(x)
+            elif(x[:5] == "label"):
+                self.add_label_hack_assembly(x)
+            elif (x[:4] == "goto"):
+                self.add_goto_label_hack_assembly(x)
+            elif (x[:7] == "if-goto"):
+                self.add_if_goto_hack_assembly(x)
             else:
                 raise Exception("Unexpected VM instruction:", x)
         
@@ -499,8 +544,6 @@ class Vm:
         return self.get_assembly_instruction()
 
 
-
-
-
+    
         
 
