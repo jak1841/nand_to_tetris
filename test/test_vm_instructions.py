@@ -18,7 +18,7 @@ class Test(unittest.TestCase):
     def convert_decimal_to_16_bit(self, decimal):
         result = list(str(bin(decimal)))[2:]
         empty_instruction = ["0" for x in range(16)]
-        for x in range(min(len(result), 15)):
+        for x in range(min(len(result), 16)):
             empty_instruction[-x - 1] = result[-x - 1]
         
         return ''.join(empty_instruction)
@@ -91,6 +91,21 @@ class Test(unittest.TestCase):
 
         self.assertEqual("0000000100000001", cmptr.data_memory.memory[0])
         self.assertEqual("0000000010110011", cmptr.data_memory.memory[256])
+
+        vm_instructions_array = [
+            "push constant 17711", 
+            "push constant 28657", 
+            "add"
+        ]
+        
+        hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
+        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        cmptr.load_program(binary_program)
+        cmptr.run_N_number_instructions(1000)
+
+        self.assertEqual("1011010100100000", cmptr.peek_stack())
+
+
 
     def test_logical(self):
         ass = assembler()
@@ -643,7 +658,80 @@ class Test(unittest.TestCase):
         self.assertEqual("0000000100000001", cmptr.get_sp_value())
         self.assertEqual("0000010011111011", cmptr.peek_stack())
 
-    # 
+    #  Fibonacci: computes and stores in memory the first n elements of the Fibonacci series. This typical
+    #  array manipulation program provides a more challenging test of the VM’s branching commands.
+    def test_Fibonnacci_program(self):
+        ass = assembler()
+        cmptr = computer()
+        vm = Vm()
+        n = "24"
+        vm_instructions_array = [
+            "label init_n_value", 
+            "push constant " + n,
+            "pop TEMP 0", 
+
+
+            "label init_THIS_and_THAT_addresses",
+            "push constant 2048", 
+            "pop PTR 0",
+            "push constant 2049", 
+            "pop PTR 1",
+
+            "label init_fibonacci_seqeunce",
+            "push constant 0",
+            "pop THIS 0", 
+            "push constant 1",
+            "pop THAT 0", 
+
+            "label loop_conditional", 
+            "push TEMP 0", 
+            "push constant 1", 
+            "sub", 
+            "pop TEMP 0",
+            "push TEMP 0", 
+            "push constant 0", 
+            "eq", 
+            "if-goto end",
+
+
+            "label add_this_that_value_and_store_on_stack", 
+            "push THIS 0", 
+            "push THAT 0", 
+            "add",
+
+            "label increment_THIS_THAT_ADDRESS", 
+            "push constant 1", 
+            "push PTR 0", 
+            "add", 
+            "pop PTR 0",
+            "push constant 1", 
+            "push PTR 1", 
+            "add", 
+            "pop PTR 1",
+
+
+            "label store_next_fibonacci_number_to_memory", 
+            "pop THAT 0",
+            "goto loop_conditional",
+
+            
+            "label end", 
+            "goto end"
+
+        ]
+
+        hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
+
+
+
+
+        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        cmptr.load_program(binary_program)
+
+        for x in range(12000):
+            cmptr.run_a_instruction("0")
+        
+        self.assertEqual(self.convert_decimal_list_to_16_bit([0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89,144,233,377,610,987, 1597, 2584, 4181, 6765, 10946, 17711, 28657, 46368]), cmptr.data_memory.memory[2048:2073])
         
 
 
