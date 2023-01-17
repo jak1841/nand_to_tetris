@@ -387,8 +387,8 @@ class Test(unittest.TestCase):
         cmptr.data_memory.memory[4] = self.convert_decimal_to_16_bit(2078)  # THAT
 
 
-        for x in range(20000):
-            cmptr.run_a_instruction("0")
+        
+        cmptr.run_N_number_instructions(10000)
         
         
 
@@ -438,11 +438,9 @@ class Test(unittest.TestCase):
         cmptr.data_memory.memory[3] = self.convert_decimal_to_16_bit(2068)  # THIS
         cmptr.data_memory.memory[4] = self.convert_decimal_to_16_bit(2078)  # THAT
 
+    
 
-        
-
-
-        for x in range(20000):
+        for x in range(10000):
             cmptr.run_a_instruction("0")
 
         self.assertEqual(self.convert_decimal_to_16_bit(296), cmptr.get_sp_value())

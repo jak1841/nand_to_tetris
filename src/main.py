@@ -6,33 +6,39 @@ ass = assembler()
 cmptr = computer()
 vm = Vm()
 
-    # program = None
-    # with open('src/program.asm') as my_file:
-    #     program = my_file.readlines()
 
 
+vm_instructions_array = [   
+    "function sys.init 0", 
+    "push constant 10",
+    "call add_ten 1", 
 
-    # no_whitespace_program = []
-    # for x in program:
-    #     no_whitespace_program.append(x.strip())
+    "push constant 23", 
+    "sub",
+    "label end", 
+    "goto end",
 
-    # print(no_whitespace_program)
-
-
-vm_instructions_array = ["push constant " + str(x) for x in range(100)]
+    "function add_ten 0", 
+    "push constant 23", 
+    "push ARG 0",
+    "add", 
+    "return",
+    "label end", 
+    "goto end"
+    
+    
+    
+]
 
 
 hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
 
-# hack_assembly_instructions_array = ["@257", "D=A", "@LCL", "M=D"] + hack_assembly_instructions_array
 
 binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
 cmptr.load_program(binary_program)
 
 
-for x in range(1000):
-    cmptr.run_a_instruction("0")
-
+cmptr.run_N_number_instructions(3000)
 
 sp = cmptr.data_memory.memory[0]
 print(sp)

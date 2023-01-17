@@ -78,9 +78,11 @@ class Vm:
     def __init__(self):
         self.assembly_instructions = []         # array will contain all the assembly instructions so far used in the project
         self.add_set_sp_hack_assembly()
-
         self.label_num = 0                      # Used to create unique labels to be used for comparison operations 
-
+        self.return_num = 0                     # used to create unique function return labels
+        self.add_init()
+        self.current_function_scope = ""    # This will tell us which function we are currently in inside the vm_file
+        # self.add_call_sys_init()
 
     # Input:            Decimal between 0-2^15
     # Output:           appends all instructions which put the constant onto the stack
@@ -98,6 +100,29 @@ class Vm:
                 "@SP", 
                 "M=D"]
     
+    # appends all hack instructions which call sys.init
+    def add_init(self):
+        # Sets base address initially so it doesnt overwrite sp 
+        self.assembly_instructions += [
+            "@2048",
+            "D=A",
+            "@LCL", 
+            "M=D",
+            "@2058", 
+            "D=A",
+            "@ARG", 
+            "M=D", 
+            "@2068", 
+            "D=A",
+            "@THIS", 
+            "M=D", 
+            "@2078", 
+            "D=A",
+            "@THAT", 
+            "M=D", 
+        ]
+        
+
     # appends all instructions which pops x, y from stack and pushes bitwise x&y to stack
     def add_and_hack_assembly(self):
         self.add_pop_value_from_stack_to_register_d_hack_assembly()
@@ -488,8 +513,178 @@ class Vm:
                 ]
 
 
+    # VM instruction: call f n
+    # calling a function f after n arguments have been pushed onto the stack
+    def add_call_function(self, vm_instruction):
+        
+        x = vm_instruction.split()
+        function_name = x[1]
+        n = x[2]
+        return_address = "return_" + str(self.return_num)
+
+        # PUSH RETURN ADDRESS
+        self.assembly_instructions += [
+            "@" + return_address, 
+            "D=A"
+        ]
+        self.add_push_d_register_value_to_stack_hack_assembly()
+
+        # PUSH LCL
+        self.assembly_instructions += [
+            "@LCL", 
+            "D=M"
+        ]
+        self.add_push_d_register_value_to_stack_hack_assembly()
+
+        # PUSH ARG
+        self.assembly_instructions += [
+            "@ARG", 
+            "D=M"
+        ]
+        self.add_push_d_register_value_to_stack_hack_assembly()
+
+        # PUSH THIS
+        self.assembly_instructions += [
+            "@THIS", 
+            "D=M"
+        ]
+        self.add_push_d_register_value_to_stack_hack_assembly()
+
+        # PUSH THAT 
+        self.assembly_instructions += [
+            "@THAT", 
+            "D=M"
+        ]
+        self.add_push_d_register_value_to_stack_hack_assembly()
 
 
+        # ARG = SP - 5 - n
+        # LCL = SP
+        self.assembly_instructions += [
+            "@SP", 
+            "D=M", 
+            "@LCL", 
+            "M=D", 
+
+            "@5", 
+            "D=D-A", 
+            "@" + str(n), 
+            "D=D-A", 
+            "@ARG", 
+            "M=D",
+        ]
+
+
+        
+        self.assembly_instructions += [
+            "@" + function_name, 
+            "0;JMP",
+            "(" + return_address + ")"
+        ]
+
+        self.return_num+= 1
+
+    # VM instruction: function f k 
+    # where k is the number of local variables
+    # local variables are initialized to 0 and added onto stack 
+    def add_function_declaration_hack_assembly(self, vm_instruction):
+        x = vm_instruction.split()
+        function_name = x[1]
+        num_local_variables = int(x[2])
+        self.current_function_scope = function_name
+        self.assembly_instructions += ["(" + function_name + ")"]
+        
+        for x in range(num_local_variables):
+            self.add_push_constant_hack_assembly(0)
+        
+    # VM instruction: return
+    # returns from a VM function
+    # using the convention descirbed in the elements of computing machines book
+    def add_return_hack_assembly(self, vm_instruction):
+        # FRAME = LCL   // Frame is a temporary variable at location 7
+        self.assembly_instructions += [
+            "@LCL", 
+            "D=M", 
+            "@7",
+            "M=D" 
+        ]
+
+        # RET = *(FRAME - 5)
+        self.assembly_instructions += [
+            "@7", 
+            "D=M",
+            "@5",
+            "A=D-A",  
+            "D=M", 
+            "@8", 
+            "M=D"
+        ]
+
+        # *ARG = pop()
+        self.add_pop_value_from_stack_to_memory_segment_hack_instructions("pop ARG 0")
+
+        # SP = ARG+1
+        self.assembly_instructions += [
+            "@ARG", 
+            "D=M+1", 
+            "@SP", 
+            "M=D"
+        ]
+
+        # THAT = *(FRAME - 1)
+        self.assembly_instructions += [
+            "@7", 
+            "D=M",
+            "@1",
+            "A=D-A",  
+            "D=M",
+            "@4", 
+            "M=D" 
+        ]
+
+        # THIS = *(FRAME-2)
+        self.assembly_instructions += [
+            "@7", 
+            "D=M",
+            "@2",
+            "A=D-A",  
+            "D=M",
+            "@3", 
+            "M=D" 
+        ]
+
+        # ARG = *(FRAME - 3)
+        self.assembly_instructions += [
+            "@7", 
+            "D=M",
+            "@3",
+            "A=D-A",  
+            "D=M",
+            "@2", 
+            "M=D" 
+        ]
+
+        # LCL = *(FRAME - 4)
+        self.assembly_instructions += [
+            "@7", 
+            "D=M",
+            "@4",
+            "A=D-A",  
+            "D=M",
+            "@1", 
+            "M=D" 
+        ]
+
+        # GOTO RET
+        self.assembly_instructions += [
+            "@8", 
+            "A=M", 
+            "0;JMP"
+        ]
+
+
+    
+    
 
 
     # returns the assembly instruction
@@ -502,8 +697,10 @@ class Vm:
         # Clears array of assembly instructions
         self.assembly_instructions = []
         self.add_set_sp_hack_assembly()
-        self.label_num = 0  
-        self.current_function_scope = "Sys.init"    # This will tell us which function we are currently in inside the vm_file
+        self.label_num = 0                      # Used to create unique labels to be used for comparison operations 
+        self.return_num = 0                     # used to create unique function return labels
+        self.add_init()
+        self.current_function_scope = "" 
 
         for x in VM_instructions_array:
             if ("push constant " == x[:14]):
@@ -537,6 +734,12 @@ class Vm:
                 self.add_goto_label_hack_assembly(x)
             elif (x[:7] == "if-goto"):
                 self.add_if_goto_hack_assembly(x)
+            elif (x[:6] == "return"):
+                self.add_return_hack_assembly(x)
+            elif (x[:4] == "call"):
+                self.add_call_function(x)
+            elif (x[:8] == "function"):
+                self.add_function_declaration_hack_assembly(x)
             else:
                 raise Exception("Unexpected VM instruction:", x)
         
