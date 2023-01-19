@@ -82,7 +82,7 @@ class Vm:
         self.return_num = 0                     # used to create unique function return labels
         self.add_init()
         self.current_function_scope = ""    # This will tell us which function we are currently in inside the vm_file
-        # self.add_call_sys_init()
+        
 
     # Input:            Decimal between 0-2^15
     # Output:           appends all instructions which put the constant onto the stack

@@ -731,7 +731,128 @@ class Test(unittest.TestCase):
         
         self.assertEqual(self.convert_decimal_list_to_16_bit([0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89,144,233,377,610,987, 1597, 2584, 4181, 6765, 10946, 17711, 28657, 46368]), cmptr.data_memory.memory[2048:2073])
         
+    # Implements the multiplication function using addition 
+    def test_multiplication_and_factorial_program(self):
+        ass = assembler()
+        cmptr = computer()
+        vm = Vm()
 
+        vm_instructions_array = [
+            "function sys.init 0", 
+            "push constant 7",
+            "call fact 1",
+            "push constant 6", 
+            "call mult 2",
+            "label end", 
+            "goto end",
+
+
+
+            "function fact 2", 
+            "push constant 1", 
+            "pop LCL 0", 
+            "push constant 1", 
+            "pop LCL 1", 
+            "label loop", 
+            "push constant 1", 
+            "push LCL 1", 
+            "add", 
+            "pop LCL 1", 
+            "push LCL 1", 
+            "push ARG 0", 
+            "gt", 
+            "if-goto end", 
+            "push LCL 0", 
+            "push LCL 1", 
+            "call mult 2", 
+            "pop LCL 0", 
+            "goto loop", 
+            "label end", 
+            "push LCL 0", 
+            "return",
+
+
+
+            "function mult 2", 
+            "push constant 0", 
+            "pop LCL 0", 
+            "push ARG 1", 
+            "pop LCL 1", 
+
+            "label loop", 
+            "push constant 0", 
+            "push LCL 1", 
+            "eq", 
+            "if-goto end", 
+            "push LCL 0", 
+            "push ARG 0", 
+            "add", 
+            "pop LCL 0", 
+            "push LCL 1", 
+            "push constant 1", 
+            "sub", 
+            "pop LCL 1", 
+            "goto loop", 
+
+            "label end", 
+            "push LCL 0", 
+            "return"
+        ]
+        hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
+        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        cmptr.load_program(binary_program)
+
+        cmptr.run_N_number_instructions(15000)
+
+        self.assertEqual(cmptr.get_sp_value(), self.convert_decimal_to_16_bit(257))
+        self.assertEqual(cmptr.peek_stack(), self.convert_decimal_to_16_bit(30240))
+
+
+    # FIBONACCI SEQUENCE program but uses recursion 
+    def test_fibonacci_recursion(self):
+        ass = assembler()
+        cmptr = computer()
+        vm = Vm()
+        n = "300"
+        vm_instructions_array = [
+            "push constant 0",
+            "push constant " + n,
+            "call rec 2",
+            
+
+            "label end", 
+            "goto end",
+
+            "function rec 0", 
+            "push ARG 1",
+            "push constant 0", 
+            "eq", 
+            "if-goto end", 
+            
+            "push ARG 1", 
+            "push ARG 0", 
+            "add", 
+            "push ARG 1", 
+            "push constant 1", 
+            "sub", 
+            "call rec 2", 
+            "return",
+
+
+
+            "label end",
+            "push ARG 0",
+            "return",
+                        
+            
+        ]
+        hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
+        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        cmptr.load_program(binary_program)
+
+        cmptr.run_N_number_instructions(90000)
+
+        self.assertEqual("1011000001011110", cmptr.peek_stack())
 
 
 
