@@ -813,7 +813,7 @@ class Test(unittest.TestCase):
         ass = assembler()
         cmptr = computer()
         vm = Vm()
-        n = "300"
+        n = "100"
         vm_instructions_array = [
             "push constant 0",
             "push constant " + n,
@@ -850,9 +850,69 @@ class Test(unittest.TestCase):
         binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
 
-        cmptr.run_N_number_instructions(90000)
+        cmptr.run_N_number_instructions(25000)
 
-        self.assertEqual("1011000001011110", cmptr.peek_stack())
+        self.assertEqual("0001001110111010", cmptr.peek_stack())
+
+
+    # TEST STATIC PROGRAM where we store the nth oddd number in static 0 where n is indexed 0
+    def test_static_VM_program(self):
+        ass = assembler()
+        cmptr = computer()
+        vm = Vm()
+
+        n = "69"
+        vm_instructions_array = [
+            "function sys.init 0", 
+            "push constant " + n, 
+            "push constant 1", 
+            "pop static 0",
+            "call odd_number 1",
+
+            "label end", 
+            "goto end", 
+
+            "function odd_number 0", 
+
+            "label comparison", 
+            "push constant 0", 
+            "push ARG 0", 
+            "eq", 
+            "if-goto end",
+
+            "label decrement",
+            "pop TEMP 7", 
+            "push ARG 0", 
+            "push constant 1", 
+            "sub", 
+            "pop ARG 0",
+
+
+
+            "label add", 
+            "push constant 2", 
+            "push static 0", 
+            "add", 
+            "pop static 0",
+
+            "goto comparison",
+            
+
+
+            "label end", 
+            "push constant 0",
+            "return"
+
+
+
+        ]
+        hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
+        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        cmptr.load_program(binary_program)
+
+        cmptr.run_N_number_instructions(15000)
+        self.assertEqual(cmptr.data_memory.memory[16], "0000000010001011")
+
 
 
 
