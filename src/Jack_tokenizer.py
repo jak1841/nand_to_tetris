@@ -83,7 +83,7 @@ class tokenizer:
 
     # given a string if it is the case that it is a keyword
     def is_key_word(self, string):
-        return (string in ["class", "constructor", "function", "method"
+        return (string in ["class", "constructor", "function", "method",
         "field", "static", "var", "int", "char", "boolean", "void", 
         "true", "false", "null", "this", "let", "do", "if", "else", 
         "while", "return"])
