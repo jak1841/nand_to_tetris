@@ -60,5 +60,41 @@ class Test(unittest.TestCase):
 
         self.assertEqual(expected_token_list, tokenizer_jack_program.get_all_tokens())
 
+    def test_Array_average_code_tokenizer(self):
+        jack_program = """
+            method int average(Array numbers, int array_length) {
+                var int sum;
+                var int index;
+                let index = 0;
+                let sum = 0;
+
+                while (index < array_length) {
+                    let sum = sum + numbers[index];
+                    let index = index+1;
+                }
+
+                return (sum/array_length);
+            }
+            """
+        tokenizer_jack_program = tk(jack_program)
+        expected_token_list = [("method", "keyword"), ("int", "keyword"), ("average", "identifier"), ("(", "symbol"), ("Array", "identifier"), 
+        ("numbers", "identifier"), (",", "symbol"), ("int", "keyword"), ("array_length", "identifier"), (")", "symbol"), ("{", "symbol"), 
+        ("var", "keyword"), ("int", "keyword"), ("sum", "identifier"), (";", "symbol"), ("var", "keyword"), ("int", "keyword"), 
+        ("index", "identifier"), (";", "symbol"), ("let", "keyword"), ("index", "identifier"),  ("=", "symbol"), ("0", "integerConstant"), 
+        (";", "symbol"), ("let", "keyword"), ("sum", "identifier"),  ("=", "symbol"), ("0", "integerConstant"), (";", "symbol"), 
+        ("while", "keyword"), ("(", "symbol"), ("index", "identifier"), ("<", "symbol"), ("array_length", "identifier"), (")", "symbol"), 
+        ("{", "symbol"), ("let", "keyword"), ("sum", "identifier"),  ("=", "symbol"), ("sum", "identifier"), ("+", "symbol"), ("numbers", "identifier"), 
+        ("[", "symbol"),  ("index", "identifier"), ("]", "symbol"), (";", "symbol"), 
+
+        ("let", "keyword"), ("index", "identifier"),  ("=", "symbol"), ("index", "identifier"), ("+", "symbol"), ("1", "integerConstant"), 
+        (";", "symbol"), ("}", "symbol"), ("return", "keyword"), ("(", "symbol"), ("sum", "identifier"), ("/", "symbol"), ("array_length", "identifier"), 
+        (")", "symbol"), (";", "symbol"), ("}", "symbol")
+        ]
+
+        self.assertEqual(expected_token_list, tokenizer_jack_program.get_all_tokens())
+
+
+
+
 if __name__ == '__main__':
     unittest.main()
