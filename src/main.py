@@ -1,18 +1,24 @@
-from Jack_tokenizer import tokenizer as tk
+from Jack_compilation_engine import comp_engine 
 
 jack_program = """
 
-if (x < 153)
-    {let city="Paris";}
+class Iloveyoumomma {
+    static nool james, bruh, jame;
+
+    method void incSize() {
+        var int sum, index;
+        var int index ;
+        
+    }
+
+    function boolean momme_get_better(int Iloveyou, boolean is_safe, int koko) {
+        var Array please_waheguru;
+        var boolean Iwill_pray;
+    }
+}
 
 """
 
-l = tk(jack_program)
+lol = comp_engine(jack_program)
 
-l.print_all_tokens_fxml()
-
-
-
-
-
-
+lol.match_class()
