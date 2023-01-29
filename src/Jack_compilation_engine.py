@@ -101,7 +101,7 @@ class comp_engine:
         while (self.tokens[0][0] == "var"):
             self.match_varDec()
         
-        # Statements
+        self.match_statements()
 
         self.match_token_symbol("}")
 
@@ -157,7 +157,82 @@ class comp_engine:
         STATEMENTS GRAMMAR RULES AND FUNCTIONS BELOW
     
     """
+    # Given current token will return true if it leads to a statement 
+    def is_statement(self):
+        cur_symbol = self.tokens[0][0]
+
+        return (cur_symbol in ["let", "if", "while", "do", "return"])
+
+    def match_statements(self):
+        while (self.is_statement()):
+            self.match_statement()
+
+    def match_statement(self):
+        cur_symbol = self.tokens[0][0]
+        if (cur_symbol == "let"):
+            self.match_let_statement()
+        elif (cur_symbol == "if"):
+            self.match_if_statement()
+        elif (cur_symbol == "while"):
+            self.match_while_statement()
+        elif (cur_symbol == "do"):
+            self.match_do_statement()
+        elif (cur_symbol == "return"):
+            self.match_return_statement()
+        else:
+            raise Exception("Token not leading to statement", cur_symbol)
+
+    def match_let_statement(self):
+        self.match_token_symbol("let")
+        self.match_varName()
+
+        # ( '[' Expression ']' )?
+        self.match_token_symbol("=")
+        # Expression 
+        self.match_token_symbol(";")
     
+    def match_if_statement(self):
+        self.match_token_symbol("if")
+        self.match_token_symbol("(")
+        # Expression
+        self.match_token_symbol(")")
+        self.match_token_symbol("{")
+
+        self.match_statements()
+
+        self.match_token_symbol("}")
+
+        if (self.tokens[0][0] == "else"):
+            self.match_token_symbol("else")
+            self.match_token_symbol("{")
+            self.match_statements()
+            self.match_token_symbol("}")
+            
+    def match_while_statement(self):
+        self.match_token_symbol("while")
+        self.match_token_symbol("(")
+
+        # Expression
+
+        self.match_token_symbol(")")
+        self.match_token_symbol("{")
+        
+        self.match_statements()
+        self.match_token_symbol("}")
+
+    def match_do_statement(self):
+        self.match_token_symbol("do")
+
+        # Subroutine call
+
+        self.match_token_symbol(";")
+
+    def match_return_statement(self):
+        self.match_token_symbol("return")
+        
+        # Expression ?
+
+        self.match_token_symbol(";")
             
 
     
