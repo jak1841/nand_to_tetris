@@ -15,6 +15,26 @@ class Iloveyoumomma {
         var Array please_waheguru;
         var boolean Iwill_pray;
     }
+
+    method void incSize() {
+                if (x) {
+                    do erase();
+                    let size=size;
+                    do draw();
+                }
+                return;
+            }
+    
+    method void incSize() {
+                if (((y + size) < 254) &
+                    ((x + size) < 510)) {
+                    do erase();
+                    let size = size + 2;
+                    do draw();
+                }
+                return;
+            }
+    
 }
 
 """

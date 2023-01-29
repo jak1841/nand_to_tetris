@@ -115,9 +115,6 @@ class comp_engine:
             self.match_type()
             self.match_varName()
 
-
-        
-
     def match_class_Name(self):
         token = self.tokens.pop(0)
         if (token[1] == "identifier"):
@@ -186,15 +183,22 @@ class comp_engine:
         self.match_token_symbol("let")
         self.match_varName()
 
-        # ( '[' Expression ']' )?
+        if (self.tokens[0][0] == "["):
+            self.match_token_symbol("[")
+            self.match_expression()
+            self.match_token_symbol("]")
+
+        
         self.match_token_symbol("=")
-        # Expression 
+        self.match_expression() 
         self.match_token_symbol(";")
     
     def match_if_statement(self):
         self.match_token_symbol("if")
         self.match_token_symbol("(")
-        # Expression
+        
+        self.match_expression()
+
         self.match_token_symbol(")")
         self.match_token_symbol("{")
 
@@ -212,7 +216,7 @@ class comp_engine:
         self.match_token_symbol("while")
         self.match_token_symbol("(")
 
-        # Expression
+        self.match_expression()
 
         self.match_token_symbol(")")
         self.match_token_symbol("{")
@@ -223,16 +227,138 @@ class comp_engine:
     def match_do_statement(self):
         self.match_token_symbol("do")
 
-        # Subroutine call
+        self.match_subroutine_call()
 
         self.match_token_symbol(";")
 
     def match_return_statement(self):
         self.match_token_symbol("return")
         
-        # Expression ?
-
+        if (self.tokens[0][0] != ";"):
+            self.match_expression()
+        
         self.match_token_symbol(";")
             
 
+    """
     
+        EXPRESSIONS GRAMMAR RULES AND FUNCTIONS BELOW
+    
+
+    """
+    # returns true if the current token is a keyword constant
+    def is_keywordConstant(self):
+        cur_symbol = self.tokens[0][0]
+        return cur_symbol in ["true", "false", "this", "null"]
+
+    def match_expression(self):
+        self.match_term()
+
+        while (self.is_op()):
+            self.match_op()
+            self.match_term()
+
+
+
+    def match_term (self):
+        cur_token_type = self.tokens[0][1]
+        cur_token_symbol = self.tokens[0][0]
+
+        if (cur_token_type == "integerConstant"):
+            self.tokens.pop(0)
+        elif (cur_token_type == "stringConstant"):
+            self.tokens.pop(0)
+        elif (self.is_keywordConstant()):
+            self.match_key_word_constant()
+        # VarName [expression]
+        elif (cur_token_type == "identifier" and self.tokens[1][0] == "["):
+            self.match_varName()
+            self.match_token_symbol("[")
+            self.match_expression()
+            self.match_token_symbol("]")
+        # varName
+        elif (cur_token_type == "identifier"):
+            self.match_varName()
+        # "(" Expression ")"
+        elif (cur_token_symbol == "("):
+            self.match_token_symbol("(")
+
+            self.match_expression() 
+
+            self.match_token_symbol(")")
+
+        # subroutine_call 
+        elif (cur_token_type == "identifier" and (self.tokens[1][0] == "(" or self.tokens[1][0] == ".")):
+            self.match_subroutine_call()
+    
+        else:
+            self.match_unaryOp()
+            self.match_term()
+
+
+    def match_expression_list(self):
+        if (self.tokens[0][0] != ")"):
+            self.match_expression()
+            while (self.tokens[0][0] == ","):
+                self.match_expression()
+        
+        
+    def match_subroutine_call (self):
+        if (self.tokens[1][0] == "("):
+            self.match_subroutine_Name()
+            self.match_token_symbol("(")
+            self.match_expression_list() 
+            self.match_token_symbol(")")
+        elif (self.tokens[0][1] == "identifier"):
+            self.tokens.pop(0)
+            self.match_token_symbol(".")
+            self.match_subroutine_Name()
+            self.match_token_symbol("(")
+            self.match_expression_list()  
+            self.match_token_symbol(")")
+
+    # Returns true if the current token is an op
+    def is_op(self):
+        cur_symbol = self.tokens[0][0]
+        return (cur_symbol in "+-*/&|<>=")
+
+
+
+    def match_op(self):
+        cur_symbol = self.tokens[0][0]
+        if (cur_symbol == "+"):
+            self.match_token_symbol("+")
+        elif (cur_symbol == "-"):
+            self.match_token_symbol("-")
+        elif (cur_symbol == "*"):
+            self.match_token_symbol("*")
+        elif (cur_symbol == "/"):
+            self.match_token_symbol("/")
+        elif (cur_symbol == "&"):
+            self.match_token_symbol("&")
+        elif (cur_symbol == "|"):
+            self.match_token_symbol("|")
+        elif (cur_symbol == "<"):
+            self.match_token_symbol("<")
+        elif (cur_symbol == ">"):
+            self.match_token_symbol(">")
+        elif (cur_symbol == "="):
+            self.match_token_symbol("=")
+        
+    def match_unaryOp(self):
+        self.match_token_symbol("-")
+
+    def match_key_word_constant (self):
+        cur_symbol = self.tokens[0][0]
+
+        if (cur_symbol == "true"):
+            self.match_token_symbol("true")
+        elif (cur_symbol == "false"):
+            self.match_token_symbol("false")
+        elif (cur_symbol == "null"):
+            self.match_token_symbol("null")
+        elif (cur_symbol == "this"):
+            self.match_token_symbol("this")
+        else:
+            raise Exception("Unknown Keyword Constant")
+        
