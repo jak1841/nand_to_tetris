@@ -3,6 +3,16 @@ class tokenizer:
         self.jack_program_string = jack_program_string
         self.cur_index = 0  # Gets the current index inside the jack_program
 
+    def is_comment(self):
+        return self.jack_program_string[self.cur_index:self.cur_index+2] == "/*"
+
+    def remove_comments(self):
+        if (self.jack_program_string[self.cur_index:self.cur_index+2] == "/*"):
+            self.cur_index += 2
+            while (self.jack_program_string[self.cur_index:self.cur_index+2] != "*/"):
+                self.cur_index += 1
+            
+            self.cur_index += 2
 
 
     # Checks to see if the current position in the program will lead to a symbol token
@@ -122,9 +132,14 @@ class tokenizer:
 
     # returns the enxt token and advances the current position in the array
     def get_next_token(self):
+        
         self.remove_whitespace()
 
         if (self.is_EOF() == False):
+            if (self.is_comment()):
+                self.remove_comments()
+                self.remove_whitespace()
+
             if (self.is_symbol_token()):
                 return self.get_symbol_token()
             elif (self.is_integer_constant_token()):

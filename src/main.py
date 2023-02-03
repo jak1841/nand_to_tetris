@@ -4,12 +4,16 @@ jack_program = """
 
 class Iloveyoumomma {
     static nool james, bruh, jame;
+    
+    field int cuh;
 
     method void incSize() {
         var int sum, index;
         var int index ;
         
     }
+
+    
 
     function boolean momme_get_better(int Iloveyou, boolean is_safe, int koko) {
         var Array please_waheguru;
@@ -56,3 +60,5 @@ class Iloveyoumomma {
 lol = comp_engine(jack_program)
 
 lol.match_class()
+print(lol.symbol_table.class_symbol_table)
+print(lol.symbol_table.subroutine_symbol_table)

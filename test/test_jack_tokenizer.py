@@ -14,6 +14,7 @@ class Test(unittest.TestCase):
     # jack program found in elements in computing systems page 258
     def test_square_class_code_tokenizer(self):
         jack_program = """
+        /* Increases the size of the method lol */
             method void incSize() {
                 if (((y + size) < 254)) &
                     ((x + size) < 510) {

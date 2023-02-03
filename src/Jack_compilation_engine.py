@@ -2,10 +2,11 @@
 # Given a jack program will compile the class and produce and output
 # The Grammar is defined on Page 246 in elements of computing systems. 
 from Jack_tokenizer import tokenizer as tk
+from Jack_symbol_table import symbol_table
 class comp_engine:
     def __init__(self, jack_program_string):
         self.tokens = tk(jack_program_string).get_all_tokens()
-        
+        self.symbol_table = symbol_table()
 
 
     """ 
@@ -25,7 +26,7 @@ class comp_engine:
     def match_type(self):
             token = self.tokens.pop(0)
             if (token[0] in ["int", "char", "boolean"] or token[1] == "identifier"):
-                return
+                return token[0]
             else:
                 raise Exception("Type not matching", token)
 
@@ -56,21 +57,28 @@ class comp_engine:
         self.match_token_symbol("}")
 
     def match_classVarDec(self):
+
+        kind = "STATIC"
         if (self.tokens[0][0] == "static"):
             self.match_token_symbol("static")
         else:
             self.match_token_symbol("field")
+            kind = "FIELD"
 
         
-        self.match_type()
-        self.match_varName()
+        type_variable = self.match_type()
+        name_variable = self.match_varName()
+
+        self.symbol_table.define_new_identifier(name_variable, type_variable, kind)
+        
 
         # will be able to declare multiple variables in same line. 
         # type var1, var2
         
         while (self.tokens[0][0] == ","):
             self.match_token_symbol(",")
-            self.match_varName()
+            name_variable = self.match_varName()
+            self.symbol_table.define_new_identifier(name_variable, type_variable, kind)
 
 
         self.match_token_symbol(";")
@@ -132,7 +140,7 @@ class comp_engine:
     def match_varName(self):
         token = self.tokens.pop(0)
         if (token[1] == "identifier"):
-            return
+            return token[0]
         else:
             raise Exception("varName not matching", token)
         
