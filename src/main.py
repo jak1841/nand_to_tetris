@@ -5,7 +5,7 @@ jack_program = """
 class Iloveyoumomma {
     static nool james, bruh, jame;
     
-    field int cuh;
+    field int cuh, size;
 
     method void incSize() {
         var int sum, index;
@@ -20,7 +20,7 @@ class Iloveyoumomma {
         var boolean Iwill_pray;
     }
 
-    method void incSize() {
+    method void incSize(int x) {
                 if (x) {
                     do erase();
                     let size=size;
@@ -29,7 +29,7 @@ class Iloveyoumomma {
                 return;
             }
     
-    method void incSize() {
+    method void incSize(int x, int y) {
                 if (((y + size) < 254) &
                     ((x + size) < 510)) {
                     do erase();
@@ -57,8 +57,18 @@ class Iloveyoumomma {
 
 """
 
-lol = comp_engine(jack_program)
+jack_test_program = """
+    class bruh {
+        method void dd () {
+            var int x, g, y, z;
+            let x = x + g(2, y, -z) * 5;
+        }
+    }
+
+"""
+
+lol = comp_engine(jack_test_program)
 
 lol.match_class()
-print(lol.symbol_table.class_symbol_table)
-print(lol.symbol_table.subroutine_symbol_table)
+
+print(lol.vm_program.VM_commands_list)

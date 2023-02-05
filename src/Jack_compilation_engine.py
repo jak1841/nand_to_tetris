@@ -3,10 +3,12 @@
 # The Grammar is defined on Page 246 in elements of computing systems. 
 from Jack_tokenizer import tokenizer as tk
 from Jack_symbol_table import symbol_table
+from vm_writer import vmWriter
 class comp_engine:
     def __init__(self, jack_program_string):
         self.tokens = tk(jack_program_string).get_all_tokens()
         self.symbol_table = symbol_table()
+        self.vm_program = vmWriter()
 
 
     """ 
@@ -36,7 +38,7 @@ class comp_engine:
         token = self.tokens.pop(0)
 
         if (token[0] == symbol):
-            return
+            return token
         
         raise Exception("Expected symbol", symbol, "But got", token, self.tokens)
 
@@ -139,7 +141,7 @@ class comp_engine:
     def match_subroutine_Name(self):
         token = self.tokens.pop(0)
         if (token[1] == "identifier"):
-            return
+            return token[0]
         else:
             raise Exception("subroutineName not matching", token)
     
@@ -273,8 +275,9 @@ class comp_engine:
         self.match_term()
 
         while (self.is_op()):
-            self.match_op()
-            self.match_term()
+            op = self.match_op()
+            self.match_expression()
+            self.vm_program.writeArithmetic(op)
 
 
 
@@ -284,6 +287,7 @@ class comp_engine:
 
         if (cur_token_type == "integerConstant"):
             self.tokens.pop(0)
+            self.vm_program.writePush("constant", str(cur_token_symbol))
         elif (cur_token_type == "stringConstant"):
             self.tokens.pop(0)
         elif (self.is_keywordConstant()):
@@ -300,6 +304,7 @@ class comp_engine:
         # varName
         elif (cur_token_type == "identifier"):
             self.match_varName()
+            self.vm_program.writePush(self.symbol_table.kind_of(cur_token_symbol), self.symbol_table.index_of(cur_token_symbol))
         # "(" Expression ")"
         elif (cur_token_symbol == "("):
             self.match_token_symbol("(")
@@ -311,29 +316,38 @@ class comp_engine:
         else:
             self.match_unaryOp()
             self.match_term()
+            self.vm_program.writeArithmetic("neg")
 
 
     def match_expression_list(self):
         
+        num_args = 0
         if (self.tokens[0][0] != ")"):
             self.match_expression()
+            num_args += 1
             while (self.tokens[0][0] == ","):
+                self.tokens.pop(0)
                 self.match_expression()
+                num_args += 1
+        
+        return num_args
         
         
     def match_subroutine_call (self):
         if (self.tokens[1][0] == "("):
-            self.match_subroutine_Name()
+            subroutine_name = self.match_subroutine_Name()
             self.match_token_symbol("(")
-            self.match_expression_list() 
+            num_args = self.match_expression_list() 
             self.match_token_symbol(")")
         elif (self.tokens[0][1] == "identifier"):
             self.tokens.pop(0)
             self.match_token_symbol(".")
-            self.match_subroutine_Name()
+            subroutine_name = self.match_subroutine_Name()
             self.match_token_symbol("(")
-            self.match_expression_list()  
+            num_args = self.match_expression_list()  
             self.match_token_symbol(")")
+        
+        self.vm_program.writeCall(subroutine_name, num_args)
 
     # Returns true if the current token is an op
     def is_op(self):
@@ -362,6 +376,10 @@ class comp_engine:
             self.match_token_symbol(">")
         elif (cur_symbol == "="):
             self.match_token_symbol("=")
+        else:
+            raise Exception("unknown operator", cur_symbol)
+        
+        return cur_symbol
         
     def match_unaryOp(self):
         self.match_token_symbol("-")

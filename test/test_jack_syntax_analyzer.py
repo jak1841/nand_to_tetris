@@ -9,6 +9,7 @@ jack_program = """
 
 class Iloveyoumomma {
     static nool james, bruh, jame;
+    field int size;
 
     method void incSize() {
         var int sum, index;
@@ -21,7 +22,7 @@ class Iloveyoumomma {
         var boolean Iwill_pray;
     }
 
-    method void incSize() {
+    method void incSize(int x) {
                 if (x) {
                     do erase();
                     let size=size;
@@ -30,7 +31,7 @@ class Iloveyoumomma {
                 return;
             }
     
-    method void incSize() {
+    method void incSize(int x, int y) {
                 if (((y + size) < 254) &
                     ((x + size) < 510)) {
                     do erase();
