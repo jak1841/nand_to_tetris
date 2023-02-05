@@ -201,7 +201,7 @@ class comp_engine:
 
     def match_let_statement(self):
         self.match_token_symbol("let")
-        self.match_varName()
+        identifier_assigned = self.match_varName()
 
         if (self.tokens[0][0] == "["):
             self.match_token_symbol("[")
@@ -212,6 +212,8 @@ class comp_engine:
         self.match_token_symbol("=")
         self.match_expression() 
         self.match_token_symbol(";")
+
+        self.vm_program.writePop(self.symbol_table.kind_of(identifier_assigned), self.symbol_table.index_of(identifier_assigned))
     
     def match_if_statement(self):
         self.match_token_symbol("if")

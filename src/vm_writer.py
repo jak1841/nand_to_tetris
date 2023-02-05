@@ -4,14 +4,28 @@ class vmWriter:
     
     # Segment = (constant, ARG, LCL, static, THIS, THAT, PTR, TEMP)
 
+    # Given a segment thats eithier VAR, FIELD, static, method 
+    # returns the correct on associated with it 
+    def translate_segment_to_VM_segment(self, segment):
+        if (segment == "VAR"):
+            return "LCL"
+        elif (segment == "STATIC"):
+            return "static"
+        
+        return segment
+
     # Writes VM push command
     def writePush(self, segment, index):
+        segment = self.translate_segment_to_VM_segment(segment)
+        
         self.VM_commands_list += [
             "push " + segment + " " + str(index)
         ]
     
     # Writes a VM pop command 
     def writePop(self, segment, index):
+        segment = self.translate_segment_to_VM_segment(segment)
+        
         self.VM_commands_list += [
             "pop " + segment + " " + str(index)
         ]
@@ -28,7 +42,7 @@ class vmWriter:
         elif (op == "-"):
             return "sub"
         elif (op == "*"):
-            return "multply"
+            return "multiply"
         elif (op == "/"):
             return "division"
         elif (op == "&"):

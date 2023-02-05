@@ -1,5 +1,7 @@
 from Jack_compilation_engine import comp_engine 
-
+from Virtual_machine import Vm
+from hack_assembler import assembler
+from hack_computer import computer
 jack_program = """
 
 class Iloveyoumomma {
@@ -59,16 +61,31 @@ class Iloveyoumomma {
 
 jack_test_program = """
     class bruh {
+        static int l;
         method void dd () {
-            var int x, g, y, z;
-            let x = x + g(2, y, -z) * 5;
+            let l = 16000;
         }
     }
 
 """
 
-lol = comp_engine(jack_test_program)
+def translate_jack_program_to_binary(program):
+    lol = comp_engine(program)
+    lol.match_class()
+    vm = Vm()
+    print(lol.vm_program.VM_commands_list)
+    assembly_instructions= vm.get_hack_assembly_instructions_from_VM_instructions(lol.vm_program.VM_commands_list)
+    ass = assembler()
+    return ass.array_hack_assembly_instruction_to_binary_instruction(assembly_instructions)
 
-lol.match_class()
+     
+     
 
-print(lol.vm_program.VM_commands_list)
+
+
+
+comp = computer()
+comp.load_program(translate_jack_program_to_binary(jack_test_program))
+comp.run_N_number_instructions(1000)
+
+print(comp.data_memory.memory[16])
