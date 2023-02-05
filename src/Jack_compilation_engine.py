@@ -278,7 +278,7 @@ class comp_engine:
 
         while (self.is_op()):
             op = self.match_op()
-            self.match_expression()
+            self.match_term()
             self.vm_program.writeArithmetic(op)
 
 

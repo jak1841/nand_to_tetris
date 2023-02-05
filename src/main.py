@@ -63,7 +63,7 @@ jack_test_program = """
     class bruh {
         static int l;
         method void dd () {
-            let l = 16000;
+            let l = 16000 - 16001 + 1;
         }
     }
 
