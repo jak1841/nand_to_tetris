@@ -2,14 +2,17 @@ class symbol_table:
     def __init__(self):
         self.class_symbol_table = {}
         self.subroutine_symbol_table = {}
-        self.running_index_class = 0
-        self.running_index_subroutine = 0
+        self.running_index_class_field = 0
+        self.running_index_class_static = 0
+        self.running_index_var = 0
+        self.running_index_arg = 0
 
     
     # Resets the subroutine symbol table
     def clear_subroutine_symbol_table(self):
         self.subroutine_symbol_table.clear()
-        self.running_index_subroutine = 0
+        self.running_index_var = 0
+        self.running_index_arg = 0
     
     # Creates a new identifieir and adds it to corresponding symbol table
     # where name is name of identifier 
@@ -19,13 +22,18 @@ class symbol_table:
     # ARG and VAR is subroutine scope
     # (TYPE, KIND, INDEX)
     def define_new_identifier(self, name, type, kind):
-        if (kind in ["STATIC", "FIELD"]):
-            self.class_symbol_table[name] = (type, kind, self.running_index_class)
-            self.running_index_class += 1
-        elif (kind in ["ARG", "VAR"]):
-            self.subroutine_symbol_table[name] = (type, kind, self.running_index_subroutine)
-            self.running_index_subroutine += 1
-        
+        if (kind == "STATIC"):
+            self.class_symbol_table[name] = (type, kind, self.running_index_class_static)
+            self.running_index_class_static += 1
+        elif (kind == "FIELD"):
+            self.class_symbol_table[name] = (type, kind, self.running_index_class_field)
+            self.running_index_class_field += 1
+        elif (kind == "ARG"):
+            self.subroutine_symbol_table[name] = (type, kind, self.running_index_arg)
+            self.running_index_arg += 1
+        elif (kind == "VAR"):
+            self.subroutine_symbol_table[name] = (type, kind, self.running_index_var)
+            self.running_index_var += 1
         else:
             raise Exception("Unknown kind", kind)
 

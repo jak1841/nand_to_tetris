@@ -9,6 +9,7 @@ run_cur_test: test
 	pypy test/test_draw_rect.py
 	pypy test/test_jack_tokenizer.py
 	pypy test/test_jack_syntax_analyzer.py
+	pypy test/test_symbol_table.py
 	
 	
 all_tests_run: test

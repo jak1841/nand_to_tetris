@@ -38,7 +38,7 @@ class comp_engine:
         if (token[0] == symbol):
             return
         
-        raise Exception("Expected symbol", symbol, "But got", token)
+        raise Exception("Expected symbol", symbol, "But got", token, self.tokens)
 
     def match_class(self):
         self.match_token_symbol("class")
@@ -97,6 +97,8 @@ class comp_engine:
         self.match_subroutine_Name()
         self.match_token_symbol("(")
 
+        self.symbol_table.clear_subroutine_symbol_table()
+
         # parameter list
         self.match_parameter_list()
 
@@ -114,14 +116,18 @@ class comp_engine:
         self.match_token_symbol("}")
 
     def match_parameter_list(self):
+        type_variable = None
+        name_variable = None
         if (self.is_type_token()):
-            self.match_type()
-            self.match_varName()
+            type_variable = self.match_type()
+            name_variable = self.match_varName()
+            self.symbol_table.define_new_identifier(name_variable, type_variable, "ARG")
         
-        while (self.tokens[0][0] == ","):
-            self.match_token_symbol(",")
-            self.match_type()
-            self.match_varName()
+            while (self.tokens[0][0] == ","):
+                self.match_token_symbol(",")
+                type_variable = self.match_type()
+                name_variable = self.match_varName()
+                self.symbol_table.define_new_identifier(name_variable, type_variable, "ARG")
 
     def match_class_Name(self):
         token = self.tokens.pop(0)
@@ -147,12 +153,16 @@ class comp_engine:
     def match_varDec(self):
         self.match_token_symbol("var")
 
-        self.match_type()
-        self.match_varName()
+        type_variable = self.match_type()
+        name_variable = self.match_varName()
+        self.symbol_table.define_new_identifier(name_variable, type_variable, "VAR")
+
         
         while (self.tokens[0][0] == ","):
             self.match_token_symbol(",")
-            self.match_varName()
+            name_variable = self.match_varName()
+            self.symbol_table.define_new_identifier(name_variable, type_variable, "VAR")
+
         
         self.match_token_symbol(";")
 
@@ -284,6 +294,9 @@ class comp_engine:
             self.match_token_symbol("[")
             self.match_expression()
             self.match_token_symbol("]")
+        # subroutine_call 
+        elif (cur_token_type == "identifier" and (self.tokens[1][0] == "(" or self.tokens[1][0] == ".")):
+            self.match_subroutine_call()
         # varName
         elif (cur_token_type == "identifier"):
             self.match_varName()
@@ -294,10 +307,6 @@ class comp_engine:
             self.match_expression() 
 
             self.match_token_symbol(")")
-
-        # subroutine_call 
-        elif (cur_token_type == "identifier" and (self.tokens[1][0] == "(" or self.tokens[1][0] == ".")):
-            self.match_subroutine_call()
     
         else:
             self.match_unaryOp()
@@ -305,6 +314,7 @@ class comp_engine:
 
 
     def match_expression_list(self):
+        
         if (self.tokens[0][0] != ")"):
             self.match_expression()
             while (self.tokens[0][0] == ","):

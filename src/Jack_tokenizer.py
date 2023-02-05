@@ -136,7 +136,7 @@ class tokenizer:
         self.remove_whitespace()
 
         if (self.is_EOF() == False):
-            if (self.is_comment()):
+            while (self.is_comment()):
                 self.remove_comments()
                 self.remove_whitespace()
 
