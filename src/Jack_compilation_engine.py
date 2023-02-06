@@ -250,12 +250,19 @@ class comp_engine:
         self.match_token_symbol("while")
         self.match_token_symbol("(")
 
-        self.match_expression()
+        self.vm_program.writeLabel("L" + str(self.label_index))
+        self.match_expression() # Conditional 
+        # get the not of the conditional 
+        self.vm_program.writeArithmetic("not")
+        self.vm_program.writeIfGoto("L" + str(self.label_index + 1))
 
         self.match_token_symbol(")")
         self.match_token_symbol("{")
         
         self.match_statements()
+        self.vm_program.writeGoto("L" + str(self.label_index))
+        self.vm_program.writeLabel("L" + str(self.label_index + 1))
+        self.label_index += 2
         self.match_token_symbol("}")
 
     def match_do_statement(self):
