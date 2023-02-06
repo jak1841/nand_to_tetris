@@ -88,49 +88,67 @@ class comp_engine:
         
     def match_subroutineDec(self):
         token = self.tokens.pop(0)
+        function_type = token
         if (token[0] not in ["constructor", "function", "method"]):
             raise Exception("Expected constructor, function, method but got", token)
         
+        
         token = self.tokens[0][0]
+        function_return_type = token
         if (token == "void"):
             self.tokens.pop(0)
         else:
             self.match_type()
         
-        self.match_subroutine_Name()
+        function_name = self.match_subroutine_Name()
         self.match_token_symbol("(")
 
         self.symbol_table.clear_subroutine_symbol_table()
 
         # parameter list
-        self.match_parameter_list()
+        num_args = self.match_parameter_list()
 
         self.match_token_symbol(")")
-        self.match_subroutineBody()
+
+        
+
+        self.match_subroutineBody(function_name, function_type, function_return_type)
     
-    def match_subroutineBody(self):
+    def match_subroutineBody(self, function_name, function_type, function_return_type):
         self.match_token_symbol("{")
 
+        num_local_variables = 0
         while (self.tokens[0][0] == "var"):
+            num_local_variables += 1
             self.match_varDec()
+        
+        self.vm_program.writeFunction(function_name, num_local_variables)
+        
+
         
         self.match_statements()
 
         self.match_token_symbol("}")
 
+    # Matches parameter list and returns the number of ARGS
     def match_parameter_list(self):
         type_variable = None
         name_variable = None
+        num_args = 0    
         if (self.is_type_token()):
             type_variable = self.match_type()
             name_variable = self.match_varName()
             self.symbol_table.define_new_identifier(name_variable, type_variable, "ARG")
+            num_args += 1
         
             while (self.tokens[0][0] == ","):
                 self.match_token_symbol(",")
                 type_variable = self.match_type()
                 name_variable = self.match_varName()
                 self.symbol_table.define_new_identifier(name_variable, type_variable, "ARG")
+                num_args+= 1
+        
+        return num_args
 
     def match_class_Name(self):
         token = self.tokens.pop(0)

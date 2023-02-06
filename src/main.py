@@ -62,12 +62,12 @@ class Iloveyoumomma {
 jack_test_program = """
     class bruh {
         static int l, bruh;
-        method void dd () {
+        method void deeznuts () {
             var int i;
             let i = 0;
             let l = 0;
 
-            while (i < 100) {
+            while (i < 20) {
                 let l = l + 5;
                 let i = i + 1;
             }
