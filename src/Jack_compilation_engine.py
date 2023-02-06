@@ -296,6 +296,8 @@ class comp_engine:
         if (self.tokens[0][0] != ";"):
             self.match_expression()
         
+        self.vm_program.writeReturn()
+        
         self.match_token_symbol(";")
             
 

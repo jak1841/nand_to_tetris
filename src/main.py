@@ -62,15 +62,30 @@ class Iloveyoumomma {
 jack_test_program = """
     class bruh {
         static int l, bruh;
-        method void deeznuts () {
+
+        function void main() {
+            let l = 0;
+
+            do deeznuts();
+            do deeznuts();
+            do deeznuts();
+            do deeznuts();
+
+            return 0;
+
+
+        }
+
+        function void deeznuts () {
             var int i;
             let i = 0;
-            let l = 0;
 
             while (i < 20) {
                 let l = l + 5;
                 let i = i + 1;
             }
+
+            return 0;
             
         }
     }
@@ -94,6 +109,6 @@ def translate_jack_program_to_binary(program):
 
 comp = computer()
 comp.load_program(translate_jack_program_to_binary(jack_test_program))
-comp.run_N_number_instructions(21000)
+comp.run_N_number_instructions(40000)
 
 print(comp.data_memory.memory[16])
