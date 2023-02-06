@@ -61,9 +61,14 @@ class Iloveyoumomma {
 
 jack_test_program = """
     class bruh {
-        static int l;
+        static int l, bruh;
         method void dd () {
-            let l = 16000 - 16001 + 1;
+            let l = 0;
+            if (1 < 0) {
+                let l = l + 50;
+            } else {
+                let l = l + 51;
+            }
         }
     }
 
@@ -86,6 +91,6 @@ def translate_jack_program_to_binary(program):
 
 comp = computer()
 comp.load_program(translate_jack_program_to_binary(jack_test_program))
-comp.run_N_number_instructions(1000)
+comp.run_N_number_instructions(10000)
 
 print(comp.data_memory.memory[16])

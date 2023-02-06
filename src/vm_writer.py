@@ -1,6 +1,7 @@
 class vmWriter:
     def __init__(self):
         self.VM_commands_list = [] # Where the VM program will live
+        
     
     # Segment = (constant, ARG, LCL, static, THIS, THAT, PTR, TEMP)
 
@@ -57,6 +58,8 @@ class vmWriter:
             return "eq"
         elif (op == "neg"):
             return "neg"
+        elif (op == "not"):
+            return "not"
 
     
     # Writes a VM labeled command

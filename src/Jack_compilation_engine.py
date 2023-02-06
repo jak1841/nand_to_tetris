@@ -9,6 +9,7 @@ class comp_engine:
         self.tokens = tk(jack_program_string).get_all_tokens()
         self.symbol_table = symbol_table()
         self.vm_program = vmWriter()
+        self.label_index = 0    # Used to create a unique label name for if, else, while, etc
 
 
     """ 
@@ -219,20 +220,31 @@ class comp_engine:
         self.match_token_symbol("if")
         self.match_token_symbol("(")
         
-        self.match_expression()
+        self.match_expression() # Conditionitional 
+        # makes negative 
+        self.vm_program.writeArithmetic("not")
+        self.vm_program.writeIfGoto("L" + str(self.label_index))    # Depending on truth value of conditonal
+
+
 
         self.match_token_symbol(")")
         self.match_token_symbol("{")
 
         self.match_statements()
 
+        self.vm_program.writeGoto("L" + str(self.label_index + 1))  # jumping past else
+
         self.match_token_symbol("}")
 
         if (self.tokens[0][0] == "else"):
             self.match_token_symbol("else")
             self.match_token_symbol("{")
+            self.vm_program.writeLabel("L" + str(self.label_index))
             self.match_statements()
             self.match_token_symbol("}")
+        
+        self.vm_program.writeLabel("L" + str(self.label_index + 1))
+        self.label_index += 2
             
     def match_while_statement(self):
         self.match_token_symbol("while")
