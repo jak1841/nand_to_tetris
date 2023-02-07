@@ -428,14 +428,24 @@ class comp_engine:
     def match_key_word_constant (self):
         cur_symbol = self.tokens[0][0]
 
+        # true = -1 
+        # false = 0
+        # null = 0
+        # this = PTR 0
+
         if (cur_symbol == "true"):
             self.match_token_symbol("true")
+            self.vm_program.writePush("constant", "1")
+            self.vm_program.writeArithmetic("neg")
         elif (cur_symbol == "false"):
             self.match_token_symbol("false")
+            self.vm_program.writePush("constant", "0")
         elif (cur_symbol == "null"):
             self.match_token_symbol("null")
+            self.vm_program.writePush("constant", "0")
         elif (cur_symbol == "this"):
             self.match_token_symbol("this")
+            self.vm_program.writePush("PTR", "0")
         else:
             raise Exception("Unknown Keyword Constant")
         

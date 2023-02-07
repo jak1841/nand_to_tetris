@@ -64,14 +64,18 @@ jack_test_program = """
         static int l, bruh;
 
         function void main() {
+            var int i_total;
+
             let l = 0;
 
-            do deeznuts();
-            do deeznuts();
-            do deeznuts();
-            do deeznuts();
+            let i_total = i_total + deeznuts();
+            let i_total = i_total + deeznuts();
+            let i_total = i_total + deeznuts();
+            let i_total = i_total + deeznuts();
 
-            return 0;
+            let l = i_total;
+
+            return null;
 
 
         }
@@ -85,7 +89,7 @@ jack_test_program = """
                 let i = i + 1;
             }
 
-            return 0;
+            return i;
             
         }
     }
