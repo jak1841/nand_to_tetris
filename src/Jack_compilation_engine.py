@@ -223,16 +223,24 @@ class comp_engine:
         identifier_assigned = self.match_varName()
 
         if (self.tokens[0][0] == "["):
+            self.vm_program.writePush(self.symbol_table.kind_of(identifier_assigned), self.symbol_table.index_of(identifier_assigned))
             self.match_token_symbol("[")
             self.match_expression()
             self.match_token_symbol("]")
 
+            self.vm_program.writeArithmetic("+")
+            self.vm_program.writePop("PTR", 1)
+            self.match_token_symbol("=")
+            self.match_expression() 
+            self.match_token_symbol(";") 
+            self.vm_program.writePop("THAT", 0)
         
-        self.match_token_symbol("=")
-        self.match_expression() 
-        self.match_token_symbol(";")
+        else:
+            self.match_token_symbol("=")
+            self.match_expression() 
+            self.match_token_symbol(";")
 
-        self.vm_program.writePop(self.symbol_table.kind_of(identifier_assigned), self.symbol_table.index_of(identifier_assigned))
+            self.vm_program.writePop(self.symbol_table.kind_of(identifier_assigned), self.symbol_table.index_of(identifier_assigned))
     
     def match_if_statement(self):
         self.match_token_symbol("if")
@@ -335,10 +343,14 @@ class comp_engine:
             self.match_key_word_constant()
         # VarName [expression]
         elif (cur_token_type == "identifier" and self.tokens[1][0] == "["):
-            self.match_varName()
+            var_name = self.match_varName()
+            self.vm_program.writePush(self.symbol_table.kind_of(var_name), self.symbol_table.index_of(var_name))
             self.match_token_symbol("[")
             self.match_expression()
             self.match_token_symbol("]")
+            self.vm_program.writeArithmetic("+")
+            self.vm_program.writePop("PTR", 1)
+            self.vm_program.writePush("THAT", 0)
         # subroutine_call 
         elif (cur_token_type == "identifier" and (self.tokens[1][0] == "(" or self.tokens[1][0] == ".")):
             self.match_subroutine_call()
@@ -449,3 +461,12 @@ class comp_engine:
         else:
             raise Exception("Unknown Keyword Constant")
         
+
+    # Array_name[index]
+    # Generates the VM code for handling array accesses
+    def array_access(self, array_name):
+        # push array_name
+        self.vm_program.writePush(self.symbol_table.kind_of(array_name), self.symbol_table.index_of(array_name))
+
+        # push index 
+

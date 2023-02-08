@@ -61,19 +61,23 @@ class Iloveyoumomma {
 
 jack_test_program = """
     class bruh {
-        static int l, bruh;
+        static int l;
+
+        static int ram;
 
         function void main() {
             var int i_total;
 
             let l = 0;
 
-            let i_total = i_total + deeznuts();
-            let i_total = i_total + deeznuts();
-            let i_total = i_total + deeznuts();
-            let i_total = i_total + deeznuts();
+            let ram = 0;
+            
 
-            let l = i_total;
+            let i_total = l + deeznuts();
+            let ram[16] = i_total;
+
+             
+
 
             return null;
 
@@ -84,8 +88,7 @@ jack_test_program = """
             var int i;
             let i = 0;
 
-            while (i < 20) {
-                let l = l + 5;
+            while (i < 100) {
                 let i = i + 1;
             }
 
