@@ -4,12 +4,20 @@
 from Jack_tokenizer import tokenizer as tk
 from Jack_symbol_table import symbol_table
 from vm_writer import vmWriter
+from collections import defaultdict
+
 class comp_engine:
     def __init__(self, jack_program_string):
         self.tokens = tk(jack_program_string).get_all_tokens()
         self.symbol_table = symbol_table()
         self.vm_program = vmWriter()
         self.label_index = 0    # Used to create a unique label name for if, else, while, etc
+        self.current_class_name = ""    # Assuming multiple classes will return the current class name
+
+        self.map_class_names_to_function_names = defaultdict(list)         # name_class -> list of function names
+
+           
+        
 
 
     """ 
@@ -45,7 +53,7 @@ class comp_engine:
 
     def match_class(self):
         self.match_token_symbol("class")
-        self.match_class_Name()
+        self.current_class_name = self.match_class_Name()
         self.match_token_symbol("{")
 
         # classVarDec*
@@ -101,6 +109,8 @@ class comp_engine:
             self.match_type()
         
         function_name = self.match_subroutine_Name()
+        self.map_class_names_to_function_names[self.current_class_name].append(function_name)
+
         self.match_token_symbol("(")
 
         self.symbol_table.clear_subroutine_symbol_table()
@@ -122,7 +132,8 @@ class comp_engine:
             num_local_variables += 1
             self.match_varDec()
         
-        self.vm_program.writeFunction(function_name, num_local_variables)
+
+        self.vm_program.writeFunction(str(self.current_class_name) + function_name, num_local_variables)
         
 
         
@@ -153,7 +164,7 @@ class comp_engine:
     def match_class_Name(self):
         token = self.tokens.pop(0)
         if (token[1] == "identifier"):
-            return
+            return token[0]
         else:
             raise Exception("className not matching", token)
     
@@ -162,7 +173,7 @@ class comp_engine:
         if (token[1] == "identifier"):
             return token[0]
         else:
-            raise Exception("subroutineName not matching", token)
+            raise Exception("subroutineName not matching", self.tokens)
     
     def match_varName(self):
         token = self.tokens.pop(0)
@@ -387,15 +398,24 @@ class comp_engine:
         
         
     def match_subroutine_call (self):
+        subroutine_name = ""
+        # Function calling not with object
         if (self.tokens[1][0] == "("):
             subroutine_name = self.match_subroutine_Name()
             self.match_token_symbol("(")
             num_args = self.match_expression_list() 
             self.match_token_symbol(")")
         elif (self.tokens[0][1] == "identifier"):
-            self.tokens.pop(0)
+            identifier_name = self.tokens.pop(0)[0]
             self.match_token_symbol(".")
-            subroutine_name = self.match_subroutine_Name()
+
+            # call function with created object
+            if (self.symbol_table.is_identifier_in_symbol_table(identifier_name)):
+                subroutine_name = self.symbol_table.type_of(identifier_name) + self.match_subroutine_Name()
+            # call function statically
+            else:
+                subroutine_name = identifier_name + self.match_subroutine_Name()
+
             self.match_token_symbol("(")
             num_args = self.match_expression_list()  
             self.match_token_symbol(")")
@@ -462,11 +482,8 @@ class comp_engine:
             raise Exception("Unknown Keyword Constant")
         
 
-    # Array_name[index]
-    # Generates the VM code for handling array accesses
-    def array_access(self, array_name):
-        # push array_name
-        self.vm_program.writePush(self.symbol_table.kind_of(array_name), self.symbol_table.index_of(array_name))
-
-        # push index 
+    def match_jack_program(self):
+        while (len(self.tokens) > 0 and self.tokens[0][0] == "class"):
+            self.match_class()
+        
 

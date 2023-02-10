@@ -5,7 +5,7 @@ class vmWriter:
         # initialize it with sys.init calling main and then forever looping 
         self.VM_commands_list += [
             "function sys.init 0", 
-            "call main 0", 
+            "call Main_Classmain 0", 
             "label end", 
             "goto end",
         ]

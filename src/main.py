@@ -58,42 +58,50 @@ class Iloveyoumomma {
 }
 
 """
+jack_memory_class = """
+    class Memory {
+        static int ram; 
 
-jack_test_program = """
-    class bruh {
-        static int l;
-
-        static int ram;
-
-        function void main() {
-            var int i_total;
-
-            let l = 0;
-
+        /* Called in sys.init function always*/
+        function void init() {
             let ram = 0;
-            
-
-            let i_total = l + deeznuts();
-            let ram[16] = i_total;
-
-             
-
-
-            return null;
-
-
+            return 0;
         }
 
-        function void deeznuts () {
-            var int i;
-            let i = 0;
+        /*  Get value at that address in RAM */
+        function int peek(int address) {
+            return ram[address];
+        }
 
-            while (i < 100) {
-                let i = i + 1;
-            }
+        /* Update value at given address with given value in RAM */
+        function void poke(int address, int value) {
+            let ram[address] = value;
+            return 0;
+        }
 
-            return i;
+        /* Allocates n different memory position */
+        
+
+
+
+
+
+    }
+
+"""
+
+
+jack_test_program = """
+    class Main_Class {
+        static int g;
+        function void main() {
+            var Memory john;
+
+            do john.init();
+            do john.poke(16, 63);
+            return 0;
             
+
         }
     }
 
@@ -101,7 +109,7 @@ jack_test_program = """
 
 def translate_jack_program_to_binary(program):
     lol = comp_engine(program)
-    lol.match_class()
+    lol.match_jack_program()
     vm = Vm()
     print(lol.vm_program.VM_commands_list)
     assembly_instructions= vm.get_hack_assembly_instructions_from_VM_instructions(lol.vm_program.VM_commands_list)
@@ -115,7 +123,7 @@ def translate_jack_program_to_binary(program):
 
 
 comp = computer()
-comp.load_program(translate_jack_program_to_binary(jack_test_program))
+comp.load_program(translate_jack_program_to_binary(jack_memory_class + jack_test_program))
 comp.run_N_number_instructions(40000)
 
 print(comp.data_memory.memory[16])

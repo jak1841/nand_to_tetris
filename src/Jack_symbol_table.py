@@ -37,6 +37,9 @@ class symbol_table:
         else:
             raise Exception("Unknown kind", kind)
 
+    # Given name of identifier returns true if it is in the symbol table
+    def is_identifier_in_symbol_table(self, name):
+        return (name in self.class_symbol_table or name in self.subroutine_symbol_table)
 
     # Given name of identifier in current scope returns its kind 
     def kind_of(self, name):
@@ -65,8 +68,7 @@ class symbol_table:
         else:
             raise Exception("unknown identifier name", name)
 
-
-
+    
 
 
     
