@@ -13,6 +13,7 @@ class comp_engine:
         self.vm_program = vmWriter()
         self.label_index = 0    # Used to create a unique label name for if, else, while, etc
         self.current_class_name = ""    # Assuming multiple classes will return the current class name
+        self.number_fields_current_class = 1
 
         self.map_class_names_to_function_names = defaultdict(list)         # name_class -> list of function names
 
@@ -54,10 +55,13 @@ class comp_engine:
     def match_class(self):
         self.match_token_symbol("class")
         self.current_class_name = self.match_class_Name()
+        self.number_fields_current_class = 1
         self.match_token_symbol("{")
 
         # classVarDec*
         while (self.tokens[0][0] in ["static", "field"]):
+            if (self.tokens[0][0] == "field"):
+                self.number_fields_current_class += 1
             self.match_classVarDec()
         
         # subroutineDec*
@@ -96,7 +100,7 @@ class comp_engine:
         
     def match_subroutineDec(self):
         token = self.tokens.pop(0)
-        function_type = token
+        function_type = token[0]
         if (token[0] not in ["constructor", "function", "method"]):
             raise Exception("Expected constructor, function, method but got", token)
         
@@ -133,8 +137,11 @@ class comp_engine:
             self.match_varDec()
         
 
+        
         self.vm_program.writeFunction(str(self.current_class_name) + function_name, num_local_variables)
         
+        if (function_type == "constructor"):
+            self.match_constructor_def()
 
         
         self.match_statements()
@@ -198,7 +205,17 @@ class comp_engine:
         
         self.match_token_symbol(";")
 
+    # Given a function name will add constructor code for vm
+    def match_constructor_def(self):  
         
+        # self.vm_program.writePush("constant", self.number_fields_current_class)
+        # self.vm_program.writeCall("Memoryalloc", 1) 
+        # self.vm_program.writePop("PTR", 0) 
+        # Compilation of return this would be push pointer 0
+        pass
+
+        
+    
     """
     
         STATEMENTS GRAMMAR RULES AND FUNCTIONS BELOW
@@ -229,11 +246,30 @@ class comp_engine:
         else:
             raise Exception("Token not leading to statement", cur_symbol)
 
+    def match_field_let_statement(self, identifier_assigned):
+        # ASSUMING ARG 0 has the object 
+        self.match_token_symbol("=")
+        self.match_expression() 
+        self.match_token_symbol(";")
+
+        self.vm_program.writePush("ARG", 0)
+        self.vm_program.writePush("constant", self.symbol_table.index_of(identifier_assigned))
+        self.vm_program.writeArithmetic("+")
+        self.vm_program.writePop("PTR", 1)
+        self.vm_program.writePop("THAT", 0)
+
+
+
+
+
     def match_let_statement(self):
         self.match_token_symbol("let")
         identifier_assigned = self.match_varName()
 
-        if (self.tokens[0][0] == "["):
+        if (self.symbol_table.kind_of(identifier_assigned) == "FIELD"):
+            self.match_field_let_statement(identifier_assigned)
+
+        elif (self.tokens[0][0] == "["):
             self.vm_program.writePush(self.symbol_table.kind_of(identifier_assigned), self.symbol_table.index_of(identifier_assigned))
             self.match_token_symbol("[")
             self.match_expression()
@@ -399,6 +435,7 @@ class comp_engine:
         
     def match_subroutine_call (self):
         subroutine_name = ""
+        num_args = 0
         # Function calling not with object
         if (self.tokens[1][0] == "("):
             subroutine_name = self.match_subroutine_Name()
@@ -408,16 +445,19 @@ class comp_engine:
         elif (self.tokens[0][1] == "identifier"):
             identifier_name = self.tokens.pop(0)[0]
             self.match_token_symbol(".")
-
+            
             # call function with created object
             if (self.symbol_table.is_identifier_in_symbol_table(identifier_name)):
                 subroutine_name = self.symbol_table.type_of(identifier_name) + self.match_subroutine_Name()
+                self.vm_program.writePush(self.symbol_table.kind_of(identifier_name), 0) # pushes object which acts like data encapsulation
+                num_args += 1
             # call function statically
             else:
-                subroutine_name = identifier_name + self.match_subroutine_Name()
+                subroutine_name = self.match_subroutine_Name()
+                subroutine_name = identifier_name + subroutine_name
 
             self.match_token_symbol("(")
-            num_args = self.match_expression_list()  
+            num_args += self.match_expression_list()  
             self.match_token_symbol(")")
         
         self.vm_program.writeCall(subroutine_name, num_args)
@@ -427,6 +467,7 @@ class comp_engine:
         cur_symbol = self.tokens[0][0]
         return (cur_symbol in "+-*/&|<>=")
 
+    # Returns true subroutine name is in class
 
 
     def match_op(self):

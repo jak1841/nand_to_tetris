@@ -3,6 +3,9 @@ class vmWriter:
         self.VM_commands_list = [] # Where the VM program will live
 
         # initialize it with sys.init calling main and then forever looping 
+        self.initialize_call_main()
+    
+    def initialize_call_main(self):
         self.VM_commands_list += [
             "function sys.init 0", 
             "call Main_Classmain 0", 
@@ -10,7 +13,52 @@ class vmWriter:
             "goto end",
         ]
         
+
+    def initialize_memory_class (self):
+        jack_memory_class = """
+            class Memory {
+                static int ram; 
+                static int heap_base;
+
+                /* Called in sys.init function always*/
+                function void init() {
+                    let heap_base = 2048;
+                    let ram = 0;
+                    return 0;
+                }
+
+                /*  Get value at that address in RAM */
+                function int peek(int address) {
+                    return ram[address];
+                }
+
+                /* Update value at given address with given value in RAM */
+                function void poke(int address, int value) {
+                    let ram[address] = value;
+                    return 0;
+                }
+
+                /* Allocates n different memory position */
+                function int alloc(int n) {
+                    var int block; 
+                    let block = heap_base;
+                    let heap_base = heap_base + n;
+                    return block;
+                }
+
+                /* Deallocates a object given its pointer*/
+                function void deAlloc (int object_address) {
+                    return 0;
+                }
+            }
+
+        """
     
+
+        
+
+
+
     # Segment = (constant, ARG, LCL, static, THIS, THAT, PTR, TEMP)
 
     # Given a segment thats eithier VAR, FIELD, static, method 
@@ -20,6 +68,8 @@ class vmWriter:
             return "LCL"
         elif (segment == "STATIC"):
             return "static"
+        elif (segment == "FIELD"):
+            return "ARG"
         
         return segment
 
@@ -82,6 +132,8 @@ class vmWriter:
             "goto " + label_name
         ]
 
+
+    
     
     # Writes a VM if-goto command 
     def writeIfGoto (self, label_name):

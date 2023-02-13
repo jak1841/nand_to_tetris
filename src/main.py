@@ -61,9 +61,11 @@ class Iloveyoumomma {
 jack_memory_class = """
     class Memory {
         static int ram; 
+        static int heap_base;
 
         /* Called in sys.init function always*/
         function void init() {
+            let heap_base = 2048;
             let ram = 0;
             return 0;
         }
@@ -80,25 +82,50 @@ jack_memory_class = """
         }
 
         /* Allocates n different memory position */
-        
+        function int alloc(int n) {
+            var int block; 
+            let block = heap_base;
+            let heap_base = heap_base + n;
+            return block;
+        }
 
-
-
-
-
+        /* Deallocates a object given its pointer*/
+        function void deAlloc (int object_address) {
+            return 0;
+        }
     }
 
 """
 
 
 jack_test_program = """
+    class Point {
+    
+        field int x, y;
+        
+        constructor Point new(int x1, int y1) {
+            let x = x1;
+            let y = y1;
+
+            return Memory.alloc(2);
+        }
+
+
+    }
     class Main_Class {
         static int g;
         function void main() {
             var Memory john;
+            var int k;
+            var Point p;
 
-            do john.init();
-            do john.poke(16, 63);
+            do Memory.init();
+
+            
+            let p = Point.new(1, 2);
+
+            let k = 0;
+            let k[16] = 63;
             return 0;
             
 
@@ -126,4 +153,4 @@ comp = computer()
 comp.load_program(translate_jack_program_to_binary(jack_memory_class + jack_test_program))
 comp.run_N_number_instructions(40000)
 
-print(comp.data_memory.memory[16])
+print(comp.data_memory.memory[16:19])

@@ -10,6 +10,7 @@ run_cur_test: test
 	pypy test/test_jack_tokenizer.py
 	pypy test/test_jack_syntax_analyzer.py
 	pypy test/test_symbol_table.py
+	pypy test/test_jack_code_generation.py
 	
 	
 all_tests_run: test
@@ -22,6 +23,8 @@ all_tests_run: test
 	pypy test/test_vm_instructions.py
 	pypy test/test_jack_tokenizer.py
 	pypy test/test_jack_syntax_analyzer.py
+	pypy test/test_symbol_table.py
+	pypy test/test_jack_code_generation.py
 
 
 
