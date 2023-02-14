@@ -118,6 +118,39 @@ class Test(unittest.TestCase):
         comp.run_N_number_instructions(18000)
         self.assertEqual(self.convert_decimal_list_to_16_bit([100, 1225, 150]), comp.data_memory.memory[16:19])
 
+    def test_simple_function_calling(self):
+        program = """
+            class Main_Class {
+                static int i;
+
+                /* Given two positive ints return there product */
+                function int multiply(int x, int y) {
+                    var int return_product;
+
+                    let return_product = 0;
+
+                    while (y > 0) {
+                        let return_product = return_product + x;
+                        let y = y - 1;
+                    }
+
+                    return return_product;
+
+                } 
+
+                function int main() {
+                    let i = Main_Class.multiply(200, 128);
+                    return 0;
+                }
+            }
+        
+        """
+        comp = computer()
+        comp.load_program(self.translate_jack_program_to_binary(program))
+        comp.run_N_number_instructions(30000)
+        self.assertEqual(self.convert_decimal_to_16_bit(25600), comp.data_memory.memory[16])
+
+
 
 if __name__ == '__main__':
     unittest.main()
