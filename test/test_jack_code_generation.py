@@ -89,6 +89,35 @@ class Test(unittest.TestCase):
 
         self.assertEqual(self.convert_decimal_list_to_16_bit([911, 420, 1406, 5736]), comp.data_memory.memory[16:20])
 
+    def test_simple_while_statement(self):
+        program = """
+            class Main_Class {
+                static int i, j, k;
+                function int main() {
+                    while (i < 50) {
+                        let j = j + i;
+                        let i = i + 1;
+                    }
+
+                    while (i < 100) {
+                        let k = k + 3;
+                        let i = i + 1;
+                    }
+
+                    return 0;
+
+                }
+
+                
+            }
+        
+        
+        """
+        comp = computer()
+        comp.load_program(self.translate_jack_program_to_binary(program))
+        comp.run_N_number_instructions(18000)
+        self.assertEqual(self.convert_decimal_list_to_16_bit([100, 1225, 150]), comp.data_memory.memory[16:19])
+
 
 if __name__ == '__main__':
     unittest.main()
