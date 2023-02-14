@@ -150,6 +150,46 @@ class Test(unittest.TestCase):
         comp.run_N_number_instructions(30000)
         self.assertEqual(self.convert_decimal_to_16_bit(25600), comp.data_memory.memory[16])
 
+    def test_recursive_function_calling(self):
+        program = """
+            class Main_Class {
+                static int i;
+
+                /* Given two positive ints return there product */
+                function int multiply(int x, int y) {
+                    var int return_product;
+
+                    let return_product = 0;
+
+                    while (y > 0) {
+                        let return_product = return_product + x;
+                        let y = y - 1;
+                    }
+
+                    return return_product;
+
+                } 
+
+                function int do_recursive_operation(int x) {
+                    if (x = 0) {
+                        return 1;
+                    } else {
+                        return Main_Class.multiply(x, Main_Class.do_recursive_operation(x - 1));
+                    }
+                }
+
+                function int main() {
+                    let i = Main_Class.do_recursive_operation(6);
+                    return 0;
+                }
+            }
+        
+        """
+
+        comp = computer()
+        comp.load_program(self.translate_jack_program_to_binary(program))
+        comp.run_N_number_instructions(40000)
+        self.assertEqual(self.convert_decimal_to_16_bit(720), comp.data_memory.memory[16])
 
 
 if __name__ == '__main__':
