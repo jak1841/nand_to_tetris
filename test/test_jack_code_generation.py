@@ -37,8 +37,6 @@ class Test(unittest.TestCase):
         ass = assembler()
         return ass.array_hack_assembly_instruction_to_binary_instruction(assembly_instructions)
 
-
-
     def test_simple_assignment_seven(self):
         seven_program = """
             class Main_Class {
@@ -122,6 +120,7 @@ class Test(unittest.TestCase):
         program = """
             class Main_Class {
                 static int i;
+                static int j;
 
                 /* Given two positive ints return there product */
                 function int multiply(int x, int y) {
@@ -140,7 +139,19 @@ class Test(unittest.TestCase):
 
                 function int main() {
                     let i = Main_Class.multiply(200, 128);
+                    do Main_Class.add_unknown_number(0);
+                    do Main_Class.add_unknown_number(1);
+                    do Main_Class.add_unknown_number(2);
+                    do Main_Class.add_unknown_number(3);
+                    do Main_Class.add_unknown_number(4);
+
+                    let j = Main_Class.add_unknown_number(20);
+
                     return 0;
+                }
+
+                function int add_unknown_number(int x) {
+                    return x + 69;
                 }
             }
         
@@ -148,7 +159,7 @@ class Test(unittest.TestCase):
         comp = computer()
         comp.load_program(self.translate_jack_program_to_binary(program))
         comp.run_N_number_instructions(30000)
-        self.assertEqual(self.convert_decimal_to_16_bit(25600), comp.data_memory.memory[16])
+        self.assertEqual(self.convert_decimal_list_to_16_bit([25600, 89]), comp.data_memory.memory[16:18])
 
     def test_recursive_function_calling(self):
         program = """
