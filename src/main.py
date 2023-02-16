@@ -86,6 +86,7 @@ jack_memory_class = """
             var int block; 
             let block = heap_base;
             let heap_base = heap_base + n;
+
             return block;
         }
 
@@ -102,12 +103,19 @@ jack_test_program = """
     class Point {
     
         field int x, y;
-        
         constructor Point new(int x1, int y1) {
+            /* Source of error is in the field let statement*/
             let x = x1;
             let y = y1;
+            return this;
+        }
 
-            return Memory.alloc(2);
+        function int get_x() {
+            return x;
+        }
+
+        function int get_y() {
+            return y;
         }
 
 
@@ -121,11 +129,11 @@ jack_test_program = """
 
             do Memory.init();
 
+            let p = Point.new(2, 3);
+            let g = p.get_x();
             
-            let p = Point.new(1, 2);
+    
 
-            let k = 0;
-            let k[16] = 63;
             return 0;
             
 
@@ -153,4 +161,6 @@ comp = computer()
 comp.load_program(translate_jack_program_to_binary(jack_memory_class + jack_test_program))
 comp.run_N_number_instructions(40000)
 
-print(comp.data_memory.memory[16:19])
+print(comp.data_memory.memory[16:20])
+
+print(comp.data_memory.memory[2048:2050])

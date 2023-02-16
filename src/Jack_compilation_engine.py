@@ -13,7 +13,7 @@ class comp_engine:
         self.vm_program = vmWriter()
         self.label_index = 0    # Used to create a unique label name for if, else, while, etc
         self.current_class_name = ""    # Assuming multiple classes will return the current class name
-        self.number_fields_current_class = 1
+        self.number_fields_current_class = 0
 
         self.map_class_names_to_function_names = defaultdict(list)         # name_class -> list of function names
 
@@ -46,22 +46,18 @@ class comp_engine:
     # Does error checking as well if symbol does not match
     def match_token_symbol(self, symbol):
         token = self.tokens.pop(0)
-
         if (token[0] == symbol):
             return token
-        
         raise Exception("Expected symbol", symbol, "But got", token, self.tokens)
 
     def match_class(self):
         self.match_token_symbol("class")
         self.current_class_name = self.match_class_Name()
-        self.number_fields_current_class = 1
+        self.number_fields_current_class = 0
         self.match_token_symbol("{")
 
         # classVarDec*
         while (self.tokens[0][0] in ["static", "field"]):
-            if (self.tokens[0][0] == "field"):
-                self.number_fields_current_class += 1
             self.match_classVarDec()
         
         # subroutineDec*
@@ -78,6 +74,7 @@ class comp_engine:
             self.match_token_symbol("static")
         else:
             self.match_token_symbol("field")
+            self.number_fields_current_class += 1
             kind = "FIELD"
 
         
@@ -94,6 +91,10 @@ class comp_engine:
             self.match_token_symbol(",")
             name_variable = self.match_varName()
             self.symbol_table.define_new_identifier(name_variable, type_variable, kind)
+
+            # Counts the number of field variables
+            if (kind == "FIELD"):
+                self.number_fields_current_class += 1
 
 
         self.match_token_symbol(";")
@@ -208,11 +209,9 @@ class comp_engine:
     # Given a function name will add constructor code for vm
     def match_constructor_def(self):  
         
-        # self.vm_program.writePush("constant", self.number_fields_current_class)
-        # self.vm_program.writeCall("Memoryalloc", 1) 
-        # self.vm_program.writePop("PTR", 0) 
-        # Compilation of return this would be push pointer 0
-        pass
+        self.vm_program.writePush("constant", self.number_fields_current_class)
+        self.vm_program.writeCall("Memoryalloc", 1) 
+        self.vm_program.writePop("PTR", 0) # Stored in the this pointer
 
         
     
@@ -247,16 +246,12 @@ class comp_engine:
             raise Exception("Token not leading to statement", cur_symbol)
 
     def match_field_let_statement(self, identifier_assigned):
-        # ASSUMING ARG 0 has the object 
+        # ASSUMING THIS has the correct pointer to the object 
         self.match_token_symbol("=")
         self.match_expression() 
         self.match_token_symbol(";")
 
-        self.vm_program.writePush("ARG", 0)
-        self.vm_program.writePush("constant", self.symbol_table.index_of(identifier_assigned))
-        self.vm_program.writeArithmetic("+")
-        self.vm_program.writePop("PTR", 1)
-        self.vm_program.writePop("THAT", 0)
+        self.vm_program.writePop("THIS", self.symbol_table.index_of(identifier_assigned))
 
 
 
@@ -376,6 +371,12 @@ class comp_engine:
             self.vm_program.writeArithmetic(op)
 
 
+    # Given a field from a certain object pushes that field value onto stack 
+    def add_field_to_stack(self, identifier_name):
+        # Assumes PTR 0 or this pointer has current object 
+        self.vm_program.writePush("THIS", self.symbol_table.index_of(identifier_name))
+        
+        
 
     def match_term (self):
         cur_token_type = self.tokens[0][1]
@@ -404,7 +405,10 @@ class comp_engine:
         # varName
         elif (cur_token_type == "identifier"):
             self.match_varName()
-            self.vm_program.writePush(self.symbol_table.kind_of(cur_token_symbol), self.symbol_table.index_of(cur_token_symbol))
+            if (self.symbol_table.kind_of(cur_token_symbol) == "FIELD"):
+                self.add_field_to_stack(cur_token_symbol)
+            else:
+                self.vm_program.writePush(self.symbol_table.kind_of(cur_token_symbol), self.symbol_table.index_of(cur_token_symbol))
         # "(" Expression ")"
         elif (cur_token_symbol == "("):
             self.match_token_symbol("(")
@@ -449,8 +453,8 @@ class comp_engine:
             # call function with created object
             if (self.symbol_table.is_identifier_in_symbol_table(identifier_name)):
                 subroutine_name = self.symbol_table.type_of(identifier_name) + self.match_subroutine_Name()
-                self.vm_program.writePush(self.symbol_table.kind_of(identifier_name), 0) # pushes object which acts like data encapsulation
-                num_args += 1
+                self.vm_program.writePush(self.symbol_table.kind_of(identifier_name), self.symbol_table.index_of(identifier_name)) # pushes object which acts like data encapsulation
+                self.vm_program.writePop("PTR", 0)
             # call function statically
             else:
                 subroutine_name = self.match_subroutine_Name()
