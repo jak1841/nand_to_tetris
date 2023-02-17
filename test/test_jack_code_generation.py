@@ -51,6 +51,11 @@ class Test(unittest.TestCase):
     def test_conditionals(self):
         program = """
             class Main_Class {
+                
+                function int get_temperature () {
+                    return 11;
+                }
+
                 function void main() {
                     do Memory.init();
                     do Memory.poke(800, (7 < 8));
@@ -58,8 +63,10 @@ class Test(unittest.TestCase):
                     do Memory.poke(802, (false | true));
                     do Memory.poke(803, (true & true));
                     do Memory.poke(804, (8 = 8));
-
-                    
+                    do Memory.poke(805, (Main_Class.get_temperature() > 10));
+                    do Memory.poke(806, (Main_Class.get_temperature() < 10));
+                    do Memory.poke(807, (Main_Class.get_temperature() = 10));
+                    do Memory.poke(808, (Main_Class.get_temperature() = 11));
  
                     return null;
                 }
@@ -70,7 +77,7 @@ class Test(unittest.TestCase):
         comp = computer()
         comp.load_program(self.translate_jack_program_to_binary_with_libraries(program))
         comp.run_N_number_instructions(5000)
-        self.assertEqual(self.convert_decimal_list_to_16_bit([-1, 0, -1, -1, -1]), comp.data_memory.memory[800:805])
+        self.assertEqual(self.convert_decimal_list_to_16_bit([-1, 0, -1, -1, -1, -1, 0, 0, -1]), comp.data_memory.memory[800:809])
 
 
 
@@ -259,14 +266,11 @@ class Test(unittest.TestCase):
 
                 /* Given another pt returns true if x is greater */
                 function int is_point_x_greater (Point p) {
-                    return -1;
+                    return (x > p.get_x());
                 }
 
                 function int is_point_y_greater (Point p) {
-                    if (p.get_y() < y) {
-                        return true;
-                    }
-                    return false;
+                    return (y > p.get_y());
                 }
 
             }
@@ -279,7 +283,7 @@ class Test(unittest.TestCase):
                     do Memory.init();
 
                     let p1 = Point.new(2, 7);
-                    let p2 = Point.new(8, 20);
+                    let p2 = Point.new(1, 20);
 
                     let p1x = p1.get_x();
                     let p1y = p1.get_y();
@@ -287,7 +291,7 @@ class Test(unittest.TestCase):
                     let p2y = p2.get_y();
                     
                     let is_greater_x = p2.is_point_x_greater(p1);
-
+                    let is_greater_y = p2.is_point_y_greater(p1);
 
                     return null;
                 }
