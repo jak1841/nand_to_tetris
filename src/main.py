@@ -125,12 +125,15 @@ jack_test_program = """
         function void main() {
             var Memory john;
             var int k;
-            var Point p;
+            var Point p, d;
 
             do Memory.init();
 
-            let p = Point.new(2, 3);
-            let g = p.get_x();
+            let p = Point.new(2, 255);
+            let d = Point.new(63, 15);
+            let g = d.get_y() + d.get_x() + p.get_y() + p.get_x();
+
+            
             
     
 
@@ -161,6 +164,6 @@ comp = computer()
 comp.load_program(translate_jack_program_to_binary(jack_memory_class + jack_test_program))
 comp.run_N_number_instructions(40000)
 
-print(comp.data_memory.memory[16:20])
+print(comp.data_memory.memory[16:19])
 
 print(comp.data_memory.memory[2048:2050])

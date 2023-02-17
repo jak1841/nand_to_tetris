@@ -13,6 +13,8 @@ from hack_computer import computer
 class Test(unittest.TestCase):
 
     def convert_decimal_to_16_bit(self, decimal):
+        if (decimal == -1):
+            return "1111111111111111"
         result = list(str(bin(decimal)))[2:]
         empty_instruction = ["0" for x in range(16)]
         for x in range(min(len(result), 16)):
@@ -36,6 +38,41 @@ class Test(unittest.TestCase):
         assembly_instructions= vm.get_hack_assembly_instructions_from_VM_instructions(lol.vm_program.VM_commands_list)
         ass = assembler()
         return ass.array_hack_assembly_instruction_to_binary_instruction(assembly_instructions)
+
+    def translate_jack_program_to_binary_with_libraries(self, program):
+        lol = comp_engine(program)
+        lol.add_all_libraries_to_tokens()
+        lol.match_jack_program()
+        vm = Vm()
+        assembly_instructions= vm.get_hack_assembly_instructions_from_VM_instructions(lol.vm_program.VM_commands_list)
+        ass = assembler()
+        return ass.array_hack_assembly_instruction_to_binary_instruction(assembly_instructions)
+
+    def test_conditionals(self):
+        program = """
+            class Main_Class {
+                function void main() {
+                    do Memory.init();
+                    do Memory.poke(800, (7 < 8));
+                    do Memory.poke(801, (8 < 7));
+                    do Memory.poke(802, (false | true));
+                    do Memory.poke(803, (true & true));
+                    do Memory.poke(804, (8 = 8));
+
+                    
+ 
+                    return null;
+                }
+            }
+        
+        """
+
+        comp = computer()
+        comp.load_program(self.translate_jack_program_to_binary_with_libraries(program))
+        comp.run_N_number_instructions(5000)
+        self.assertEqual(self.convert_decimal_list_to_16_bit([-1, 0, -1, -1, -1]), comp.data_memory.memory[800:805])
+
+
 
     def test_simple_assignment_seven(self):
         seven_program = """
@@ -201,6 +238,107 @@ class Test(unittest.TestCase):
         comp.load_program(self.translate_jack_program_to_binary(program))
         comp.run_N_number_instructions(40000)
         self.assertEqual(self.convert_decimal_to_16_bit(720), comp.data_memory.memory[16])
+
+    def test_basic_object_implementation(self):
+        program = """
+            class Point {
+                field int x, y;
+                constructor Point new(int x1, int y1) {
+                    let x = x1;
+                    let y = y1;
+                    return this;
+                }
+
+                function int get_x() {
+                    return x;
+                }
+
+                function int get_y() {
+                    return y;
+                }
+
+                /* Given another pt returns true if x is greater */
+                function int is_point_x_greater (Point p) {
+                    return -1;
+                }
+
+                function int is_point_y_greater (Point p) {
+                    if (p.get_y() < y) {
+                        return true;
+                    }
+                    return false;
+                }
+
+            }
+
+            class Main_Class {
+                static int p1x, p1y, p2x, p2y, is_greater_x, is_greater_y;
+                function int main () {
+                    var Point p1, p2;
+                                
+                    do Memory.init();
+
+                    let p1 = Point.new(2, 7);
+                    let p2 = Point.new(8, 20);
+
+                    let p1x = p1.get_x();
+                    let p1y = p1.get_y();
+                    let p2x = p2.get_x();
+                    let p2y = p2.get_y();
+                    
+                    let is_greater_x = p2.is_point_x_greater(p1);
+
+
+                    return null;
+                }
+            }
+
+        
+        
+        """
+
+        comp = computer()
+        comp.load_program(self.translate_jack_program_to_binary_with_libraries(program))
+        comp.run_N_number_instructions(10000)
+
+        print(comp.data_memory.memory[16:22])
+
+        # self.assertEqual(self.convert_decimal_list_to_16_bit([2, 7, 8, 20, 0]), comp.data_memory.memory[16:21])
+
+    def test_decimal_to_binary_conversion(self):
+        # Stores a decimal in RAM[8000] and then converts that into binary and stores in RAM[8001-8016] as eithier 0 or 1 
+        program = """
+            class Main_Class {
+                static int pos;
+                function int main () {
+                    do Main_Class.init_ram_8000(63);
+                    
+                    return null;
+                }
+
+                /* Given a decimal number stores in ram 8000 and also initializes all ram locations after that with -1*/
+                function int init_ram_8000(int decimal) {
+                    var int i;
+                    do Memory.poke(8000, decimal);
+                    let i = 8001; 
+
+                    while (i < 8017) {
+                        do Memory.poke(i, -1);
+                        let i = i + 1;
+                    }
+                    return null;
+                }
+
+
+
+            }
+
+        """
+
+        comp = computer()
+        comp.load_program(self.translate_jack_program_to_binary_with_libraries(program))
+        comp.run_N_number_instructions(10000)
+        
 
 
 if __name__ == '__main__':
