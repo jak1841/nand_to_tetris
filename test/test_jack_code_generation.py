@@ -291,7 +291,7 @@ class Test(unittest.TestCase):
                     let p2y = p2.get_y();
                     
                     let is_greater_x = p2.is_point_x_greater(p1);
-                    let is_greater_y = p2.is_point_y_greater(p1);
+                    let is_greater_y = p1.is_point_y_greater(p2);
 
                     return null;
                 }
@@ -305,7 +305,7 @@ class Test(unittest.TestCase):
         comp.load_program(self.translate_jack_program_to_binary_with_libraries(program))
         comp.run_N_number_instructions(10000)
 
-        print(comp.data_memory.memory[16:22])
+        self.assertEqual(self.convert_decimal_list_to_16_bit([7, 8, 15, 16, -1, 0]), comp.data_memory.memory[16:22])
 
         # self.assertEqual(self.convert_decimal_list_to_16_bit([2, 7, 8, 20, 0]), comp.data_memory.memory[16:21])
 
