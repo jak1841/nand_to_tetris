@@ -131,7 +131,12 @@ jack_test_program = """
 
             let p = Point.new(2, 255);
             let d = Point.new(63, 15);
-            let g = d.get_y() + d.get_x() + p.get_y() + p.get_x();
+            
+            if (p.get_x() < 3) {
+                let g = 10;
+            } else {
+                let g = 3;
+            }
 
             
             

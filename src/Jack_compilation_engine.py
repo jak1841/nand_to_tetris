@@ -497,18 +497,32 @@ class comp_engine:
             # call function with created object
             if (self.symbol_table.is_identifier_in_symbol_table(identifier_name)):
                 subroutine_name = self.symbol_table.type_of(identifier_name) + self.match_subroutine_Name()
+
+                self.vm_program.writePush("PTR", 0)
+                self.vm_program.writePop("TEMP", 6)
+
                 self.vm_program.writePush(self.symbol_table.kind_of(identifier_name), self.symbol_table.index_of(identifier_name)) # pushes object which acts like data encapsulation
                 self.vm_program.writePop("PTR", 0)
+                self.match_token_symbol("(")
+                num_args += self.match_expression_list()
+                self.match_token_symbol(")")
+        
+                self.vm_program.writeCall(subroutine_name, num_args)
+                self.vm_program.writePush("TEMP", 6)
+                self.vm_program.writePop("PTR", 0)
+                
+                
+                
             # call function statically
             else:
                 subroutine_name = self.match_subroutine_Name()
                 subroutine_name = identifier_name + subroutine_name
 
-            self.match_token_symbol("(")
-            num_args += self.match_expression_list()  
-            self.match_token_symbol(")")
+                self.match_token_symbol("(")
+                num_args += self.match_expression_list()  
+                self.match_token_symbol(")")
         
-        self.vm_program.writeCall(subroutine_name, num_args)
+                self.vm_program.writeCall(subroutine_name, num_args)
 
     # Returns true if the current token is an op
     def is_op(self):

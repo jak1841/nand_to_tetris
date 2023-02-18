@@ -143,6 +143,7 @@ class vmWriter:
 
     # Writes a VM call command 
     def writeCall (self, name, num_args):
+        
         self.VM_commands_list += [
             "call " + name + " " + str(num_args)
         ]
