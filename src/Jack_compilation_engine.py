@@ -531,7 +531,6 @@ class comp_engine:
 
     # Returns true subroutine name is in class
 
-
     def match_op(self):
         cur_symbol = self.tokens[0][0]
         if (cur_symbol == "+"):
@@ -584,7 +583,6 @@ class comp_engine:
         else:
             raise Exception("Unknown Keyword Constant")
         
-
     def match_jack_program(self):
         while (len(self.tokens) > 0 and self.tokens[0][0] == "class"):
             self.match_class()

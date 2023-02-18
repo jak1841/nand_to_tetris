@@ -309,6 +309,77 @@ class Test(unittest.TestCase):
 
         # self.assertEqual(self.convert_decimal_list_to_16_bit([2, 7, 8, 20, 0]), comp.data_memory.memory[16:21])
 
+    def test_linked_list_implementation_using_objects(self):
+        program = """
+            class Node {
+                field Node next;
+                field int is_tail;
+                field int number;
+
+                constructor Node new(int value) {
+                    let is_tail = true;
+                    let number = value;
+                    return this;
+                }
+
+                function int add_next_node(int value) {
+                    let next = Node.new(value);
+                    let is_tail = false;
+                    return 0;
+                }
+
+                function Node get_next_node() {
+                    return next;
+                }
+
+                function int get_number() {
+                    return number;
+                }
+
+                function int get_is_tail() {
+                    return is_tail;
+                }
+                
+
+
+
+            }
+
+            class Main_Class {
+                function int main () {
+                    var Node head, cur;
+                    var int i;
+
+                    do Memory.init();
+
+                    let head = Node.new(0);
+                    let cur = head;
+                    let i = 1;
+
+                    while (i < 17) {
+                        do cur.add_next_node(i);
+                        let cur = cur.get_next_node();
+                        let i = i + 1;
+                    }
+
+                    let cur = head;
+                    let i = 0;
+                    while (cur.get_is_tail() = false) {
+                        do Memory.poke(800 + i, cur.get_number());
+                        let cur = cur.get_next_node();
+                        let i = i + 1;
+                    }
+                    return null;
+                }
+            }
+
+        """
+
+        comp = computer()
+        comp.load_program(self.translate_jack_program_to_binary_with_libraries(program))
+        comp.run_N_number_instructions(40000)
+        self.assertEqual(self.convert_decimal_list_to_16_bit([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0]), comp.data_memory.memory[800:817])
+
     def test_decimal_to_binary_conversion(self):
         # Stores a decimal in RAM[8000] and then converts that into binary and stores in RAM[8001-8016] as eithier 0 or 1 
         program = """
