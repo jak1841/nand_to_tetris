@@ -266,7 +266,7 @@ class Test(unittest.TestCase):
 
                 /* Given another pt returns true if x is greater */
                 function int is_point_x_greater (Point p) {
-                    return (x > p.get_x());
+                    return (p.get_x() = x);
                 }
 
                 function int is_point_y_greater (Point p) {
@@ -282,7 +282,7 @@ class Test(unittest.TestCase):
                                 
                     do Memory.init();
 
-                    let p1 = Point.new(2, 7);
+                    let p1 = Point.new(1, 21);
                     let p2 = Point.new(1, 20);
 
                     let p1x = p1.get_x();
@@ -290,8 +290,8 @@ class Test(unittest.TestCase):
                     let p2x = p2.get_x();
                     let p2y = p2.get_y();
                     
-                    let is_greater_x = p2.is_point_x_greater(p1);
-                    let is_greater_y = p2.is_point_y_greater(p1);
+                    let is_greater_x = p1.is_point_x_greater(p2);
+                    let is_greater_y = p1.is_point_y_greater(p2);
 
                     return null;
                 }
