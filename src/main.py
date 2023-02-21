@@ -58,6 +58,7 @@ class Iloveyoumomma {
 }
 
 """
+
 jack_memory_class = """
     class Memory {
         static int ram; 
@@ -98,6 +99,61 @@ jack_memory_class = """
 
 """
 
+jack_memory_class_first_fit = """
+    class Memory {
+        static int ram; 
+        static Array heap;
+        static int freeList;
+
+        /* Called in sys.init function always*/
+        function void init() {
+            let heap = 2048;
+            let ram = 0;
+            let freeList = heap;
+            let heap[0] = 0;
+            let heap[1] = 14334;
+            return 0;
+        }
+
+        /*  Get value at that address in RAM */
+        function int peek(int address) {
+            return ram[address];
+        }
+
+        /* Update value at given address with given value in RAM */
+        function void poke(int address, int value) {
+            let ram[address] = value;
+            return 0;
+        }
+
+        /* Allocates n different memory position */
+        function int alloc(int n) {
+            /*
+                Iterates through the free list and checks if a block is available
+            */
+            var int cur;
+            let cur = freeList;
+
+            while (((cur[0] = 0) = false)) {
+                
+            }
+
+
+            
+            var int block; 
+            let block = heap;
+            let heap = heap + n;
+
+            return block;
+        }
+
+        /* Deallocates a object given its pointer*/
+        function void deAlloc (int object_address) {
+            return 0;
+        }
+    }
+
+"""
 
 jack_test_program = """
     class Point {
@@ -132,7 +188,7 @@ jack_test_program = """
             let p = Point.new(2, 255);
             let d = Point.new(63, 15);
             
-            if (p.get_x() < 3) {
+            if (p.get_x() > 3) {
                 let g = 10;
             } else {
                 let g = 3;

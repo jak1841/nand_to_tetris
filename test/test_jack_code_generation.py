@@ -67,6 +67,9 @@ class Test(unittest.TestCase):
                     do Memory.poke(806, (Main_Class.get_temperature() < 10));
                     do Memory.poke(807, (Main_Class.get_temperature() = 10));
                     do Memory.poke(808, (Main_Class.get_temperature() = 11));
+                    do Memory.poke(809, (1 < 4) & (4 < 8));
+                    do Memory.poke(810, (8 = 7) | (-7 = -7));
+                    do Memory.poke(811, (1 < -1));
  
                     return null;
                 }
@@ -77,8 +80,7 @@ class Test(unittest.TestCase):
         comp = computer()
         comp.load_program(self.translate_jack_program_to_binary_with_libraries(program))
         comp.run_N_number_instructions(5000)
-        self.assertEqual(self.convert_decimal_list_to_16_bit([-1, 0, -1, -1, -1, -1, 0, 0, -1]), comp.data_memory.memory[800:809])
-
+        self.assertEqual(self.convert_decimal_list_to_16_bit([-1, 0, -1, -1, -1, -1, 0, 0, -1, -1, -1 , 0]), comp.data_memory.memory[800:812])
 
 
     def test_simple_assignment_seven(self):
