@@ -148,6 +148,14 @@ class Test(unittest.TestCase):
                         let i = i + 1;
                     }
 
+                    while (i > 2000) {
+                        let k = k + 10000;
+                    }
+
+                    while (false) {
+                        let k = k + 1000;
+                    }
+
                     return 0;
 
                 }
@@ -379,7 +387,7 @@ class Test(unittest.TestCase):
 
         comp = computer()
         comp.load_program(self.translate_jack_program_to_binary_with_libraries(program))
-        comp.run_N_number_instructions(40000)
+        comp.run_N_number_instructions(50000)
         self.assertEqual(self.convert_decimal_list_to_16_bit([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0]), comp.data_memory.memory[800:817])
 
     def test_decimal_to_binary_conversion(self):

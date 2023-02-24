@@ -110,8 +110,8 @@ jack_memory_class_first_fit = """
             let heap = 2048;
             let ram = 0;
             let freeList = heap;
-            let heap[0] = 0;
-            let heap[1] = 14334;
+            let freeList[0] = 0;
+            let freeList[1] = 14334;
             return 0;
         }
 
@@ -131,25 +131,44 @@ jack_memory_class_first_fit = """
             /*
                 Iterates through the free list and checks if a block is available
             */
-            var int cur;
-            let cur = freeList;
+            var int cur, i;
+            var int block;
+            let cur = freeList; 
 
-            while (((cur[0] = 0) = false)) {
+            let i = 0;
+
+            /* Cur gets to eithier last position and does not have an */
+            while (cur > 0) {
+
                 
+                if (cur[1] > (n + 2)) {
+                    let block = cur + cur[1] - (n + 2);
+                    let block[0] = 0;
+                    let block[1] = n;
+                    let cur[1] = cur[1] - (n + 2);
+                    return block + 2;
+                }
+
+                let cur = cur[0];
+
             }
 
-
-            
-            var int block; 
-            let block = heap;
-            let heap = heap + n;
-
-            return block;
+            return 2048; /*Failure to find block*/ 
         }
 
         /* Deallocates a object given its pointer*/
         function void deAlloc (int object_address) {
-            return 0;
+            var int pointer_object, cur;
+            let cur = freeList;
+
+            while (cur[0] > 0) {
+                let cur = cur[0];
+            } 
+
+            let pointer_object = object_address - 2;
+            let cur[0] = pointer_object;
+
+            return -1; /* Success */
         }
     }
 
@@ -185,17 +204,14 @@ jack_test_program = """
 
             do Memory.init();
 
-            let p = Point.new(2, 255);
-            let d = Point.new(63, 15);
             
-            if (p.get_x() > 3) {
-                let g = 10;
-            } else {
-                let g = 3;
-            }
+            let p = Point.new(1, 2);
+            do Memory.deAlloc(p);
+            let d = Point.new(15, 20);
+            
+            
 
-            
-            
+            do Memory.poke(801, d.get_y());
     
 
             return 0;
@@ -210,7 +226,11 @@ def translate_jack_program_to_binary(program):
     lol = comp_engine(program)
     lol.match_jack_program()
     vm = Vm()
-    print(lol.vm_program.VM_commands_list)
+    for x in (lol.vm_program.VM_commands_list):
+        if (x[:8] == "function"):
+            print(x)
+        else: 
+            print("    " + x)
     assembly_instructions= vm.get_hack_assembly_instructions_from_VM_instructions(lol.vm_program.VM_commands_list)
     ass = assembler()
     return ass.array_hack_assembly_instruction_to_binary_instruction(assembly_instructions)
@@ -222,9 +242,9 @@ def translate_jack_program_to_binary(program):
 
 
 comp = computer()
-comp.load_program(translate_jack_program_to_binary(jack_memory_class + jack_test_program))
+comp.load_program(translate_jack_program_to_binary(jack_memory_class_first_fit + jack_test_program))
 comp.run_N_number_instructions(40000)
 
-print(comp.data_memory.memory[16:19])
+print(comp.data_memory.memory[800:803])
 
 print(comp.data_memory.memory[2048:2050])

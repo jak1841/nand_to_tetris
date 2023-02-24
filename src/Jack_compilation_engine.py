@@ -60,7 +60,81 @@ class comp_engine:
             }
 
         """
-        self.tokens += tk(jack_memory_class).get_all_tokens()
+        jack_memory_class_first_fit = """
+    class Memory {
+        static int ram; 
+        static Array heap;
+        static int freeList;
+
+        /* Called in sys.init function always*/
+        function void init() {
+            let heap = 2048;
+            let ram = 0;
+            let freeList = heap;
+            let freeList[0] = 0;
+            let freeList[1] = 14334;
+            return 0;
+        }
+
+        /*  Get value at that address in RAM */
+        function int peek(int address) {
+            return ram[address];
+        }
+
+        /* Update value at given address with given value in RAM */
+        function void poke(int address, int value) {
+            let ram[address] = value;
+            return 0;
+        }
+
+        /* Allocates n different memory position */
+        function int alloc(int n) {
+            /*
+                Iterates through the free list and checks if a block is available
+            */
+            var int cur, i;
+            var int block;
+            let cur = freeList; 
+
+            let i = 0;
+
+            /* Cur gets to eithier last position and does not have an */
+            while (cur > 0) {
+
+                
+                if (cur[1] > (n + 2)) {
+                    let block = cur + cur[1] - (n + 2);
+                    let block[0] = 0;
+                    let block[1] = n;
+                    let cur[1] = cur[1] - (n + 2);
+                    return block + 2;
+                }
+
+                let cur = cur[0];
+
+            }
+
+            return 2048; /*Failure to find block*/ 
+        }
+
+        /* Deallocates a object given its pointer*/
+        function void deAlloc (int object_address) {
+            var int pointer_object, cur;
+            let cur = freeList;
+
+            while (cur[0] > 0) {
+                let cur = cur[0];
+            } 
+
+            let pointer_object = object_address - 2;
+            let cur[0] = pointer_object;
+
+            return -1; /* Success */
+        }
+    }
+
+"""
+        self.tokens += tk(jack_memory_class_first_fit).get_all_tokens()
 
         
 
