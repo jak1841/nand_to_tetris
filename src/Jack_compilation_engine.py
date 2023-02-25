@@ -134,7 +134,36 @@ class comp_engine:
     }
 
 """
-        self.tokens += tk(jack_memory_class_first_fit).get_all_tokens()
+        
+        jack_Math_class = """
+            class Math {
+                function int multiply(int x, int y) {
+                    var int sum, i, j_bit_y, j; 
+
+                    let i = 1;
+                    let j = 0;
+                    let sum = 0;
+
+                    while (j < 16) {
+                        let j_bit_y = y & i;
+
+                        if (i = j_bit_y) {
+                            let sum = sum + x;
+                        }
+
+                        let i = i + i;
+                        let x = x + x;
+                        let j = j + 1;
+                                                
+                    }
+
+                    return sum;
+
+
+                }
+            }
+        """
+        self.tokens += tk(jack_memory_class_first_fit + jack_Math_class).get_all_tokens()
 
         
 
@@ -252,8 +281,7 @@ class comp_engine:
 
         num_local_variables = 0
         while (self.tokens[0][0] == "var"):
-            num_local_variables += 1
-            self.match_varDec()
+            num_local_variables += self.match_varDec()
         
 
         
@@ -311,18 +339,21 @@ class comp_engine:
     def match_varDec(self):
         self.match_token_symbol("var")
 
+        num_lcl_variables = 1
         type_variable = self.match_type()
         name_variable = self.match_varName()
         self.symbol_table.define_new_identifier(name_variable, type_variable, "VAR")
 
         
         while (self.tokens[0][0] == ","):
+            num_lcl_variables+= 1
             self.match_token_symbol(",")
             name_variable = self.match_varName()
             self.symbol_table.define_new_identifier(name_variable, type_variable, "VAR")
 
         
         self.match_token_symbol(";")
+        return num_lcl_variables
 
     # Given a function name will add constructor code for vm
     def match_constructor_def(self):  

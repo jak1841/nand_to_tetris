@@ -105,6 +105,13 @@ class Test(unittest.TestCase):
 
         self.assertEqual("1011010100100000", cmptr.peek_stack())
 
+        vm_instructions_array = [
+            "function resp 2",
+            "push constant 911", 
+            "push constant 911", 
+            "add"
+        ]
+
 
 
     def test_logical(self):
@@ -128,6 +135,23 @@ class Test(unittest.TestCase):
         self.assertEqual("0000000000000000", cmptr.data_memory.memory[256])
 
         
+        # Local check that things are equal (x == 911)
+        vm_instructions_array = [
+            "function rec 2", 
+            "push constant 911", 
+            "pop LCL 0", 
+            "push constant 911", 
+            "pop LCL 1",
+            "push LCL 0", 
+            "push LCL 1" , 
+            "eq"
+        ]
+
+        hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
+        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        cmptr.load_program(binary_program)
+        cmptr.run_N_number_instructions(1000)
+        self.assertEqual("1111111111111111", cmptr.peek_stack())
         
 
         # evaluating if (x == 791)

@@ -57,6 +57,9 @@ class Test(unittest.TestCase):
                 }
 
                 function void main() {
+                    var int x, y;
+                    let x = 1;
+                    let y = 1;
                     do Memory.init();
                     do Memory.poke(800, (7 < 8));
                     do Memory.poke(801, (8 < 7));
@@ -70,6 +73,7 @@ class Test(unittest.TestCase):
                     do Memory.poke(809, (1 < 4) & (4 < 8));
                     do Memory.poke(810, (8 = 7) | (-7 = -7));
                     do Memory.poke(811, (1 < -1));
+                    do Memory.poke(812, (y = x));
  
                     return null;
                 }
@@ -80,7 +84,26 @@ class Test(unittest.TestCase):
         comp = computer()
         comp.load_program(self.translate_jack_program_to_binary_with_libraries(program))
         comp.run_N_number_instructions(5000)
-        self.assertEqual(self.convert_decimal_list_to_16_bit([-1, 0, -1, -1, -1, -1, 0, 0, -1, -1, -1 , 0]), comp.data_memory.memory[800:812])
+        self.assertEqual(self.convert_decimal_list_to_16_bit([-1, 0, -1, -1, -1, -1, 0, 0, -1, -1, -1 , 0, -1]), comp.data_memory.memory[800:813])
+
+    def test_multiplication(self):
+        program = """
+            class Main_Class {
+                function void main() {
+                    do Memory.init();
+                    do Math.multiply(2, 3);
+                    do Memory.poke(800, 9);
+                    do Memory.poke(801, 5);
+                    return null;
+                }
+            }
+        """
+                
+        comp = computer()
+        comp.load_program(self.translate_jack_program_to_binary_with_libraries(program))
+        comp.run_N_number_instructions(20000)
+        self.assertEqual(self.convert_decimal_list_to_16_bit([0, 800]), comp.data_memory.memory[800:802])
+
 
 
     def test_simple_assignment_seven(self):

@@ -174,6 +174,38 @@ jack_memory_class_first_fit = """
 
 """
 
+
+jack_Math_class = """
+            class Math {
+                function int multiply(int x, int y) {
+                    var int sum, i, j_bit_y, j; 
+                    var int boolean;
+
+                    let i = 1;
+                    let j = 0;
+                    let sum = 0;
+
+                    while (j < 16) {
+                        let j_bit_y = y & i;
+
+                        if (i = j_bit_y) {
+                            let sum = sum + x;
+                        }
+
+                        let i = i + i;
+                        let x = x + x;
+                        let j = j + 1;
+                                                
+                    }
+
+                    return sum;
+
+
+                }
+            }
+        """
+
+
 jack_test_program = """
     class Point {
     
@@ -197,21 +229,27 @@ jack_test_program = """
     }
     class Main_Class {
         static int g;
+
+        function int mult(int x, int y) {
+            do Memory.poke(801, x);
+            return 0;
+        }
+
         function void main() {
             var Memory john;
             var int k;
             var Point p, d;
 
-            do Memory.init();
+            let p = 1;
+            let d = 2;
 
             
-            let p = Point.new(1, 2);
-            do Memory.deAlloc(p);
-            let d = Point.new(15, 20);
-            
-            
 
-            do Memory.poke(801, d.get_y());
+            do Memory.init();        
+            
+            do Main_Class.mult((p+d), d);
+
+            
     
 
             return 0;
@@ -221,6 +259,9 @@ jack_test_program = """
     }
 
 """
+
+
+
 
 def translate_jack_program_to_binary(program):
     lol = comp_engine(program)

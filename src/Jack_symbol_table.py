@@ -44,6 +44,7 @@ class symbol_table:
     # Given name of identifier in current scope returns its kind 
     def kind_of(self, name):
         if (name in self.subroutine_symbol_table):
+            
             return self.subroutine_symbol_table[name][1]
         elif (name in self.class_symbol_table):
             return self.class_symbol_table[name][1]
