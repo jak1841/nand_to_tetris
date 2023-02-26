@@ -230,9 +230,23 @@ jack_test_program = """
     class Main_Class {
         static int g;
 
-        function int mult(int x, int y) {
-            do Memory.poke(801, x);
-            return 0;
+        function int multi(int x, int y) {
+            var int j, i, sum;
+            let sum = 0;
+            let j = 0;
+            let i = 1;
+
+
+            while (j < 15) {
+                
+                if (j < 15) {
+                    let sum = sum + 1;
+                } 
+                let j = j + 1;
+                
+            }
+
+            return sum;
         }
 
         function void main() {
@@ -247,7 +261,8 @@ jack_test_program = """
 
             do Memory.init();        
             
-            do Main_Class.mult((p+d), d);
+            do Memory.poke(801, Main_Class.multi(2, 3));
+
 
             
     

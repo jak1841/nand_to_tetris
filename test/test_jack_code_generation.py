@@ -91,9 +91,7 @@ class Test(unittest.TestCase):
             class Main_Class {
                 function void main() {
                     do Memory.init();
-                    do Math.multiply(2, 3);
-                    do Memory.poke(800, 9);
-                    do Memory.poke(801, 5);
+                    do Memory.poke(800, Math.multiply(2, 3));
                     return null;
                 }
             }
@@ -101,7 +99,7 @@ class Test(unittest.TestCase):
                 
         comp = computer()
         comp.load_program(self.translate_jack_program_to_binary_with_libraries(program))
-        comp.run_N_number_instructions(20000)
+        comp.run_N_number_instructions(40000)
         self.assertEqual(self.convert_decimal_list_to_16_bit([0, 800]), comp.data_memory.memory[800:802])
 
 
@@ -129,6 +127,7 @@ class Test(unittest.TestCase):
             class Main_Class {
                 static int i, j, x, y;
                 function void main() {
+                    var int t1, t2;
                     if (923 > 120) {
                         let i = 911;
                         let j = 420;
@@ -144,6 +143,17 @@ class Test(unittest.TestCase):
                         let x = 1406;
                         let y = 5736;
                     }
+
+                    let t1 = 0;
+                    let t2 = 0;
+                    if (t1 = t2) {
+                        do Memory.poke(800, -1);
+                    } else {
+                        do Memory.poke(800, 0);
+                    }
+
+                    return 0;
+                    
                     
                 }
             }

@@ -108,9 +108,11 @@ class comp_engine:
                     let block[1] = n;
                     let cur[1] = cur[1] - (n + 2);
                     return block + 2;
+                } else {
+                    let cur = cur[0];
                 }
 
-                let cur = cur[0];
+                
 
             }
 
@@ -142,19 +144,11 @@ class comp_engine:
 
                     let i = 1;
                     let j = 0;
-                    let sum = 0;
 
-                    while (j < 16) {
-                        let j_bit_y = y & i;
-
-                        if (i = j_bit_y) {
-                            let sum = sum + x;
-                        }
-
-                        let i = i + i;
-                        let x = x + x;
-                        let j = j + 1;
-                                                
+                    while (j < 1) {
+                        let sum = i;
+                        let j = j+1;
+                        let i = i+i;
                     }
 
                     return sum;
@@ -434,13 +428,17 @@ class comp_engine:
             self.vm_program.writePop(self.symbol_table.kind_of(identifier_assigned), self.symbol_table.index_of(identifier_assigned))
     
     def match_if_statement(self):
+
         self.match_token_symbol("if")
         self.match_token_symbol("(")
-        
+
+        cur_index = self.label_index
+        self.label_index += 2
+
         self.match_expression() # Conditionitional 
         # makes negative 
         self.vm_program.writeArithmetic("not")
-        self.vm_program.writeIfGoto("L" + str(self.label_index))    # Depending on truth value of conditonal
+        self.vm_program.writeIfGoto("L" + str(cur_index))    # Depending on truth value of conditonal
 
 
 
@@ -449,37 +447,38 @@ class comp_engine:
 
         self.match_statements()
 
-        self.vm_program.writeGoto("L" + str(self.label_index + 1))  # jumping past else
+        self.vm_program.writeGoto("L" + str(cur_index + 1))  # jumping past else
 
         self.match_token_symbol("}")
 
         if (self.tokens[0][0] == "else"):
             self.match_token_symbol("else")
             self.match_token_symbol("{")
-            self.vm_program.writeLabel("L" + str(self.label_index))
+            self.vm_program.writeLabel("L" + str(cur_index))
             self.match_statements()
             self.match_token_symbol("}")
         
-        self.vm_program.writeLabel("L" + str(self.label_index + 1))
-        self.label_index += 2
+        self.vm_program.writeLabel("L" + str(cur_index + 1))
             
     def match_while_statement(self):
         self.match_token_symbol("while")
         self.match_token_symbol("(")
 
-        self.vm_program.writeLabel("L" + str(self.label_index))
+        cur_index = self.label_index
+        self.label_index += 2
+
+        self.vm_program.writeLabel("L" + str(cur_index))
         self.match_expression() # Conditional 
         # get the not of the conditional 
         self.vm_program.writeArithmetic("not")
-        self.vm_program.writeIfGoto("L" + str(self.label_index + 1))
+        self.vm_program.writeIfGoto("L" + str(cur_index + 1))
 
         self.match_token_symbol(")")
         self.match_token_symbol("{")
         
         self.match_statements()
-        self.vm_program.writeGoto("L" + str(self.label_index))
-        self.vm_program.writeLabel("L" + str(self.label_index + 1))
-        self.label_index += 2
+        self.vm_program.writeGoto("L" + str(cur_index))
+        self.vm_program.writeLabel("L" + str(cur_index + 1))
         self.match_token_symbol("}")
 
     def match_do_statement(self):
