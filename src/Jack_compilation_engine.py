@@ -140,20 +140,25 @@ class comp_engine:
         jack_Math_class = """
             class Math {
                 function int multiply(int x, int y) {
-                    var int sum, i, j_bit_y, j; 
-
-                    let i = 1;
+                    var int j, i, sum;
+                    let sum = 0;
                     let j = 0;
+                    let i = 1;
 
-                    while (j < 1) {
-                        let sum = i;
-                        let j = j+1;
-                        let i = i+i;
+
+                    while (j < 16) {
+                        
+                        if ((i&y) = i) {
+                            let sum = sum + x;
+                        } 
+                        
+                        let x = x + x;
+                        let i = i + i;
+                        let j = j + 1;
+                        
                     }
 
                     return sum;
-
-
                 }
             }
         """
