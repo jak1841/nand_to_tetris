@@ -239,9 +239,12 @@ jack_test_program = """
 
             while (j < 15) {
                 
-                if (j < 15) {
-                    let sum = sum + 1;
+                if ((i&y) = i) {
+                    let sum = sum + x;
                 } 
+                
+                let x = x + x;
+                let i = i + i;
                 let j = j + 1;
                 
             }
@@ -261,7 +264,7 @@ jack_test_program = """
 
             do Memory.init();        
             
-            do Memory.poke(801, Main_Class.multi(2, 3));
+            do Memory.poke(801, Main_Class.multi(32, 2));
 
 
             

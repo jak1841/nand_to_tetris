@@ -447,18 +447,21 @@ class comp_engine:
 
         self.match_statements()
 
-        self.vm_program.writeGoto("L" + str(cur_index + 1))  # jumping past else
+        
 
         self.match_token_symbol("}")
 
         if (self.tokens[0][0] == "else"):
+            self.vm_program.writeGoto("L" + str(cur_index + 1))  # jumping past else
             self.match_token_symbol("else")
             self.match_token_symbol("{")
             self.vm_program.writeLabel("L" + str(cur_index))
             self.match_statements()
             self.match_token_symbol("}")
         
-        self.vm_program.writeLabel("L" + str(cur_index + 1))
+            self.vm_program.writeLabel("L" + str(cur_index + 1))
+        else:
+            self.vm_program.writeLabel("L" + str(cur_index))
             
     def match_while_statement(self):
         self.match_token_symbol("while")
