@@ -230,26 +230,19 @@ jack_test_program = """
     class Main_Class {
         static int g;
 
-        function int multi(int x, int y) {
-            var int j, i, sum;
-            let sum = 0;
-            let j = 0;
-            let i = 1;
+        function int divi(int x, int y) {
+            var int q;
+            if (y > x) {
+                return 0;
+            } 
 
+            let q = Main_Class.divi(x, (y+y));
 
-            while (j < 15) {
-                
-                if ((i&y) = i) {
-                    let sum = sum + x;
-                } 
-                
-                let x = x + x;
-                let i = i + i;
-                let j = j + 1;
-                
+            if ((x - (Math.multiply(2, Math.multiply(q, y)))) < y) {
+                return q+q;
             }
 
-            return sum;
+            return q+q+1;
         }
 
         function void main() {
@@ -264,10 +257,10 @@ jack_test_program = """
 
             do Memory.init();        
             
-            do Memory.poke(801, Main_Class.multi(32, 2));
-
-
             
+
+
+            do Memory.poke(800, Main_Class.divi(100, 5));
     
 
             return 0;
@@ -295,14 +288,22 @@ def translate_jack_program_to_binary(program):
     return ass.array_hack_assembly_instruction_to_binary_instruction(assembly_instructions)
 
      
-     
+def translate_jack_program_to_binary_with_libraries(program):
+    lol = comp_engine(program)
+    lol.add_all_libraries_to_tokens()
+    lol.match_jack_program()
+    vm = Vm()
+    assembly_instructions= vm.get_hack_assembly_instructions_from_VM_instructions(lol.vm_program.VM_commands_list)
+    ass = assembler()
+    return ass.array_hack_assembly_instruction_to_binary_instruction(assembly_instructions)
+
 
 
 
 
 comp = computer()
-comp.load_program(translate_jack_program_to_binary(jack_memory_class_first_fit + jack_test_program))
-comp.run_N_number_instructions(40000)
+comp.load_program(translate_jack_program_to_binary_with_libraries(jack_test_program))
+comp.run_N_number_instructions(80000)
 
 print(comp.data_memory.memory[800:803])
 

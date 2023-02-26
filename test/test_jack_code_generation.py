@@ -108,6 +108,7 @@ class Test(unittest.TestCase):
 
 
 
+
     def test_simple_assignment_seven(self):
         seven_program = """
             class Main_Class {

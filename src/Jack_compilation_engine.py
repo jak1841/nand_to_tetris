@@ -150,7 +150,9 @@ class comp_engine:
                         
                         if ((i&y) = i) {
                             let sum = sum + x;
-                        } 
+                        } else {
+                            let sum = sum;
+                        }
                         
                         let x = x + x;
                         let i = i + i;
@@ -159,6 +161,21 @@ class comp_engine:
                     }
 
                     return sum;
+                }
+
+                function int divide(int x, int y) {
+                    var int q;
+                    if (y > x) {
+                        return 0;
+                    } 
+
+                    let q = Math.divide(x, (y+y));
+
+                    if ((x - (Math.multiply(2, Math.multiply(q, y)))) < y) {
+                        return q+q;
+                    }
+
+                    return q+q+1;
                 }
             }
         """
