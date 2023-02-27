@@ -106,6 +106,23 @@ class Test(unittest.TestCase):
         comp.run_N_number_instructions(40000)
         self.assertEqual(self.convert_decimal_list_to_16_bit([6, 0, 9212, 18177, 59994]), comp.data_memory.memory[800:805])
 
+    def test_division(self):
+        program = """
+            class Main_Class {
+                function void main() {
+                    do Memory.init();
+                    do Memory.poke(800, Math.divide(100, 5));
+                    do Memory.poke(801, Math.divide(72, 9));
+                    
+                    return null;
+                }
+            }
+        """
+
+        comp = computer()
+        comp.load_program(self.translate_jack_program_to_binary_with_libraries(program))
+        comp.run_N_number_instructions(160000)
+        self.assertEqual(self.convert_decimal_list_to_16_bit([20, 8]), comp.data_memory.memory[800:802])
 
 
 
