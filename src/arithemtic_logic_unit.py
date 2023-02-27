@@ -1,5 +1,5 @@
 from logic_gates import gate
-
+fast_running = True
 class alu():
     def __init__(self):
         self.gate = gate()
@@ -129,6 +129,18 @@ class alu():
         num_bit = len(a)
         carry_bit = 0
         result = ["0" for x in range(num_bit)]
+
+        if (fast_running):
+            c = bin(int(a,2) + int(b,2))[2:]
+            n = min(num_bit, len(c))
+            for x in range(n):
+                result[num_bit - x - 1] = c[-1 -x ]
+            
+            return "".join(result)
+
+
+            
+
         for x in range(num_bit):
             carry_bit, summ = self.full_adder(b[num_bit - x - 1], a[num_bit - x - 1], carry_bit)
             result[num_bit - x - 1] = summ
