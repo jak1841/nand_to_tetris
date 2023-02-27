@@ -3,6 +3,7 @@
     Implementing low level logic gates
 
 """
+fast_running = True # This will improve performance of the machine
 class gate:
     def __init__(self):
         pass
@@ -21,6 +22,11 @@ class gate:
     # 1 -> 0
     # Given a single bit in the form of string, returns a bit specefied by not operation
     def not_(self, a):
+        if (fast_running):
+            if (a == "1"):
+                return "0"
+            else:
+                return "1"
         return self.nand(a, a)
 
     # 0, 0 -> 0
@@ -29,6 +35,11 @@ class gate:
     # 1, 1 -> 1
     # Given 2 single bit both in the form of string, returns a bit specefied by and operation
     def and_(self, a, b):
+        if (fast_running):
+            if (a == "1" and b == "1"):
+                return "1"
+            else:
+                return "0"
         return self.not_(self.nand(a, b))
 
     # 0, 0 -> 0
@@ -37,6 +48,11 @@ class gate:
     # 1, 1 -> 1
     # Given 2 single bit both as string return a bit of the or operation
     def or_(self, a, b):
+        if (fast_running):
+            if (a == "0" and b == "0"):
+                return "0"
+            else:
+                return "1"
         return self.nand(self.not_(a), self.not_(b))
 
     # 0, 0 -> 0
@@ -55,6 +71,10 @@ class gate:
     # sel = 0 -> output equal a
     # sel = 1 -> output equal b
     def multiplexor(self, a, b, sel):
+        if (fast_running):
+            if (sel == "0"):
+                return a
+            return b
         a_not_sel = self.and_(a, self.not_(sel))
         b_sel = self.and_(b, sel)
         return self.or_(a_not_sel, b_sel)
@@ -71,6 +91,10 @@ class gate:
     # Ouput:    Binary number
     # Mulitplexor but with n bit data.
     def n_bit_multipexor (self, a, b, sel):
+        if (fast_running):
+            if (sel == "0"):
+                return a
+            return b
         result = ""
         for x in range(len(a)):
             result += self.multiplexor(a[x], b[x], sel)
@@ -96,7 +120,13 @@ class gate:
     def n_bit_xor(self, a, b):
         result = ""
         for x in range(len(a)):
-            result += self.xor(a[x], b[x])
+            if (fast_running):
+                if (a[x] == b[x]):
+                    result += "0"
+                else:
+                    result += "1" 
+            else:  
+                result += self.xor(a[x], b[x])
 
         return result
 
@@ -116,7 +146,13 @@ class gate:
     def n_bit_and(self, a, b):
         result = ""
         for x in range(len(a)):
-            result+= self.and_(a[x], b[x])
+            if (fast_running):
+                if (a[x] == "1" and b[x] == "1"):
+                    result += "1"
+                else:
+                    result += "0"
+            else:            
+                result+= self.and_(a[x], b[x])
 
         return result
 
@@ -126,7 +162,13 @@ class gate:
     def n_bit_not(self, a):
         result = ""
         for x in range(len(a)):
-            result += self.not_(a[x])
+            if (fast_running):
+                if (a[x] == "0"):
+                    result += "1"
+                else:
+                    result += "0"    
+            else:
+                result += self.not_(a[x])
 
         return result
 
@@ -146,6 +188,10 @@ class gate:
     # if all bits are 0 -> 1
     # else -> 0
     def n_bit_all_zeros(self, a):
+        if (fast_running):
+            if ("1" in a):
+                return "0"
+            return "1"
         result = a[0]
         for x in range(1, len(a)):
             result = self.or_(result, a[x])
