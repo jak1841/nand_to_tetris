@@ -157,6 +157,51 @@ class alu():
         one += "1"
         return self.adder_n_bit(one, a)
     
+    # Inputs: x[n] y[n]         Two n-bit data inputs 
+    # Outputs: [out[n], zr, ng] n bit data output, zero flag, negative flag
+    # Function:                 return product of x and y in 2s complement format
+    def multiply(self, x, y):
+        # Converts a binary number which is in twos complement to integer representation
+        def twos_comp(binary_string):
+            val, bits = int(binary_string,2), len(binary_string)
+            """compute the 2's complement of int value val"""
+            if (val & (1 << (bits - 1))) != 0: # if sign bit is set e.g., 8bit: 128-255
+                val = val - (1 << bits)        # compute negative value
+            return val                         # return positive value as is
+
+        
+        def prepend_ones(string, length):
+            for x in range(length):
+                string = "1" + string
+            
+            return string
+
+        c = twos_comp(x) * twos_comp(y)
+        zr = "0"
+        ng = "0"
+        if (c == 0):
+            zr = "1"
+            c = '{0:016b}'.format(c)
+        elif (c < 0):
+            ng = "1"
+            c = bin(c*-1)[2:]
+            c = prepend_ones(c, 16-len(c))
+        else:
+            c = '{0:016b}'.format(c)
+            
+            
+
+
+        
+        return [c, zr, ng]
+
+         
+        
+
+
+
+
+
     # Inputs: x[n] y[n]         Two n-bit data inputs
     #         zx,               Zero the x input
     #         nx,               negate the x input
@@ -169,6 +214,16 @@ class alu():
     #           zr,             true iff out = 0
     #           ng,             true iff out < 0
     def alu_n_bit(self, x, y, zx, nx, zy, ny, f, no):
+        # This multiplication is not good with handling overflow
+        if (fast_running and zx == "m"):
+            return self.multiply(x, y)
+
+
+            
+            
+
+
+
         zeroed_x = self.gate.n_bit_xor(x, x)
         x1 = self.gate.n_bit_multipexor(x, zeroed_x, zx)
         negated_x = self.gate.n_bit_not(x1)
@@ -198,6 +253,7 @@ class alu():
 
     # Function: Inputs 2 binary number and 6 bit operation into alu
     def alu_n_bit_operation(self, x, y, operation):
+        
         return self.alu_n_bit(x, y, operation[0], operation[1], operation[2], operation[3], operation[4], operation[5])
 
 

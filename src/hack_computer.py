@@ -5,7 +5,7 @@
 from random_access_memory import Ram_n
 from central_processing_unit import cpu_16_bit
 from arithemtic_logic_unit import alu
-
+import sys
 class computer:
     """
         DATA MEMORY 0 - 16384
@@ -76,7 +76,7 @@ class computer:
         pixel_screen = ""
         for x in display_screen:
             if (x == "1"):
-                pixel_screen+= "■"
+                pixel_screen+= "#"
             elif(x == "\n"):
                 pixel_screen+="\n"
             else:
@@ -85,7 +85,13 @@ class computer:
 
         
         print(pixel_screen)
-            
+
+
+    def clear_screen(self):
+        for x in range(20):
+            sys.stdout.write('\x1b[1A')
+            #delete last line
+            sys.stdout.write('\x1b[2K')       
 
     # Runs computer how ever many instruction given
     def run_N_number_instructions(self, N):

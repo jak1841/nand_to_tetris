@@ -2,6 +2,7 @@ from Jack_compilation_engine import comp_engine
 from Virtual_machine import Vm
 from hack_assembler import assembler
 from hack_computer import computer
+import time
 jack_program = """
 
 class Iloveyoumomma {
@@ -206,66 +207,42 @@ jack_Math_class = """
         """
 
 
-jack_test_program = """
-    class Point {
+jack_screen_class = """
+    class Screen {
     
-        field int x, y;
-        constructor Point new(int x1, int y1) {
-            /* Source of error is in the field let statement*/
-            let x = x1;
-            let y = y1;
-            return this;
-        }
+        function void drawPixel(int row, int col) {
+            var int address, value, bit_index;
+            let address = 16385 + Math.multiply(row, 10) + Math.divide(col, 10);
 
-        function int get_x() {
-            return x;
-        }
 
-        function int get_y() {
-            return y;
-        }
+            let value = Memory.peek(address);
+            let bit_index = col - Math.multiply(16, Math.divide(col, 16));
+            
+            
 
+
+            do Memory.poke(address, bit_index);
+        
+            return null;
+        }
 
     }
-    class Main_Class {
-        static int g;
 
-        function int divi(int x, int y) {
-            var int q;
-            if (y > x) {
-                return 0;
-            } 
+"""
 
-            let q = Main_Class.divi(x, (y+y));
-
-            if ((x - (Math.multiply(2, Math.multiply(q, y)))) < y) {
-                return q+q;
-            }
-
-            return q+q+1;
-        }
-
-        function void main() {
-            var Memory john;
-            var int k;
-            var Point p, d;
-
-            let p = 1;
-            let d = 2;
-
-            
-
-            do Memory.init();        
-            
-            
-
-
-            do Memory.poke(800, Main_Class.divi(100, 5));
+jack_test_program = """
     
-
-            return 0;
+    class Main_Class {
+        function void main() {
             
+            do Memory.init();   
 
+            do Screen.drawPixel(0, 0);  
+            do Screen.drawPixel(0, 90);  
+            
+   
+            
+            return 0;
         }
     }
 
@@ -299,12 +276,29 @@ def translate_jack_program_to_binary_with_libraries(program):
 
 
 
+# import sys
+# import os
+# comp = computer()
+# comp.load_program(translate_jack_program_to_binary_with_libraries(jack_test_program + jack_screen_class))
+# while (True):
+#   comp.run_N_number_instructions(40000)
+#   comp.display_screen()
+#   time.sleep(.1)
+#   comp.clear_screen()
 
 
-comp = computer()
-comp.load_program(translate_jack_program_to_binary_with_libraries(jack_test_program))
-comp.run_N_number_instructions(80000)
 
-print(comp.data_memory.memory[800:803])
+def twos_comp(binary_string):
+    val, bits = int(binary_string,2), len(binary_string)
+    """compute the 2's complement of int value val"""
+    if (val & (1 << (bits - 1))) != 0: # if sign bit is set e.g., 8bit: 128-255
+        val = val - (1 << bits)        # compute negative value
+    return val                         # return positive value as is
 
-print(comp.data_memory.memory[2048:2050])
+binary_string = '1111110011001011' # or whatever... no '0b' prefix
+out = twos_comp(binary_string)
+
+
+print(out)
+
+print(bin(-821))
