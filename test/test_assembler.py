@@ -134,6 +134,17 @@ class Test(unittest.TestCase):
         self.assertEqual("1111111100110101", cmptr.cpu.D_register.register_n_bit("0000000000000000", "0"))
 
 
+        program = [
+            "@31", 
+            "D=A", 
+            "@1902",
+            "M=D*A" 
+        ]
+
+        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(program)
+        cmptr.load_program(binary_program)
+        cmptr.run_N_number_instructions(4)
+        self.assertEqual(self.convert_decimal_to_16_bit(58962), cmptr.data_memory.memory[1902])
 
 
 
