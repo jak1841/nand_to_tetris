@@ -121,7 +121,7 @@ class Test(unittest.TestCase):
 
         comp = computer()
         comp.load_program(self.translate_jack_program_to_binary_with_libraries(program))
-        comp.run_N_number_instructions(160000)
+        comp.run_N_number_instructions(7500)
         self.assertEqual(self.convert_decimal_list_to_16_bit([20, 8]), comp.data_memory.memory[800:802])
 
 

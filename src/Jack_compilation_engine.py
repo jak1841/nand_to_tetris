@@ -171,7 +171,7 @@ class comp_engine:
 
                     let q = Math.divide(x, (y+y));
 
-                    if ((x - (Math.multiply(2, Math.multiply(q, y)))) < y) {
+                    if ((x - (2*q* y)) < y) {
                         return q+q;
                     }
 
