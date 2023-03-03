@@ -113,7 +113,35 @@ class Test(unittest.TestCase):
         ]
 
     def test_multiplication(self):
-        pass
+        ass = assembler()
+        cmptr = computer()
+        vm = Vm()
+
+        vm_instructions_array = [
+            "push constant 8", 
+            "push constant 7", 
+            "push constant 6", 
+            "push constant 5",
+            "push constant 4", 
+            "push constant 3", 
+            "push constant 2", 
+            "push constant 1",
+            "mult", 
+            "mult",
+            "mult", 
+            "mult",
+            "mult", 
+            "mult",
+            "mult", 
+            
+                                 ]
+
+        hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
+        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        cmptr.load_program(binary_program)
+        cmptr.run_N_number_instructions(1000)
+
+        self.assertEqual("1001110110000000", cmptr.peek_stack())
 
 
     def test_logical(self):

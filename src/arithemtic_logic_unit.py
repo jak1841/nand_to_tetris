@@ -177,6 +177,8 @@ class alu():
             return string
 
         c = twos_comp(x) * twos_comp(y)
+
+
         zr = "0"
         ng = "0"
         if (c == 0):
@@ -188,6 +190,8 @@ class alu():
             c = prepend_ones(c, 16-len(c))
         else:
             c = '{0:016b}'.format(c)
+        
+        
             
             
 
