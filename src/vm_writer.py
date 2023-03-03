@@ -101,7 +101,7 @@ class vmWriter:
         elif (op == "-"):
             return "sub"
         elif (op == "*"):
-            return "call Mathmultiply 2"
+            return "mult"
         elif (op == "/"):
             return "division"
         elif (op == "&"):

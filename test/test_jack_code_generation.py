@@ -91,11 +91,11 @@ class Test(unittest.TestCase):
             class Main_Class {
                 function void main() {
                     do Memory.init();
-                    do Memory.poke(800, Math.multiply(2, 3));
-                    do Memory.poke(801, Math.multiply(0, 1));
-                    do Memory.poke(802, Math.multiply(9212, 1));
-                    do Memory.poke(803, Math.multiply(83, 219));
-                    do Memory.poke(804, Math.multiply(9999, 6));
+                    do Memory.poke(800, 2*3);
+                    do Memory.poke(801, 0*1);
+                    do Memory.poke(802, 9212*1);
+                    do Memory.poke(803, 83*219);
+                    do Memory.poke(804, 9999* 6);
                     return null;
                 }
             }
@@ -103,7 +103,7 @@ class Test(unittest.TestCase):
                 
         comp = computer()
         comp.load_program(self.translate_jack_program_to_binary_with_libraries(program))
-        comp.run_N_number_instructions(40000)
+        comp.run_N_number_instructions(5000)
         self.assertEqual(self.convert_decimal_list_to_16_bit([6, 0, 9212, 18177, 59994]), comp.data_memory.memory[800:805])
 
     def test_division(self):
