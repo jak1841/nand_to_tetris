@@ -200,6 +200,27 @@ class Vm:
 
         self.add_push_d_register_value_to_stack_hack_assembly()
 
+    # appends all instructions which pops x, y from stack and pushes x*y to stack
+    def add_multiplication_hack_assembly(self):
+        self.add_pop_value_from_stack_to_register_d_hack_assembly()
+
+        # Store Y into R13
+        self.assembly_instructions += [
+            "@R13", 
+            "M=D"
+        ]
+
+        self.add_pop_value_from_stack_to_register_d_hack_assembly()
+
+        # Addition of X and Y stored in D
+        self.assembly_instructions += [
+            "@R13", 
+            "D=D*M"
+        ]
+
+        self.add_push_d_register_value_to_stack_hack_assembly()
+
+
     # appends all instructions which pops x, y from stack and pushs x-y to stack 
     def add_subtraction_hack_assembly(self):
         self.add_pop_value_from_stack_to_register_d_hack_assembly()
@@ -708,6 +729,8 @@ class Vm:
                 self.add_push_constant_hack_assembly(number)
             elif (x == "add"):
                 self.add_addition_hack_assembly()
+            elif (x == "mult"):
+                self.add_multiplication_hack_assembly()
             elif (x == "sub"):
                 self.add_subtraction_hack_assembly()
             elif (x == "neg"):

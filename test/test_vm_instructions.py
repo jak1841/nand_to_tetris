@@ -112,6 +112,8 @@ class Test(unittest.TestCase):
             "add"
         ]
 
+    def test_multiplication(self):
+        pass
 
 
     def test_logical(self):
