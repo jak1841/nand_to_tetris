@@ -140,6 +140,7 @@ class Test(unittest.TestCase):
             "@1902",
             "M=D*A" 
         ]
+        
 
         binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(program)
         cmptr.load_program(binary_program)
