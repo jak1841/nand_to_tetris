@@ -143,7 +143,29 @@ class Test(unittest.TestCase):
         comp.load_program(self.translate_jack_program_to_binary_with_libraries(program))
         comp.run_N_number_instructions(30000)
         self.assertEqual(self.convert_decimal_list_to_16_bit([10, 2, 1]), comp.data_memory.memory[800:803])
-       
+
+    def test_absolute_value(self):
+        program = """
+            class Main_Class {
+                function void main() {
+                    do Memory.init();
+                    do Memory.poke(800, Math.abs(-100));
+                    do Memory.poke(801, Math.abs(-4));
+                    do Memory.poke(802, Math.abs(-2));
+
+                    do Memory.poke(803, Math.abs(0));
+                    do Memory.poke(804, Math.abs(-8008));
+                    
+                    return null;
+                }
+            }
+        """
+
+        comp = computer()
+        comp.load_program(self.translate_jack_program_to_binary_with_libraries(program))
+        comp.run_N_number_instructions(5000)
+        self.assertEqual(self.convert_decimal_list_to_16_bit([100, 4, 2, 0, 8008]), comp.data_memory.memory[800:805])
+
 
 
     def test_simple_assignment_seven(self):
