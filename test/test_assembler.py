@@ -146,6 +146,81 @@ class Test(unittest.TestCase):
         cmptr.run_N_number_instructions(4)
         self.assertEqual(self.convert_decimal_to_16_bit(58962), cmptr.data_memory.memory[1902])
 
+    def test_division_programs(self):
+        program = [
+            "@200", 
+            "D=A", 
+            "@100", 
+            "D=D/A"
+        ]
+        ass = assembler()
+        cmptr = computer()
+        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(program)
+        cmptr.load_program(binary_program)
+        cmptr.run_N_number_instructions(4)
+        self.assertEqual(self.convert_decimal_to_16_bit(2), cmptr.cpu.D_register.register_n_bit("0000000000000000", "0"))
+
+
+        program = [
+            "@0", 
+            "D=A", 
+            "@1911", 
+            "D=D/A"
+        ]
+
+        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(program)
+        cmptr.load_program(binary_program)
+        cmptr.run_N_number_instructions(4)
+        self.assertEqual(self.convert_decimal_to_16_bit(0), cmptr.cpu.D_register.register_n_bit("0000000000000000", "0"))
+
+        program = [
+            "@1", 
+            "D=A", 
+            "@1911", 
+            "D=D/A"
+        ]
+
+        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(program)
+        cmptr.load_program(binary_program)
+        cmptr.run_N_number_instructions(4)
+        self.assertEqual(self.convert_decimal_to_16_bit(0), cmptr.cpu.D_register.register_n_bit("0000000000000000", "0"))
+
+        program = [
+            "@12211", 
+            "D=A", 
+            "@1", 
+            "D=D/A"
+        ]
+
+        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(program)
+        cmptr.load_program(binary_program)
+        cmptr.run_N_number_instructions(4)
+        self.assertEqual(self.convert_decimal_to_16_bit(12211), cmptr.cpu.D_register.register_n_bit("0000000000000000", "0"))
+
+        program = [
+            "@821",
+            "D=A", 
+            "A=0", 
+            "A=A-1", 
+            "D=D/A"
+        ]
+
+        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(program)
+        cmptr.load_program(binary_program)
+        cmptr.run_N_number_instructions(5)
+        self.assertEqual("1111111100110101", cmptr.cpu.D_register.register_n_bit("0000000000000000", "0"))
+
+        program = [
+            "@1902", 
+            "D=A", 
+            "@317",
+            "M=D/A" 
+        ]
+
+        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(program)
+        cmptr.load_program(binary_program)
+        cmptr.run_N_number_instructions(4)
+        self.assertEqual(self.convert_decimal_to_16_bit(6), cmptr.data_memory.memory[317])
 
 
 

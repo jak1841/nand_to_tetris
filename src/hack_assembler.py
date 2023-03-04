@@ -38,6 +38,7 @@ class assembler:
         self.comp_hashmap["D&A"] = "0" + "000000"
         self.comp_hashmap["D|A"] = "0" + "010101"
         self.comp_hashmap["D*A"] = "0" + "m00000"   # Multiplication for fast computation
+        self.comp_hashmap["D/A"] = "0" + "d00000"   # Division for fast computation 
 
         # A = 1
         self.comp_hashmap["M"] = "1" + "110000"
@@ -51,6 +52,7 @@ class assembler:
         self.comp_hashmap["D&M"] = "1" + "000000"
         self.comp_hashmap["D|M"] = "1" + "010101"
         self.comp_hashmap["D*M"] = "1" + "m00000"   # Multiplication for fast computation
+        self.comp_hashmap["D/M"] = "1" + "d00000"   # Division for fast computation
 
     # makes an hashmap which maps symbol dest to its 
     # binary representation
