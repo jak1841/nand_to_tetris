@@ -125,6 +125,25 @@ class Test(unittest.TestCase):
         comp.run_N_number_instructions(2000)
         self.assertEqual(self.convert_decimal_list_to_16_bit([20, 8, -1]), comp.data_memory.memory[800:803])
 
+    def test_sqrt(self):
+        program = """
+            class Main_Class {
+                function void main() {
+                    do Memory.init();
+                    do Memory.poke(800, Math.sqrt(100));
+                    do Memory.poke(801, Math.sqrt(4));
+                    do Memory.poke(802, Math.sqrt(2));
+                    
+                    return null;
+                }
+            }
+        """
+
+        comp = computer()
+        comp.load_program(self.translate_jack_program_to_binary_with_libraries(program))
+        comp.run_N_number_instructions(30000)
+        self.assertEqual(self.convert_decimal_list_to_16_bit([10, 2, 1]), comp.data_memory.memory[800:803])
+       
 
 
     def test_simple_assignment_seven(self):

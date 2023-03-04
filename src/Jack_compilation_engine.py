@@ -171,11 +171,25 @@ class comp_engine:
 
                     let q = Math.divide(x, (y+y));
 
-                    if ((x - (2*q* y)) < y) {
+                    if ((x - Math.multiply(2, Math.multiply(q, y))) < y) {
                         return q+q;
                     }
 
                     return q+q+1;
+                }
+
+                function int sqrt(int x) {
+                    var int y, j, temp; 
+                    let y = 0;
+                    let j = 256;
+                    while (j > 0) {
+                        let temp = ((y+j)*(y+j));
+                        if ( (temp > 0) & ((temp < x) | (temp = x)) ) {
+                            let y = y + j;
+                        }
+                        let j = j/2;
+                    }
+                    return y;
                 }
 
                 
