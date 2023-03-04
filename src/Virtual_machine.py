@@ -751,6 +751,8 @@ class Vm:
                 self.add_addition_hack_assembly()
             elif (x == "mult"):
                 self.add_multiplication_hack_assembly()
+            elif (x == "div"):
+                self.add_division_hack_assembly()
             elif (x == "sub"):
                 self.add_subtraction_hack_assembly()
             elif (x == "neg"):

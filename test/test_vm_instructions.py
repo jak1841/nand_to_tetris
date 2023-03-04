@@ -143,6 +143,37 @@ class Test(unittest.TestCase):
 
         self.assertEqual("1001110110000000", cmptr.peek_stack())
 
+    def test_division(self):
+        ass = assembler()
+        cmptr = computer()
+        vm = Vm()
+
+        vm_instructions_array = [
+            "push constant 4096", 
+            "push constant 2",
+            "div",
+            "push constant 2",
+            "div",
+            "push constant 2",
+            "div",
+            "push constant 2",
+            "div",
+            "push constant 2",
+            "div",
+            "push constant 8", 
+            "mult", 
+            "push constant 8", 
+            "div",
+            "push constant 2",
+            "div",
+        ]
+        hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
+        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        cmptr.load_program(binary_program)
+        cmptr.run_N_number_instructions(1000)
+
+        self.assertEqual(self.convert_decimal_to_16_bit(64), cmptr.peek_stack())
+
 
     def test_logical(self):
         ass = assembler()
