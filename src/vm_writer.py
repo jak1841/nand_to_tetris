@@ -103,7 +103,7 @@ class vmWriter:
         elif (op == "*"):
             return "mult"
         elif (op == "/"):
-            return "division"
+            return "div"
         elif (op == "&"):
             return "and"
         elif (op == "|"):

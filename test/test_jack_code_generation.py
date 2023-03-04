@@ -111,8 +111,9 @@ class Test(unittest.TestCase):
             class Main_Class {
                 function void main() {
                     do Memory.init();
-                    do Memory.poke(800, Math.divide(100, 5));
-                    do Memory.poke(801, Math.divide(72, 9));
+                    do Memory.poke(800, 100/5);
+                    do Memory.poke(801, 72/9);
+                    do Memory.poke(802, (-911)/911);
                     
                     return null;
                 }
@@ -121,8 +122,8 @@ class Test(unittest.TestCase):
 
         comp = computer()
         comp.load_program(self.translate_jack_program_to_binary_with_libraries(program))
-        comp.run_N_number_instructions(7500)
-        self.assertEqual(self.convert_decimal_list_to_16_bit([20, 8]), comp.data_memory.memory[800:802])
+        comp.run_N_number_instructions(2000)
+        self.assertEqual(self.convert_decimal_list_to_16_bit([20, 8, -1]), comp.data_memory.memory[800:803])
 
 
 
