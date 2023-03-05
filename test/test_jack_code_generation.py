@@ -166,6 +166,28 @@ class Test(unittest.TestCase):
         comp.run_N_number_instructions(5000)
         self.assertEqual(self.convert_decimal_list_to_16_bit([100, 4, 2, 0, 8008]), comp.data_memory.memory[800:805])
 
+    def test_min_and_max(self):
+        program = """
+            class Main_Class {
+                function void main() {
+                    do Memory.init();
+                    do Memory.poke(800, Math.max(-100, 100));
+                    do Memory.poke(801, Math.max(8008, 8009));
+                    do Memory.poke(802, Math.max(911, 911));
+
+                    do Memory.poke(803, Math.min(-812, 812));
+                    do Memory.poke(804, Math.min(420, 421));
+                    do Memory.poke(805, Math.min(2, 2));
+
+                    return null;
+                }
+            }
+        """
+
+        comp = computer()
+        comp.load_program(self.translate_jack_program_to_binary_with_libraries(program))
+        comp.run_N_number_instructions(5000)
+        self.assertEqual(self.convert_decimal_list_to_16_bit([100, 8009, 911])+ ["1111110011010100"] + self.convert_decimal_list_to_16_bit([420, 2]), comp.data_memory.memory[800:806])
 
 
     def test_simple_assignment_seven(self):

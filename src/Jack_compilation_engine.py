@@ -200,6 +200,22 @@ class comp_engine:
                     return x;
                 }
 
+                /*Given two numbers return the max of the two*/
+                function int max(int x, int y) {
+                    if (x > y){
+                        return x;
+                    } 
+                    return y;
+                }
+
+                /*Given two numbers return the minimum of the two*/
+                function int min(int x, int y) {
+                    if (x < y) {
+                        return x;
+                    }
+                    return y;
+                }
+
                 
             }
         """
