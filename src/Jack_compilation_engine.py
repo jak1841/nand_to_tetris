@@ -216,6 +216,14 @@ class comp_engine:
                     return y;
                 }
 
+                /*Given int x, y returns x^y, does not handle overflow well*/
+                function int power(int x, int y) {
+                    if (y = 0) {
+                        return 1;
+                    }
+                    return x * Math.power(x, (y-1));
+                }
+
                 
             }
         """

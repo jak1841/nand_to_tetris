@@ -209,19 +209,36 @@ jack_Math_class = """
 
 jack_screen_class = """
     class Screen {
-    
-        function void drawPixel(int row, int col) {
-            var int address, value, bit_index;
-            let address = 16385 + Math.multiply(row, 10) + Math.divide(col, 10);
+        static int color_bit;
 
+        function void init() {
+            let color_bit = 1;
+            return null;
+        }
+
+        function void setColor(int b) {
+            let color_bit = b;
+            return null;
+        }
+
+        function void drawPixel(int row, int col) {
+            var int address, value, bit_index, c;
+            let address = 16385 + (row*10) + (col/10);
 
             let value = Memory.peek(address);
-            let bit_index = col - Math.multiply(16, Math.divide(col, 16));
+            let bit_index = col - (col/16*16);
+            let bit_index = Math.power(2, 15 - bit_index);
+
+            if (color_bit = 1) {
+                do Memory.poke(address, (value | bit_index));
+            } else {
+                let bit_index = -(bit_index - 1);
+                do Memory.poke(address, (value & bit_index));
+            }
             
             
-
-
-            do Memory.poke(address, bit_index);
+            
+            
         
             return null;
         }
@@ -237,8 +254,15 @@ jack_test_program = """
             
             do Memory.init();   
 
-            do Screen.drawPixel(0, 0);  
-            do Screen.drawPixel(0, 90);  
+            do Screen.drawPixel(0, 0);
+            do Screen.drawPixel(0, 1);
+            do Screen.drawPixel(0, 2);
+            do Screen.drawPixel(0, 3);
+            do Screen.setColor(1);
+            do Screen.drawPixel(0, 4);
+
+            do Screen.drawPixel(1, 1);  
+              
             
    
             
@@ -276,29 +300,14 @@ def translate_jack_program_to_binary_with_libraries(program):
 
 
 
-# import sys
-# import os
-# comp = computer()
-# comp.load_program(translate_jack_program_to_binary_with_libraries(jack_test_program + jack_screen_class))
-# while (True):
-#   comp.run_N_number_instructions(40000)
-#   comp.display_screen()
-#   time.sleep(.1)
-#   comp.clear_screen()
+import sys
+import os
+comp = computer()
+comp.load_program(translate_jack_program_to_binary_with_libraries(jack_test_program + jack_screen_class))
+while (True):
+    # print(comp.data_memory.memory[16385])
+    comp.run_N_number_instructions(40000)
+    comp.display_screen()
+    time.sleep(.1)
+    comp.clear_screen()
 
-
-
-def twos_comp(binary_string):
-    val, bits = int(binary_string,2), len(binary_string)
-    """compute the 2's complement of int value val"""
-    if (val & (1 << (bits - 1))) != 0: # if sign bit is set e.g., 8bit: 128-255
-        val = val - (1 << bits)        # compute negative value
-    return val                         # return positive value as is
-
-binary_string = '1111110011001011' # or whatever... no '0b' prefix
-out = twos_comp(binary_string)
-
-
-print(out)
-
-print(bin(-821))
