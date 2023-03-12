@@ -67,7 +67,7 @@ class computer:
 
         # Gets all Ram values responsible for screen info and puts it into an screen
         display_screen = ""
-        for x in range(19):
+        for x in range(29):
             for y in range(10):
                 display_screen+= self.data_memory.memory[16385 + (10*x) + y]
             display_screen+= "\n"
@@ -88,7 +88,7 @@ class computer:
 
 
     def clear_screen(self):
-        for x in range(20):
+        for x in range(30):
             sys.stdout.write('\x1b[1A')
             #delete last line
             sys.stdout.write('\x1b[2K')       

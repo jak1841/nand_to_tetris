@@ -223,7 +223,7 @@ jack_screen_class = """
 
         function void drawPixel(int row, int col) {
             var int address, value, bit_index, c;
-            let address = 16385 + (row*10) + (col/10);
+            let address = 16385 + (row*10) + (col/16);
 
             let value = Memory.peek(address);
             let bit_index = col - (col/16*16);
@@ -235,11 +235,75 @@ jack_screen_class = """
                 let bit_index = -(bit_index - 1);
                 do Memory.poke(address, (value & bit_index));
             }
+            return null;
+        }
+        /* Draws a line from point (x1, y1) to (x2, y2)*/
+        function void drawLine(int x1, int y1, int x2, int y2) {
+            var int dx, dy, diff, a, b, x, y;
             
+
+            let dx = x2 - x1;
+            let dy = y2 - y1;
+
             
+            if (((dx > 0) & (dy > 0)) | ((dx < 0) & (dy < 0))) {
+                if ((dx > 0) & (dy > 0)) {
+                    /*Line going to bottom right*/
+                    let x = x1;
+                    let y = y1;
+                } else {
+                    /*Line going to top left*/
+                    let x = x2;
+                    let y = y2;
+                    let dx = x1 - x2;
+                    let dy = y1 - y2;
+                }
+
+                let a = 0;
+                let b = 0;
+                let diff = 0;
+
+                while (((a > dx) = false) & ((b > dy) = false)){
+                    do Screen.drawPixel(x + a, y + b);
+                    let diff = (a*dy) - (b*dx);
+                    if (diff < 0) {
+                        let a = a + 1;
+                    } else {
+                        let b = b + 1;
+                    }
+                }
+            } 
+
             
+            /*Line going to top right*/
+            if (((dx > 0) & (dy < 0)) | ((dx < 0) & (dy > 0))) {
+                
+                /*x2 > x1 and y2 < y1*/
+                if ((dx > 0) & (dy < 0)) {
+                    let x = x1;
+                    let y = y1;
+                } else {
+                    
+                    
+                }
+
+                let a = 0;
+                let b = 0;
+                let diff = 0;
+
+
+                while (((a > dx) = false) & ((b < dy) = false)){
+                    do Screen.drawPixel(x + a, y + b);
+                    let diff = (a*dy) - (b*dx);
+                    if (diff > 0) {
+                        let a = a + 1;
+                    } else {
+                        let b = b - 1;
+                    }
+                }                
+            }
             
-        
+
             return null;
         }
 
@@ -253,18 +317,39 @@ jack_test_program = """
         function void main() {
             
             do Memory.init();   
-
-            do Screen.drawPixel(0, 0);
-            do Screen.drawPixel(0, 1);
-            do Screen.drawPixel(0, 2);
-            do Screen.drawPixel(0, 3);
             do Screen.setColor(1);
-            do Screen.drawPixel(0, 4);
+            
+            /*do Screen.drawPixel(0, 0);
+            do Screen.drawPixel(1, 1);
+            do Screen.drawPixel(2, 2);
+            do Screen.drawPixel(3, 3);
+            do Screen.drawPixel(4, 4);
+            do Screen.drawPixel(5, 5);
+            do Screen.drawPixel(6, 6);
+            do Screen.drawPixel(7, 7);
+            do Screen.drawPixel(8, 8);
+            do Screen.drawPixel(9, 9);
+            do Screen.drawPixel(10, 10);
+            do Screen.drawPixel(11, 11);
+            do Screen.drawPixel(12, 12);
+            do Screen.drawPixel(13, 13);
+            do Screen.drawPixel(14, 14);
+            do Screen.drawPixel(15, 15);
+            do Screen.drawPixel(16, 16);
+            do Screen.drawPixel(17, 17);
+            do Screen.drawPixel(18, 18);*/
 
-            do Screen.drawPixel(1, 1);  
+            /*do Screen.drawLine(28, 99, 0, 0);*/
+            do Screen.drawLine(18, 27, 0, 0);
+            do Screen.drawLine(0, 27, 27, 0);
+
+
+
               
             
-   
+
+            
+            
             
             return 0;
         }
@@ -308,6 +393,6 @@ while (True):
     # print(comp.data_memory.memory[16385])
     comp.run_N_number_instructions(40000)
     comp.display_screen()
-    time.sleep(.1)
+    time.sleep(.15)
     comp.clear_screen()
 

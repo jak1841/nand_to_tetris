@@ -537,6 +537,45 @@ class Test(unittest.TestCase):
         comp.load_program(self.translate_jack_program_to_binary_with_libraries(program))
         comp.run_N_number_instructions(10000)
         
+    def test_negative_numbers(self):
+        program = """
+            class Main_Class {
+                function void main() {
+                    var int x, y, z;
+                    do Memory.init();
+
+                    let x = -821;
+                    let y = 821;
+                    let z = -822;
+                    do Memory.poke(798, x);
+                    do Memory.poke(799, y);
+                    do Memory.poke(800, z);
+                    if (x < y) {
+                        do Memory.poke(801, -1);
+                    } else {
+                        do Memory.poke(801, 0);
+                    }
+
+                    if (x > z) {
+                        do Memory.poke(802, -1);
+                    } else {
+                        do Memory.poke(802, 0);
+                    }
+
+                    return null;
+
+                }
+                
+            }
+
+
+        """
+
+        comp = computer()
+        comp.load_program(self.translate_jack_program_to_binary_with_libraries(program))
+        comp.run_N_number_instructions(10000)
+        self.assertEqual(["1111110011001011", "0000001100110101", "1111110011001010"] + self.convert_decimal_list_to_16_bit([-1, -1]), comp.data_memory.memory[798:803])
+
 
 
 if __name__ == '__main__':
