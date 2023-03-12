@@ -562,6 +562,20 @@ class Test(unittest.TestCase):
                         do Memory.poke(802, 0);
                     }
 
+                    if (x > 0) {
+                        do Memory.poke(803, -1);
+                    }
+
+                    if (y > 0) {
+                        do Memory.poke(804, -1);
+                    }
+
+                    if (z > 0) {
+                        do Memory.poke(805, -1);
+                    }
+
+
+
                     return null;
 
                 }
@@ -574,7 +588,7 @@ class Test(unittest.TestCase):
         comp = computer()
         comp.load_program(self.translate_jack_program_to_binary_with_libraries(program))
         comp.run_N_number_instructions(10000)
-        self.assertEqual(["1111110011001011", "0000001100110101", "1111110011001010"] + self.convert_decimal_list_to_16_bit([-1, -1]), comp.data_memory.memory[798:803])
+        self.assertEqual(["1111110011001011", "0000001100110101", "1111110011001010"] + self.convert_decimal_list_to_16_bit([-1, -1, 0, -1, 0]), comp.data_memory.memory[798:806])
 
 
 
