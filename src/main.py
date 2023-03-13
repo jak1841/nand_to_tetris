@@ -207,115 +207,11 @@ jack_Math_class = """
         """
 
 
-jack_screen_class = """
-    class Screen {
-        static int color_bit;
-
-        function void init() {
-            let color_bit = 1;
-            return null;
-        }
-
-        function void setColor(int b) {
-            let color_bit = b;
-            return null;
-        }
-
-        function void drawPixel(int row, int col) {
-            var int address, value, bit_index, c;
-            let address = 16385 + (row*10) + (col/16);
-
-            let value = Memory.peek(address);
-            let bit_index = col - (col/16*16);
-            let bit_index = Math.power(2, 15 - bit_index);
-
-            if (color_bit = 1) {
-                do Memory.poke(address, (value | bit_index));
-            } else {
-                let bit_index = -(bit_index - 1);
-                do Memory.poke(address, (value & bit_index));
-            }
-            return null;
-        }
-        /* Draws a line from point (x1, y1) to (x2, y2)*/
-        function void drawLine(int x1, int y1, int x2, int y2) {
-            var int dx, dy, diff, a, b, x, y;
-            
-
-            let dx = x2 - x1;
-            let dy = y2 - y1;
-
-            
-            if (((dx > 0) & (dy > 0)) | ((dx < 0) & (dy < 0))) {
-                if ((dx > 0) & (dy > 0)) {
-                    /*Line going to bottom right*/
-                    let x = x1;
-                    let y = y1;
-                } else {
-                    /*Line going to top left*/
-                    let x = x2;
-                    let y = y2;
-                    let dx = x1 - x2;
-                    let dy = y1 - y2;
-                }
-
-                let a = 0;
-                let b = 0;
-                let diff = 0;
-
-                while (((a > dx) = false) & ((b > dy) = false)){
-                    do Screen.drawPixel(x + a, y + b);
-                    let diff = (a*dy) - (b*dx);
-                    if (diff < 0) {
-                        let a = a + 1;
-                    } else {
-                        let b = b + 1;
-                    }
-                }
-            } 
-
-            
-            /*Line going to top right*/
-            if (((dx > 0) & (dy < 0)) | ((dx < 0) & (dy > 0))) {
-                
-                /*x2 > x1 and y2 < y1*/
-                if ((dx > 0) & (dy < 0)) {
-                    let x = x1;
-                    let y = y1;
-                } else {
-                    
-                    
-                }
-
-                let a = 0;
-                let b = 0;
-                let diff = 0;
-
-
-                while (((a > dx) = false) & ((b < dy) = false)){
-                    do Screen.drawPixel(x + a, y + b);
-                    let diff = (a*dy) - (b*dx);
-                    if (diff > 0) {
-                        let a = a + 1;
-                    } else {
-                        let b = b - 1;
-                    }
-                }                
-            }
-            
-
-            return null;
-        }
-
-    }
-
-"""
 
 jack_test_program = """
     
     class Main_Class {
         function void main() {
-            
             do Memory.init();   
             do Screen.setColor(1);
             
@@ -339,9 +235,16 @@ jack_test_program = """
             do Screen.drawPixel(17, 17);
             do Screen.drawPixel(18, 18);*/
 
-            /*do Screen.drawLine(28, 99, 0, 0);*/
-            do Screen.drawLine(18, 27, 0, 0);
-            do Screen.drawLine(0, 27, 27, 0);
+            
+            do Screen.drawLine(99, 28, 0, 0);
+            /*do Screen.drawLine(0, 15, 15, 0);
+            do Screen.drawLine(0, 28, 50, 20);*/
+
+            
+
+            
+
+
 
 
 
@@ -390,8 +293,7 @@ import os
 comp = computer()
 comp.load_program(translate_jack_program_to_binary_with_libraries(jack_test_program + jack_screen_class))
 while (True):
-    # print(comp.data_memory.memory[16385])
-    comp.run_N_number_instructions(40000)
+    comp.run_N_number_instructions(80000)
     comp.display_screen()
     time.sleep(.15)
     comp.clear_screen()

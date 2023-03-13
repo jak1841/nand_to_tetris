@@ -136,7 +136,125 @@ class comp_engine:
     }
 
 """
-        
+        jack_screen_class = """
+            class Screen {
+                static int color_bit;
+
+                function void init() {
+                    let color_bit = 1;
+                    return null;
+                }
+
+                function void setColor(int b) {
+                    let color_bit = b;
+                    return null;
+                }
+
+                function void drawPixel(int col, int row) {
+                    var int address, value, bit_index, c;
+                    let address = 16385 + (row*10) + (col/16);
+
+                    let value = Memory.peek(address);
+                    let bit_index = col - (col/16*16);
+                    let bit_index = Math.power(2, 15 - bit_index);
+
+                    if (color_bit = 1) {
+                        do Memory.poke(address, (value | bit_index));
+                    } else {
+                        let bit_index = -(bit_index - 1);
+                        do Memory.poke(address, (value & bit_index));
+                    }
+                    return null;
+                }
+                /* Draws a line from point (x1, y1) to (x2, y2)*/
+                function void drawLine(int x1, int y1, int x2, int y2) {
+                    var int dx, dy, diff, a, b, x, y, temp;
+                    
+                    if(x1 > x2){
+                        let temp = x1;
+                        let x1 = x2;
+                        let x2 = temp;
+
+                        let temp = y1;
+                        let y1 = y2;
+                        let y2 = temp;
+                    }
+
+                    let dx = x2 - x1;
+                    let dy = y2 - y1;
+
+                    
+                    if (((dx > 0) & (dy > 0)) | ((dx < 0) & (dy < 0))) {
+                        if ((dx > 0) & (dy > 0)) {
+                            /*Line going to bottom right*/
+                            let x = x1;
+                            let y = y1;
+                        } else {
+                            /*Line going to top left*/
+                            let x = x2;
+                            let y = y2;
+                            let dx = x1 - x2;
+                            let dy = y1 - y2;
+                        }
+
+                        let a = 0;
+                        let b = 0;
+                        let temp = 0;
+
+                        while (((a > dx) = false) & ((b > dy) = false)){
+                            do Screen.drawPixel(x + a, y + b);
+                            if(temp > 0){
+                                    let a = a + 1;
+                                    let temp = temp - dx;
+                                }else{
+                                    let b = b + 1;
+                                    let temp = temp + dy;
+                                }
+                        }
+                    } 
+
+                    
+                    /*Line going to top right or bottom right*/
+                    if (((dx > 0) & (dy < 0)) | ((dx < 0) & (dy > 0))) {
+                        if ((dx > 0) & (dy < 0)) {
+                            /*Top Right*/
+                            let x = x1;
+                            let y = y1;
+                            
+                        } else {
+                            /*Bottom right*/
+                            let x = x2;
+                            let y = y2;
+                            let dx = x1 - x2;
+                            let dy = y1 - y2;
+                        }
+                        
+                        let a = 0;
+                        let b = 0;
+                        let temp = 0;
+
+                        while (((a > dx) = false) & ((b < dy) = false)) {
+                            do Screen.drawPixel(x + a, y - b);
+                            if (temp > 0) {
+                                let a = a + 1;
+                                let temp = temp - dx;
+                            } else {
+                                let b = b + 1;
+                                let temp = temp - dy;
+                            }
+                        }
+
+
+                    }
+                    
+
+                    return null;
+                }
+
+            }
+
+        """
+
         jack_Math_class = """
             class Math {
                 function int multiply(int x, int y) {
@@ -227,7 +345,7 @@ class comp_engine:
                 
             }
         """
-        self.tokens += tk(jack_memory_class_first_fit + jack_Math_class).get_all_tokens()
+        self.tokens += tk(jack_memory_class_first_fit + jack_Math_class + jack_screen_class).get_all_tokens()
 
         
 
