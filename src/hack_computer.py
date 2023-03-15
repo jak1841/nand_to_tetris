@@ -36,6 +36,7 @@ class computer:
         self.inM = self.data_memory.do_operation("0000000000000000", A_register_value[1:], "0")
 
 
+
     # Runs one instruction from instructions memory starting from address 0
     def run_a_instruction(self, reset):
 
@@ -76,7 +77,7 @@ class computer:
         pixel_screen = ""
         for x in display_screen:
             if (x == "1"):
-                pixel_screen+= "#"
+                pixel_screen+= u"\u2588"
             elif(x == "\n"):
                 pixel_screen+="\n"
             else:

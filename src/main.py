@@ -176,83 +176,60 @@ jack_memory_class_first_fit = """
 """
 
 
-jack_Math_class = """
-            class Math {
-                function int multiply(int x, int y) {
-                    var int sum, i, j_bit_y, j; 
-                    var int boolean;
-
-                    let i = 1;
-                    let j = 0;
-                    let sum = 0;
-
-                    while (j < 16) {
-                        let j_bit_y = y & i;
-
-                        if (i = j_bit_y) {
-                            let sum = sum + x;
-                        }
-
-                        let i = i + i;
-                        let x = x + x;
-                        let j = j + 1;
-                                                
-                    }
-
-                    return sum;
-
-
-                }
-            }
-        """
-
 
 
 jack_test_program = """
     
     class Main_Class {
         function void main() {
+            var Array a;
             do Memory.init();   
             do Screen.setColor(1);
-            
-            /*do Screen.drawPixel(0, 0);
-            do Screen.drawPixel(1, 1);
-            do Screen.drawPixel(2, 2);
-            do Screen.drawPixel(3, 3);
-            do Screen.drawPixel(4, 4);
-            do Screen.drawPixel(5, 5);
-            do Screen.drawPixel(6, 6);
-            do Screen.drawPixel(7, 7);
-            do Screen.drawPixel(8, 8);
-            do Screen.drawPixel(9, 9);
-            do Screen.drawPixel(10, 10);
-            do Screen.drawPixel(11, 11);
-            do Screen.drawPixel(12, 12);
-            do Screen.drawPixel(13, 13);
-            do Screen.drawPixel(14, 14);
-            do Screen.drawPixel(15, 15);
-            do Screen.drawPixel(16, 16);
-            do Screen.drawPixel(17, 17);
-            do Screen.drawPixel(18, 18);*/
+
+            let a = Array.new(20);
+            let a[0] = 1;
+            let a[10] = 21;
+
+            let a[19] = 63;
+
+            do Memory.poke(800, a);
+
+
+
+
+
+                    
+            /*do Output.printChar(65, 0, 0);
+            do Output.printChar(66, 4, 0);
+            do Output.printChar(67, 8, 0);
+            do Output.printChar(68, 12, 0);
+            do Output.printChar(69, 16, 0);
+            do Output.printChar(70, 20, 0);
+            do Output.printChar(71, 24, 0);
+            do Output.printChar(72, 28, 0);
+            do Output.printChar(73, 32, 0); 
+            do Output.printChar(74, 36, 0); 
+            do Output.printChar(75, 40, 0);
+            do Output.printChar(76, 44, 0);
+            do Output.printChar(77, 48, 0);  
+            do Output.printChar(78, 52, 0);
+            do Output.printChar(79, 56, 0);
+            do Output.printChar(80, 60, 0);
+            do Output.printChar(81, 64, 0);
+            do Output.printChar(82, 68, 0);
+            do Output.printChar(83, 72, 0);
+            do Output.printChar(84, 76, 0);
+            do Output.printChar(85, 80, 0);
+            do Output.printChar(86, 84, 0);
+            do Output.printChar(87, 88, 0);
+            do Output.printChar(88, 92, 0);
+            do Output.printChar(89, 96, 0);
+            do Output.printChar(90, 0, 4);*/
 
             
-            do Screen.drawLine(99, 28, 0, 0);
-            /*do Screen.drawLine(0, 15, 15, 0);
-            do Screen.drawLine(0, 28, 50, 20);*/
-
-            
-
-            
 
 
 
-
-
-              
-            
-
-            
-            
             
             return 0;
         }
@@ -260,6 +237,290 @@ jack_test_program = """
 
 """
 
+jack_output_class = """
+    class Output {
+        /*This class is where we actually implement the text output and is based off the screen class
+        
+            All Characters are created in 3x3 grid and one space horizontal and vertical to seperate other characters 
+
+            Characters will be uppercase letters, numbers, and spaces
+        */
+        function void init() {
+            do Screen.init();
+            return null;
+        }
+
+        /* Given a character ascii will print that character at some position on the screen */
+        function void printChar(int ascii_value, int x, int y) {
+            /*A*/
+            if (ascii_value = 65) {
+                do Screen.drawPixel(x + 1, y);
+                do Screen.drawPixel(x, y + 1);
+                do Screen.drawPixel(x + 1, y + 1);
+                do Screen.drawPixel(x + 2, y + 1);
+                do Screen.drawPixel(x, y + 2);
+                do Screen.drawPixel(x + 2, y + 2);
+            }
+
+            /*B*/
+            if (ascii_value = 66) {
+                do Screen.drawPixel(x, y);
+                do Screen.drawPixel(x + 1, y);
+                do Screen.drawPixel(x, y + 1);
+                do Screen.drawPixel(x + 1, y + 1);
+                do Screen.drawPixel(x + 2, y + 1);
+                do Screen.drawPixel(x, y + 2);
+                do Screen.drawPixel(x + 1, y + 2);
+                do Screen.drawPixel(x + 2, y + 2);
+            }
+
+            /*C*/
+            if (ascii_value = 67) {
+                do Screen.drawPixel(x, y);
+                do Screen.drawPixel(x + 1, y);
+                do Screen.drawPixel(x + 2, y);
+                do Screen.drawPixel(x, y + 1);
+                do Screen.drawPixel(x, y + 2);
+                do Screen.drawPixel(x + 1, y + 2);
+                do Screen.drawPixel(x + 2, y + 2);
+            } 
+
+            /*D*/
+            if (ascii_value = 68) {
+                do Screen.drawPixel(x, y);
+                do Screen.drawPixel(x + 1, y);
+                do Screen.drawPixel(x, y + 1);
+                do Screen.drawPixel(x + 2, y + 1);
+                do Screen.drawPixel(x, y + 2);
+                do Screen.drawPixel(x + 1, y + 2);
+            }
+
+            /*E*/
+            if (ascii_value = 69) {
+                do Screen.drawPixel(x, y);
+                do Screen.drawPixel(x + 1, y);
+                do Screen.drawPixel(x + 2, y);
+                do Screen.drawPixel(x, y + 1);
+                do Screen.drawPixel(x + 1, y + 1);
+                do Screen.drawPixel(x, y + 2);
+                do Screen.drawPixel(x + 1, y + 2);
+                do Screen.drawPixel(x + 2, y + 2);
+
+            }
+
+            /*F*/
+            if (ascii_value = 70) {
+                do Screen.drawPixel(x, y);
+                do Screen.drawPixel(x + 1, y);
+                do Screen.drawPixel(x + 2, y);
+                do Screen.drawPixel(x, y + 1);
+                do Screen.drawPixel(x + 1, y + 1);
+                do Screen.drawPixel(x, y + 2);
+            }
+
+            /*G*/
+            if (ascii_value = 71) {
+                do Screen.drawPixel(x, y);
+                do Screen.drawPixel(x + 1, y);
+                do Screen.drawPixel(x, y + 1);
+                do Screen.drawPixel(x + 2, y + 1);
+                do Screen.drawPixel(x, y + 2);
+                do Screen.drawPixel(x + 1, y + 2);
+                do Screen.drawPixel(x + 2, y + 2);
+            }
+
+            /*H*/
+            if (ascii_value = 72) {
+                do Screen.drawPixel(x, y);
+                do Screen.drawPixel(x + 2, y);
+                do Screen.drawPixel(x, y + 1);
+                do Screen.drawPixel(x + 1, y + 1);
+                do Screen.drawPixel(x + 2, y + 1);
+                do Screen.drawPixel(x, y + 2);
+                do Screen.drawPixel(x + 2, y + 2);
+            }
+
+            /*I*/
+            if (ascii_value = 73) {
+                do Screen.drawPixel(x, y);
+                do Screen.drawPixel(x + 1, y);
+                do Screen.drawPixel(x + 2, y);
+                do Screen.drawPixel(x + 1, y + 1);
+                do Screen.drawPixel(x, y + 2);
+                do Screen.drawPixel(x + 1, y + 2);
+                do Screen.drawPixel(x + 2, y + 2);
+            }
+
+            /*J*/
+            if (ascii_value = 74) {
+                do Screen.drawPixel(x + 2, y);
+                do Screen.drawPixel(x, y + 1);
+                do Screen.drawPixel(x + 2, y + 1);
+                do Screen.drawPixel(x, y + 2);
+                do Screen.drawPixel(x + 1, y + 2);
+                do Screen.drawPixel(x + 2, y + 2);
+            }
+
+            /*K*/
+            if (ascii_value = 75) {
+                do Screen.drawPixel(x, y);
+                do Screen.drawPixel(x + 2, y);
+                do Screen.drawPixel(x, y + 1);
+                do Screen.drawPixel(x + 1, y + 1);
+                do Screen.drawPixel(x, y + 2);
+                do Screen.drawPixel(x + 2, y + 2);
+            }
+
+            /*L*/
+            if (ascii_value = 76) {
+                do Screen.drawPixel(x, y);
+                do Screen.drawPixel(x, y+1);
+                do Screen.drawPixel(x, y+2);
+                do Screen.drawPixel(x + 1, y+2);
+                do Screen.drawPixel(x + 2, y+2);
+            }
+
+            /*M*/
+            if (ascii_value = 77) {
+                do Screen.drawPixel(x, y);
+                do Screen.drawPixel(x + 1, y);
+                do Screen.drawPixel(x + 2, y);
+                do Screen.drawPixel(x, y + 1);
+                do Screen.drawPixel(x + 1, y + 1);
+                do Screen.drawPixel(x + 2, y + 1);
+                do Screen.drawPixel(x, y + 2);
+                do Screen.drawPixel(x + 2, y + 2);
+            }
+
+            /*N*/
+            if (ascii_value = 78) {
+                do Screen.drawPixel(x, y);
+                do Screen.drawPixel(x + 1, y);
+                do Screen.drawPixel(x + 2, y);
+                do Screen.drawPixel(x, y + 1);
+                do Screen.drawPixel(x + 2, y + 1);
+                do Screen.drawPixel(x, y + 2);
+                do Screen.drawPixel(x + 2, y + 2);
+            }
+
+            /*O*/
+            if (ascii_value = 79) {
+                do Screen.drawPixel(x, y);
+                do Screen.drawPixel(x + 1, y);
+                do Screen.drawPixel(x + 2, y);
+                do Screen.drawPixel(x, y + 1);
+                do Screen.drawPixel(x + 2, y + 1);
+                do Screen.drawPixel(x, y + 2);
+                do Screen.drawPixel(x + 1, y + 2);
+                do Screen.drawPixel(x + 2, y + 2);
+            }
+
+            /*P*/
+            if (ascii_value = 80) {
+                do Screen.drawPixel(x, y);
+                do Screen.drawPixel(x + 1, y);
+                do Screen.drawPixel(x + 2, y);
+                do Screen.drawPixel(x, y + 1);
+                do Screen.drawPixel(x + 1, y + 1);
+                do Screen.drawPixel(x + 2, y + 1);
+                do Screen.drawPixel(x, y + 2);
+            }
+
+            /*Q*/
+            if (ascii_value = 81) {
+                do Screen.drawPixel(x, y);
+                do Screen.drawPixel(x + 1, y);
+                do Screen.drawPixel(x + 2, y);
+                do Screen.drawPixel(x, y + 1);
+                do Screen.drawPixel(x + 1, y + 1);
+                do Screen.drawPixel(x + 2, y + 1);
+                do Screen.drawPixel(x + 2, y + 2);
+            }
+
+            /*R*/
+            if (ascii_value = 82) {
+                do Screen.drawPixel(x, y);
+                do Screen.drawPixel(x + 1, y);
+                do Screen.drawPixel(x + 2, y);
+                do Screen.drawPixel(x, y + 1);
+                do Screen.drawPixel(x, y + 2);
+            }
+
+            /*S*/
+            if (ascii_value = 83) {
+                do Screen.drawPixel(x + 1, y);
+                do Screen.drawPixel(x + 2, y);
+                do Screen.drawPixel(x + 1, y + 1);
+                do Screen.drawPixel(x, y + 2);
+                do Screen.drawPixel(x + 1, y + 2);
+            }
+            /*T*/
+            if (ascii_value = 84) {
+                do Screen.drawPixel(x, y);
+                do Screen.drawPixel(x + 1, y);
+                do Screen.drawPixel(x + 2, y);
+                do Screen.drawPixel(x + 1, y + 1);
+                do Screen.drawPixel(x + 1, y + 2);
+            }
+
+            /*U*/
+            if (ascii_value = 85) {
+                do Screen.drawPixel(x, y);
+                do Screen.drawPixel(x + 2, y);
+                do Screen.drawPixel(x, y + 1);
+                do Screen.drawPixel(x + 2, y + 1);
+                do Screen.drawPixel(x, y + 2);
+                do Screen.drawPixel(x + 1, y + 2);
+                do Screen.drawPixel(x + 2, y + 2);
+            }
+            /*V*/
+            if (ascii_value = 86) {
+                do Screen.drawPixel(x, y);
+                do Screen.drawPixel(x + 2, y);
+                do Screen.drawPixel(x, y + 1);
+                do Screen.drawPixel(x + 2, y + 1);
+                do Screen.drawPixel(x + 1, y + 2);
+            }
+
+            /*W*/
+            if (ascii_value = 87) {
+                do Screen.drawPixel(x, y);
+                do Screen.drawPixel(x + 2, y);
+                do Screen.drawPixel(x, y + 1);
+                do Screen.drawPixel(x + 1, y + 1);
+                do Screen.drawPixel(x + 2, y + 1);
+                do Screen.drawPixel(x, y + 2);
+                do Screen.drawPixel(x + 1, y + 2);
+                do Screen.drawPixel(x + 2, y + 2);
+            }
+            /*X*/
+            if (ascii_value = 88) {
+                do Screen.drawPixel(x, y);
+                do Screen.drawPixel(x + 2, y);
+                do Screen.drawPixel(x + 1, y + 1);
+                do Screen.drawPixel(x, y + 2);
+                do Screen.drawPixel(x + 2, y + 2);
+            }
+
+            /*Y*/
+            if (ascii_value = 89) {
+                do Screen.drawPixel(x, y);
+                do Screen.drawPixel(x + 2, y);
+                do Screen.drawPixel(x + 1, y + 1);
+                do Screen.drawPixel(x + 1, y + 2);
+            }
+
+            
+        
+            return null;
+        }
+
+
+
+
+    }
+
+"""
 
 
 
@@ -267,11 +528,6 @@ def translate_jack_program_to_binary(program):
     lol = comp_engine(program)
     lol.match_jack_program()
     vm = Vm()
-    for x in (lol.vm_program.VM_commands_list):
-        if (x[:8] == "function"):
-            print(x)
-        else: 
-            print("    " + x)
     assembly_instructions= vm.get_hack_assembly_instructions_from_VM_instructions(lol.vm_program.VM_commands_list)
     ass = assembler()
     return ass.array_hack_assembly_instruction_to_binary_instruction(assembly_instructions)
@@ -291,10 +547,16 @@ def translate_jack_program_to_binary_with_libraries(program):
 import sys
 import os
 comp = computer()
-comp.load_program(translate_jack_program_to_binary_with_libraries(jack_test_program + jack_screen_class))
-while (True):
-    comp.run_N_number_instructions(80000)
-    comp.display_screen()
-    time.sleep(.15)
-    comp.clear_screen()
+print(len(translate_jack_program_to_binary_with_libraries(jack_test_program)))
+comp.load_program(translate_jack_program_to_binary_with_libraries(jack_test_program ))
+comp.run_N_number_instructions(40000)
+
+print(comp.data_memory.memory[800])
+print(comp.data_memory.memory[16362: 16382])
+
+# while (True):
+#     comp.run_N_number_instructions(80000)
+#     comp.display_screen()
+#     time.sleep(.25)
+#     comp.clear_screen()
 

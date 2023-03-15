@@ -168,6 +168,7 @@ class comp_engine:
                 }
                 /* Draws a line from point (x1, y1) to (x2, y2)*/
                 function void drawLine(int x1, int y1, int x2, int y2) {
+                    /*
                     var int dx, dy, diff, a, b, x, y, temp;
                     
                     if(x1 > x2){
@@ -186,11 +187,9 @@ class comp_engine:
                     
                     if (((dx > 0) & (dy > 0)) | ((dx < 0) & (dy < 0))) {
                         if ((dx > 0) & (dy > 0)) {
-                            /*Line going to bottom right*/
                             let x = x1;
                             let y = y1;
                         } else {
-                            /*Line going to top left*/
                             let x = x2;
                             let y = y2;
                             let dx = x1 - x2;
@@ -214,15 +213,12 @@ class comp_engine:
                     } 
 
                     
-                    /*Line going to top right or bottom right*/
                     if (((dx > 0) & (dy < 0)) | ((dx < 0) & (dy > 0))) {
                         if ((dx > 0) & (dy < 0)) {
-                            /*Top Right*/
                             let x = x1;
                             let y = y1;
                             
                         } else {
-                            /*Bottom right*/
                             let x = x2;
                             let y = y2;
                             let dx = x1 - x2;
@@ -246,6 +242,7 @@ class comp_engine:
 
 
                     }
+                    */
                     
 
                     return null;
@@ -254,9 +251,10 @@ class comp_engine:
             }
 
         """
-
         jack_Math_class = """
             class Math {
+            
+                /*
                 function int multiply(int x, int y) {
                     var int j, i, sum;
                     let sum = 0;
@@ -295,6 +293,7 @@ class comp_engine:
 
                     return q+q+1;
                 }
+                */
 
                 function int sqrt(int x) {
                     var int y, j, temp; 
@@ -345,7 +344,21 @@ class comp_engine:
                 
             }
         """
-        self.tokens += tk(jack_memory_class_first_fit + jack_Math_class + jack_screen_class).get_all_tokens()
+        jack_array_class = """
+            class Array { 
+
+                function Array new(int size) {
+                    return Memory.alloc(size);
+                }
+
+                function void dispose(Array arr) {
+                    do Memory.deAlloc(arr);
+                    return null;
+                }
+            }
+        
+        """
+        self.tokens += tk(jack_memory_class_first_fit + jack_Math_class + jack_screen_class + jack_array_class).get_all_tokens()
 
         
 
