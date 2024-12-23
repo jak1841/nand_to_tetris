@@ -1,8 +1,4 @@
 import unittest
-import sys
-
-# allows use of moducles
-sys.path.append('/mnt/c/Users/Jaskarn Dhillon/projects/nand_to_tetris/src')
 from sequential_logic import sequential as seq
 from random_access_memory import Ram_n
 

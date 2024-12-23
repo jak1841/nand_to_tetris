@@ -1,9 +1,4 @@
-import sys
-sys.path.append('/mnt/c/Users/Jaskarn Dhillon/projects/nand_to_tetris/src')
-
 from Jack_compilation_engine import comp_engine 
-
-
 
 jack_program = """
 

@@ -1,9 +1,4 @@
-
 import unittest
-import sys
-
-# allows use of
-sys.path.append('/mnt/c/Users/Jaskarn Dhillon/projects/nand_to_tetris/src')
 from central_processing_unit import cpu_16_bit
 from hack_assembler import assembler
 

@@ -1,14 +1,5 @@
 import unittest
-import sys
-
-
-# allows use of moducles
-sys.path.append('/mnt/c/Users/Jaskarn Dhillon/projects/nand_to_tetris/src')
-
 from Jack_tokenizer import tokenizer as tk
-
-
-
 
 class Test(unittest.TestCase):
     # jack program found in elements in computing systems page 258

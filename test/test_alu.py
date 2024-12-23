@@ -1,9 +1,4 @@
 import unittest
-import sys
-
-# allows use of moducles
-sys.path.append('/mnt/c/Users/Jaskarn Dhillon/projects/nand_to_tetris/src')
-
 from arithemtic_logic_unit import alu as a
 alu = a()
 

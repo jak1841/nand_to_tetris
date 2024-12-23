@@ -1,16 +1,7 @@
 import unittest
-import sys
-
-
-# allows use of moducles
-sys.path.append('/mnt/c/Users/Jaskarn Dhillon/projects/nand_to_tetris/src')
-
 from hack_assembler import assembler
 from hack_computer import computer
 from Virtual_machine import Vm
-
-
-
 
 class Test(unittest.TestCase):
 

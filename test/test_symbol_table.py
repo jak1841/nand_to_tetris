@@ -1,9 +1,5 @@
-import sys
 import unittest
-sys.path.append('/mnt/c/Users/Jaskarn Dhillon/projects/nand_to_tetris/src')
-
 from Jack_compilation_engine import comp_engine 
-
 
 class Test(unittest.TestCase):
     def test_bank_account(self):

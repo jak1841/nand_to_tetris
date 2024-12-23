@@ -1,8 +1,4 @@
 import unittest
-import sys
-# allows use of moducles
-sys.path.append('/mnt/c/Users/Jaskarn Dhillon/projects/nand_to_tetris/src')
-
 from Jack_compilation_engine import comp_engine 
 from Virtual_machine import Vm
 from hack_assembler import assembler

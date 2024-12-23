@@ -1,9 +1,5 @@
-import unittest
-import sys
-
-# allows use of
-sys.path.append('/mnt/c/Users/Jaskarn Dhillon/projects/nand_to_tetris/src')
 from logic_gates import gate as g
+import unittest
 
 gate = g()
 
