@@ -16,12 +16,8 @@ class Ram_n:
     # All registers will be be initialized to 0. 
     def init_memory(self, N, width):
         self.memory = []
-        zero = ""
-        for y in range(width):
-            zero+="0"
-
         for x in range(N):
-            self.memory.append(zero)
+            self.memory.append(0)
     
     # Input:        in (n bit), address (k bit)[2^k = N], load (bit)
     # Output:       out
@@ -30,14 +26,12 @@ class Ram_n:
     #                   Ram[address(t - 1)](t) = in (t - 1)
     def do_operation(self, input, address, load):
         
-        convert_address_to_decimal = int(address, 2)
-        
         try: 
-            if (load == "1"):
-                self.memory[convert_address_to_decimal] = input
-                return self.memory[convert_address_to_decimal]
+            if (load == 1):
+                self.memory[address] = input
+                return self.memory[address]
             else:
-                return self.memory[convert_address_to_decimal]
+                return self.memory[address]
         except:
             raise Exception("Index out of Bounds for RAM")
 

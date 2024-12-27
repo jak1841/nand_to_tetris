@@ -32,26 +32,26 @@ class computer:
 
 
     def init_inM(self):
-        A_register_value = self.cpu.A_register.register_n_bit("0000000000000000", "0")
-        self.inM = self.data_memory.do_operation("0000000000000000", A_register_value[1:], "0")
+        A_register_value = self.cpu.A_register.register_16_bit(0000000000000000, 0)
+        self.inM = self.data_memory.do_operation(0000000000000000, A_register_value & 0x7FFF, 0)
 
 
 
     # Runs one instruction from instructions memory starting from address 0
     def run_a_instruction(self, reset):
 
-        PC_value = self.cpu.PC.PC_counter_n_bit("0000000000000000", "0", "0", "0")[1:]  # 15 bit is needed
-        instruction = self.instruction_memory.do_operation("0000000000000000", PC_value, "0")
+        PC_value = self.cpu.PC.PC_counter_16_bit(0000000000000000, 0, 0, 0) & 0x7FFF  # 15 bit is needed
+        instruction = self.instruction_memory.do_operation(0000000000000000, PC_value, 0)
         result_alu, writeM, addressM, PC_address = self.cpu.execute_instruction(self.inM, instruction, reset)
 
-        self.inM = self.data_memory.do_operation(result_alu, addressM[1:], writeM)
+        self.inM = self.data_memory.do_operation(result_alu, addressM & 0x7FFF, writeM)
         
 
     # Loads the program into instructions memory to be ready to executre
     def load_program(self, array_instruction):
-        self.run_a_instruction("1")     # reset program counter
+        self.run_a_instruction(1)     # reset program counter
         a = alu()
-        position = "000000000000000"
+        position = 000000000000000
 
         # reset data memory and instruction memory
         self.data_memory = Ram_n(32768, 16) # in: 15 bit address, out: 16 bit address
@@ -59,8 +59,18 @@ class computer:
 
         for x in array_instruction:
             binary_instruction = x
-            self.instruction_memory.do_operation(binary_instruction, position, "1")
-            position = a.increment_n_bit(position)
+            self.instruction_memory.do_operation(binary_instruction, position, 1)
+            position = a.adder_16_bit(0x1, position)
+
+
+    def convertTo16BitBinaryString(self, value):
+        # Convert the unsigned integer to a binary string and remove the '0b' prefix
+        binary_str = bin(value)[2:]
+        
+        # Pad the binary string with leading zeros to make it 16 bits long
+        binary_str = binary_str.zfill(16)
+        
+        return binary_str
 
         
     # Prints the RAM contents to the screen 
@@ -70,7 +80,8 @@ class computer:
         display_screen = ""
         for x in range(29):
             for y in range(10):
-                display_screen+= self.data_memory.memory[16385 + (10*x) + y]
+                videoRamAddress = 16385 + (10*x) + y
+                display_screen+= self.convertTo16BitBinaryString(self.data_memory.memory[videoRamAddress])
             display_screen+= "\n"
         
         # Convert all ones and zeros to pixels 
@@ -97,7 +108,7 @@ class computer:
     # Runs computer how ever many instruction given
     def run_N_number_instructions(self, N):
         for x in range(N):
-            self.run_a_instruction("0")
+            self.run_a_instruction(0)
 
 
     # Gets the SP value 
@@ -107,8 +118,8 @@ class computer:
     # peeks at the top of the stack for and returns value that is on it 
     def peek_stack(self):
         a = alu()
-        top_stack_address = a.alu_n_bit_operation("1111111111111111", self.get_sp_value(), a.ADD)[0]
-        return self.data_memory.do_operation(top_stack_address, top_stack_address,  "0")
+        top_stack_address = a.alu_n_bit_operation(0b1111111111111111, self.get_sp_value(), a.ADD)[0]
+        return self.data_memory.do_operation(top_stack_address, top_stack_address,  0)
         
 
 

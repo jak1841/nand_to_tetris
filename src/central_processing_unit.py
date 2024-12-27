@@ -43,12 +43,12 @@ class cpu_16_bit:
     # Function: Given the a specefic instruction and memory input then returns alu output depending
     #           On the insturctions. 
     def do_alu_operation(self, instruction, inM):
-        a = instruction[3]
-        A_register_value = self.A_register.register_n_bit(inM, "0") 
+        a = (instruction >> 12) & 0x1
+        A_register_value = self.A_register.register_16_bit(inM, 0) 
         A_or_inM = gate.n_bit_multipexor(A_register_value, inM, a)
 
-        alu_operation_input = instruction[4:10]
-        D_register_value = self.D_register.register_n_bit(inM, "0")
+        alu_operation_input = (instruction >> 6) & 0x3F
+        D_register_value = self.D_register.register_16_bit(inM, 0)
         return self.arithmetic_logic_unit.alu_n_bit_operation(D_register_value, A_or_inM, alu_operation_input)
     
     # Input:    Instruction[16]
@@ -60,11 +60,11 @@ class cpu_16_bit:
     #           d2 -> D register
     #           d3 -> Address of M in ram (Value stored in A register)
     def do_store_alu_result_operation(self, instruction, result_alu):
-        d1 = instruction[10]
-        d2 = instruction[11]
-        d3 = instruction[12]
+        d1 = (instruction >> 5) & 0x1
+        d2 = (instruction >> 4) & 0x1
+        d3 = (instruction >> 3) & 0x1
 
-        a = instruction[0]
+        a = (instruction >> 15) & 0x1
 
         # if C instruction then can store 
         # else then A instruction so no storing 
@@ -72,8 +72,8 @@ class cpu_16_bit:
         new_d2 = gate.and_(d2, a)
         new_d3 = gate.and_(d3, a)
 
-        self.A_register.register_n_bit(result_alu, new_d1)
-        self.D_register.register_n_bit(result_alu, new_d2)
+        self.A_register.register_16_bit(result_alu, new_d1)
+        self.D_register.register_16_bit(result_alu, new_d2)
         return new_d3
         
     # Input:    zr[1]                   // zero flag from alu output
@@ -85,9 +85,9 @@ class cpu_16_bit:
     #           If no jump occurs increment the PC counter 
     #           if jump occurs change the PC counter address to be the value in register A
     def do_jump_handling_operation(self, zr, ng, reset, instruction):
-        j1 = instruction[13]
-        j2 = instruction[14]
-        j3 = instruction[15]
+        j1 = (instruction >> 2) & 0x1
+        j2 = (instruction >> 1) & 0x1
+        j3 = instruction & 0x1
 
         new_j1 = gate.and_(j1,  ng)
         new_j2 = gate.and_(j2, zr)
@@ -97,10 +97,10 @@ class cpu_16_bit:
 
         # if C instruction then can jump 
         # else then A instruction so no jumping
-        first = instruction[0]
+        first = (instruction >> 15) & 0x1
         r2 = gate.and_(first, r1)
-        A_register_value = self.A_register.register_n_bit(instruction, "0")
-        return self.PC.PC_counter_n_bit(A_register_value, gate.not_(r2), r2, reset)
+        A_register_value = self.A_register.register_16_bit(instruction, 0)
+        return self.PC.PC_counter_16_bit(A_register_value, gate.not_(r2), r2, reset)
         
 
     # Input:    instruction[16]
@@ -109,10 +109,9 @@ class cpu_16_bit:
     # Function: if A instruction then sets Register to A to instruction 
     #           else C instruction -> sets Reigster A to alue output 
     def a_instruction_or_c_instruction(self, instruction, alu_output):
-        first = instruction[0]
-        
+        first = (instruction >> 15) & 0x1
         r1 = gate.n_bit_multipexor(instruction, alu_output, first)
-        return self.A_register.register_n_bit(r1, gate.not_(first))
+        return self.A_register.register_16_bit(r1, gate.not_(first) & 0x1)
 
     
 

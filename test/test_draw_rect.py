@@ -20,7 +20,7 @@ cmptr.load_program(binary_program)
 
 
 for x in range(1000):
-    cmptr.run_a_instruction("0")
+    cmptr.run_a_instruction(0)
 
 cmptr.display_screen()
 

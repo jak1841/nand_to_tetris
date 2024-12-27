@@ -3,7 +3,6 @@
     Implementing low level logic gates
 
 """
-fast_running = True # This will improve performance of the machine
 class gate:
     def __init__(self):
         pass
@@ -14,20 +13,13 @@ class gate:
     # 1, 1 -> 0
     # Given 2 single bit both in the form of string, returns a bit speceficed by nand operation
     def nand(self, a, b):
-        if (a == "1" and b == "1"):
-            return "0"
-        return "1"
+        return ~(a & b)
 
     # 0 -> 1
     # 1 -> 0
     # Given a single bit in the form of string, returns a bit specefied by not operation
     def not_(self, a):
-        if (fast_running):
-            if (a == "1"):
-                return "0"
-            else:
-                return "1"
-        return self.nand(a, a)
+        return self.nand(a, a) 
 
     # 0, 0 -> 0
     # 0, 1, -> 0
@@ -35,11 +27,6 @@ class gate:
     # 1, 1 -> 1
     # Given 2 single bit both in the form of string, returns a bit specefied by and operation
     def and_(self, a, b):
-        if (fast_running):
-            if (a == "1" and b == "1"):
-                return "1"
-            else:
-                return "0"
         return self.not_(self.nand(a, b))
 
     # 0, 0 -> 0
@@ -48,11 +35,6 @@ class gate:
     # 1, 1 -> 1
     # Given 2 single bit both as string return a bit of the or operation
     def or_(self, a, b):
-        if (fast_running):
-            if (a == "0" and b == "0"):
-                return "0"
-            else:
-                return "1"
         return self.nand(self.not_(a), self.not_(b))
 
     # 0, 0 -> 0
@@ -63,7 +45,6 @@ class gate:
     def xor(self, a, b):
         not_ab = self.and_(self.not_(a), b)
         b_nota = self.and_(self.not_(b), a)
-
         return self.or_(not_ab, b_nota)
 
     # a!sel or bsel -> 1
@@ -71,10 +52,6 @@ class gate:
     # sel = 0 -> output equal a
     # sel = 1 -> output equal b
     def multiplexor(self, a, b, sel):
-        if (fast_running):
-            if (sel == "0"):
-                return a
-            return b
         a_not_sel = self.and_(a, self.not_(sel))
         b_sel = self.and_(b, sel)
         return self.or_(a_not_sel, b_sel)
@@ -91,112 +68,60 @@ class gate:
     # Ouput:    Binary number
     # Mulitplexor but with n bit data.
     def n_bit_multipexor (self, a, b, sel):
-        if (fast_running):
-            if (sel == "0"):
-                return a
-            return b
-        result = ""
-        for x in range(len(a)):
-            result += self.multiplexor(a[x], b[x], sel)
-
-        return result
+        if (sel == 0):
+            return a
+        return b
 
     # Input:    Binary number (length N), selector bit
     # Ouput:    List of two binary numbers (Length N), Where first Index = a, 2nd index = b.
     # Demultiplexor with n bit input
     def n_bit_demultplexor(self, input, sel):
-        a = ""
-        b = ""
-        for x in input:
-            result = self.demultiplexor(x, sel)
-            a += result[0]
-            b += result[1]
-
-        return [a, b]
-
+        result = [0, 0]
+        if (sel == 0):
+            result[0] = input
+        else:
+            result[1] = input
+        return result
     # Input:    2 binary numbers (Length N)
     # output:   binary number (Length N)
     # xor of both binary number
     def n_bit_xor(self, a, b):
-        result = ""
-        for x in range(len(a)):
-            if (fast_running):
-                if (a[x] == b[x]):
-                    result += "0"
-                else:
-                    result += "1" 
-            else:  
-                result += self.xor(a[x], b[x])
-
-        return result
+        return self.xor(a, b)
 
     # Input:    2 binary numbers (Length N)
     # Ouput:    binary number (Length N)
     # OR of two binary numbers
     def n_bit_or(self, a, b):
-        result = ""
-        for x in range(len(a)):
-            result+= self.or_(a[x], b[x])
-
-        return result
+        return self.or_(a, b)        
 
     # Input:    2 binary numbers (Length N)
     # Output:   binary number (Length N)
     # And of two binary numbers
     def n_bit_and(self, a, b):
-        result = ""
-        for x in range(len(a)):
-            if (fast_running):
-                if (a[x] == "1" and b[x] == "1"):
-                    result += "1"
-                else:
-                    result += "0"
-            else:            
-                result+= self.and_(a[x], b[x])
-
-        return result
+        return self.and_(a, b)
+        
 
     # Input:    Binary number (Length N)
     # Output:   Binary number (Length N)
     # NOT of binary number
     def n_bit_not(self, a):
-        result = ""
-        for x in range(len(a)):
-            if (fast_running):
-                if (a[x] == "0"):
-                    result += "1"
-                else:
-                    result += "0"    
-            else:
-                result += self.not_(a[x])
-
-        return result
+       return self.not_(a) 
 
     # Input:    2 Binary number (Length N)
     # Output:   Binary number (Length N)
     # NAND of binary numbers
     def n_bit_nand(self, a, b):
-        result = ""
-        for x in range(len(a)):
-            result+= self.nand(a[x], b[x])
-
-        return result
-
+        return self.nand(a, b)
 
     # Input: Binary number (Length N)
     # Output Single bit
     # if all bits are 0 -> 1
     # else -> 0
     def n_bit_all_zeros(self, a):
-        if (fast_running):
-            if ("1" in a):
-                return "0"
-            return "1"
-        result = a[0]
-        for x in range(1, len(a)):
-            result = self.or_(result, a[x])
-
-        return self.not_(result)
+        result = a == 0
+        if (result):
+            return 0x1
+        return 0x0
 
 
     # Input:    4 Binary number(all length N), selector binary number (length 2)
@@ -207,22 +132,23 @@ class gate:
     # sel = 10 -> c
     # sel = 11 -> d
     def n_bit_4_way_multiplexor(self, a, b, c, d, sel):
-        result_1 = self.n_bit_multipexor(a, b, sel[1])
-        result_2 = self.n_bit_multipexor(c, d, sel[1])
-
-        return self.n_bit_multipexor(result_1, result_2, sel[0])
+        result_1 = self.n_bit_multipexor(a, b, sel & 0x1)
+        result_2 = self.n_bit_multipexor(c, d, sel & 0x1)
+        return self.n_bit_multipexor(result_1, result_2, (sel & 0x2) >> 1)
 
     # Input:    array of length n, such that n = 2^x for some x (all length N), selector binary (length x)
     # output:   Binary number (length n)
     # n way multiplexor but with n bit data
     def n_bit_n_way_multiplexor(self, list_n_binary_nums, sel):
-        if (len(list_n_binary_nums) == 2):
-            return self.n_bit_multipexor(list_n_binary_nums[0], list_n_binary_nums[1], sel[0])
+        if (sel <= 0x1):
+            return self.n_bit_multipexor(list_n_binary_nums[0], list_n_binary_nums[1], sel)
 
+        numBitsSel = sel.bit_length() - 1
+        mask = (0x1 << (numBitsSel - 1)) 
         midpoint = int(len(list_n_binary_nums)/2)
-        r1 = self.n_bit_n_way_multiplexor(list_n_binary_nums[0:midpoint], sel[1:])
-        r2 = self.n_bit_n_way_multiplexor(list_n_binary_nums[midpoint:], sel[1:])
-        return self.n_bit_multipexor(r1, r2, sel[0])
+        r1 = self.n_bit_n_way_multiplexor(list_n_binary_nums[0:midpoint], sel & mask >> 1)
+        r2 = self.n_bit_n_way_multiplexor(list_n_binary_nums[midpoint:], sel & mask)
+        return self.n_bit_multipexor(r1, r2, sel & 0x1)
 
 
     # Input:        input (n bit), address
@@ -238,27 +164,3 @@ class gate:
     # Input:        list_n_binary numbers (each 1 bit)
     # output:       1 bit
     # Function:     n multiway or 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

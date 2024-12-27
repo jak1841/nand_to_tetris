@@ -9,14 +9,10 @@ from hack_computer import computer
 class Test(unittest.TestCase):
 
     def convert_decimal_to_16_bit(self, decimal):
-        if (decimal == -1):
-            return "1111111111111111"
-        result = list(str(bin(decimal)))[2:]
-        empty_instruction = ["0" for x in range(16)]
-        for x in range(min(len(result), 16)):
-            empty_instruction[-x - 1] = result[-x - 1]
-        
-        return ''.join(empty_instruction)
+        if decimal < 0:
+            decimal += (1 << 16)  # Add 2^bit_width to get the two's complement
+        return decimal
+
 
     def convert_decimal_list_to_16_bit(self, list_decimal):
         ret = []
@@ -183,7 +179,7 @@ class Test(unittest.TestCase):
         comp = computer()
         comp.load_program(self.translate_jack_program_to_binary_with_libraries(program))
         comp.run_N_number_instructions(5000)
-        self.assertEqual(self.convert_decimal_list_to_16_bit([100, 8009, 911])+ ["1111110011010100"] + self.convert_decimal_list_to_16_bit([420, 2]), comp.data_memory.memory[800:806])
+        self.assertEqual(self.convert_decimal_list_to_16_bit([100, 8009, 911])+ [0b1111110011010100] + self.convert_decimal_list_to_16_bit([420, 2]), comp.data_memory.memory[800:806])
 
 
     def test_simple_assignment_seven(self):
@@ -584,7 +580,7 @@ class Test(unittest.TestCase):
         comp = computer()
         comp.load_program(self.translate_jack_program_to_binary_with_libraries(program))
         comp.run_N_number_instructions(10000)
-        self.assertEqual(["1111110011001011", "0000001100110101", "1111110011001010"] + self.convert_decimal_list_to_16_bit([-1, -1, 0, -1, 0]), comp.data_memory.memory[798:806])
+        self.assertEqual([0b1111110011001011, 0b0000001100110101, 0b1111110011001010] + self.convert_decimal_list_to_16_bit([-1, -1, 0, -1, 0]), comp.data_memory.memory[798:806])
 
 
 

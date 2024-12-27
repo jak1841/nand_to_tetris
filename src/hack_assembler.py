@@ -37,8 +37,8 @@ class assembler:
         self.comp_hashmap["A-D"] = "0" + "000111"
         self.comp_hashmap["D&A"] = "0" + "000000"
         self.comp_hashmap["D|A"] = "0" + "010101"
-        self.comp_hashmap["D*A"] = "0" + "m00000"   # Multiplication for fast computation
-        self.comp_hashmap["D/A"] = "0" + "d00000"   # Division for fast computation 
+        self.comp_hashmap["D*A"] = "0" + "100001"   # Multiplication for fast computation
+        self.comp_hashmap["D/A"] = "0" + "000001"   # Division for fast computation 
 
         # A = 1
         self.comp_hashmap["M"] = "1" + "110000"
@@ -51,8 +51,8 @@ class assembler:
         self.comp_hashmap["M-D"] = "1" + "000111"
         self.comp_hashmap["D&M"] = "1" + "000000"
         self.comp_hashmap["D|M"] = "1" + "010101"
-        self.comp_hashmap["D*M"] = "1" + "m00000"   # Multiplication for fast computation
-        self.comp_hashmap["D/M"] = "1" + "d00000"   # Division for fast computation
+        self.comp_hashmap["D*M"] = "1" + "100001"   # Multiplication for fast computation
+        self.comp_hashmap["D/M"] = "1" + "000001"   # Division for fast computation
 
     # makes an hashmap which maps symbol dest to its 
     # binary representation
@@ -84,6 +84,7 @@ class assembler:
     # Input:        Hack assembly instruction 
     # Output:       binary instruction 
     def hack_assembly_instruction_to_binary_instruction(self, assembly_instruction):
+        instruction = ""
         # A instruction 
         if (assembly_instruction[0] == "@"):
             result = list(str(bin(int(assembly_instruction[1:])))[2:])
@@ -91,7 +92,7 @@ class assembler:
             for x in range(min(len(result), 15)):
                 empty_instruction[-x - 1] = result[-x - 1]
             
-            return ''.join(empty_instruction)
+            instruction = ''.join(empty_instruction)
         # C instruction
         else:
             # Tokenize the instruction 
@@ -115,7 +116,8 @@ class assembler:
                 jump_binary = self.jump_hashmap[jump_token]
                 comp_token = comp_token[:semi_colon_index]
 
-            return "111" + self.comp_hashmap[comp_token] + dest_binary + jump_binary
+            instruction = "111" + self.comp_hashmap[comp_token] + dest_binary + jump_binary
+        return int(instruction.strip(), 2)
 
     # Input:        Array of Hack assembly instruction 
     # Output:       Array of binary instructions translated 
@@ -127,7 +129,7 @@ class assembler:
         array_instructions = self.remove_comment_and_whitespace_from_array_assembly_instruction(array_instructions)
 
         a = alu()
-        position = "0000000000000000"
+        position = 0000000000000000
         # Does first pass which will get all the labels into symbol table 
         for x in array_instructions:
             # Label 
@@ -136,7 +138,7 @@ class assembler:
                 symbol_table[symbol] = position
             # A or C instruction
             else:
-                position = a.increment_n_bit(position)
+                position = a.adder_16_bit(0x1, position)
 
             
 
@@ -145,7 +147,7 @@ class assembler:
         # if it is then replace instruction with value in symbol table 
         # if not then a new symbol and add it to symbol table displacement
         
-        symbol_table_displacement = "0000000000010000"      # Where symbol table will be stored in memory
+        symbol_table_displacement = 0b0000000000010000      # Where symbol table will be stored in memory
         for x in array_instructions:
             # Variable
             if (x[0] == "@" and x[1] not in "0123456789"):
@@ -153,7 +155,7 @@ class assembler:
                 if (symbol not in symbol_table):
                     symbol_table[symbol] = symbol_table_displacement
                     ret.append(symbol_table_displacement)
-                    symbol_table_displacement = a.increment_n_bit(symbol_table_displacement)
+                    symbol_table_displacement = a.adder_16_bit(0x1, symbol_table_displacement)
                     
                 else:
                     ret.append(symbol_table[symbol])
@@ -181,30 +183,30 @@ class assembler:
 
     # Adds the predefined symbols to the given symbol table refering to the apporpiate positions in data memory
     def add_predefined_symbols_to_symbol_table(self, symboltable):
-        symboltable["SP"] = "0000000000000000" 
-        symboltable["LCL"] = "0000000000000001" 
-        symboltable["ARG"] = "0000000000000010" 
-        symboltable["THIS"] = "0000000000000011" 
-        symboltable["THAT"] = "0000000000000100" 
+        symboltable["SP"] = 0000000000000000 
+        symboltable["LCL"] = 0b0000000000000001 
+        symboltable["ARG"] = 0b0000000000000010 
+        symboltable["THIS"] = 0b0000000000000011 
+        symboltable["THAT"] = 0b0000000000000100 
 
-        symboltable["R0"] = "0000000000000000" 
-        symboltable["R1"] = "0000000000000001" 
-        symboltable["R2"] = "0000000000000010" 
-        symboltable["R3"] = "0000000000000011" 
-        symboltable["R4"] = "0000000000000100" 
-        symboltable["R5"] = "0000000000000101" 
-        symboltable["R6"] = "0000000000000110" 
-        symboltable["R7"] = "0000000000000111" 
-        symboltable["R8"] = "0000000000001000" 
-        symboltable["R9"] = "0000000000001001" 
-        symboltable["R10"] = "0000000000001010" 
-        symboltable["R11"] = "0000000000001011" 
-        symboltable["R12"] = "0000000000001100" 
-        symboltable["R13"] = "0000000000001101" 
-        symboltable["R14"] = "0000000000001110" 
-        symboltable["R15"] = "0000000000001111" 
+        symboltable["R0"] = 0b0000000000000000 
+        symboltable["R1"] = 0b0000000000000001 
+        symboltable["R2"] = 0b0000000000000010 
+        symboltable["R3"] = 0b0000000000000011 
+        symboltable["R4"] = 0b0000000000000100 
+        symboltable["R5"] = 0b0000000000000101 
+        symboltable["R6"] = 0b0000000000000110 
+        symboltable["R7"] = 0b0000000000000111 
+        symboltable["R8"] = 0b0000000000001000 
+        symboltable["R9"] = 0b0000000000001001 
+        symboltable["R10"] = 0b0000000000001010 
+        symboltable["R11"] = 0b0000000000001011 
+        symboltable["R12"] = 0b0000000000001100 
+        symboltable["R13"] = 0b0000000000001101 
+        symboltable["R14"] = 0b0000000000001110 
+        symboltable["R15"] = 0b0000000000001111 
 
-        symboltable["SCREEN"] = "0100000000000001" 
+        symboltable["SCREEN"] = 0b0100000000000001 
 
 
 
