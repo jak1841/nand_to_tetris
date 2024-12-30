@@ -379,34 +379,14 @@ class Vm:
 
         # Store D at the top of stack
         self.assembly_instructions += [
-            "@SP", 
-            "A=M", 
-            "M=D"
+            "PUSH D"
         ]
-
-        # Increment SP
-        self.assembly_instructions += [
-            "D=A+1", 
-            "@SP", 
-            "M=D"
-        ]
-
 
     # appends all the hack instructions required to get value at top of stack to be in register D
     def add_pop_value_from_stack_to_register_d_hack_assembly(self):
-        # Decrement the SP
-        self.assembly_instructions += [
-            "@SP", 
-            "A=M", 
-            "D=A-1", 
-            "@SP", 
-            "M=D"
-        ]
-
         # Store top of stack value into register D
         self.assembly_instructions += [
-            "A=D", 
-            "D=M"
+            "POP D"
         ]
 
 
@@ -570,52 +550,9 @@ class Vm:
         ]
         self.add_push_d_register_value_to_stack_hack_assembly()
 
-        # PUSH LCL
         self.assembly_instructions += [
-            "@LCL", 
-            "D=M"
+            "CALL " + n
         ]
-        self.add_push_d_register_value_to_stack_hack_assembly()
-
-        # PUSH ARG
-        self.assembly_instructions += [
-            "@ARG", 
-            "D=M"
-        ]
-        self.add_push_d_register_value_to_stack_hack_assembly()
-
-        # PUSH THIS
-        self.assembly_instructions += [
-            "@THIS", 
-            "D=M"
-        ]
-        self.add_push_d_register_value_to_stack_hack_assembly()
-
-        # PUSH THAT 
-        self.assembly_instructions += [
-            "@THAT", 
-            "D=M"
-        ]
-        self.add_push_d_register_value_to_stack_hack_assembly()
-
-
-        # ARG = SP - 5 - n
-        # LCL = SP
-        self.assembly_instructions += [
-            "@SP", 
-            "D=M", 
-            "@LCL", 
-            "M=D", 
-
-            "@5", 
-            "D=D-A", 
-            "@" + str(n), 
-            "D=D-A", 
-            "@ARG", 
-            "M=D",
-        ]
-
-
         
         self.assembly_instructions += [
             "@" + function_name, 
@@ -642,92 +579,10 @@ class Vm:
     # returns from a VM function
     # using the convention descirbed in the elements of computing machines book
     def add_return_hack_assembly(self, vm_instruction):
-        # FRAME = LCL   // Frame is a temporary variable at location 7
         self.assembly_instructions += [
-            "@LCL", 
-            "D=M", 
-            "@7",
-            "M=D" 
+            "RET"
         ]
-
-        # RET = *(FRAME - 5)
-        self.assembly_instructions += [
-            "@7", 
-            "D=M",
-            "@5",
-            "A=D-A",  
-            "D=M", 
-            "@8", 
-            "M=D"
-        ]
-
-        # *ARG = pop()
-        self.add_pop_value_from_stack_to_memory_segment_hack_instructions("pop ARG 0")
-
-        # SP = ARG+1
-        self.assembly_instructions += [
-            "@ARG", 
-            "D=M+1", 
-            "@SP", 
-            "M=D"
-        ]
-
-        # THAT = *(FRAME - 1)
-        self.assembly_instructions += [
-            "@7", 
-            "D=M",
-            "@1",
-            "A=D-A",  
-            "D=M",
-            "@4", 
-            "M=D" 
-        ]
-
-        # THIS = *(FRAME-2)
-        self.assembly_instructions += [
-            "@7", 
-            "D=M",
-            "@2",
-            "A=D-A",  
-            "D=M",
-            "@3", 
-            "M=D" 
-        ]
-
-        # ARG = *(FRAME - 3)
-        self.assembly_instructions += [
-            "@7", 
-            "D=M",
-            "@3",
-            "A=D-A",  
-            "D=M",
-            "@2", 
-            "M=D" 
-        ]
-
-        # LCL = *(FRAME - 4)
-        self.assembly_instructions += [
-            "@7", 
-            "D=M",
-            "@4",
-            "A=D-A",  
-            "D=M",
-            "@1", 
-            "M=D" 
-        ]
-
-        # GOTO RET
-        self.assembly_instructions += [
-            "@8", 
-            "A=M", 
-            "0;JMP"
-        ]
-
-
-    
-    
-
-
+        
     # returns the assembly instruction
     def get_assembly_instruction(self):
         return self.assembly_instructions

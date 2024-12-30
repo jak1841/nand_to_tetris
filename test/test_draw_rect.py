@@ -15,7 +15,7 @@ for x in program:
     no_whitespace_program.append(x.strip())
 
 
-binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(no_whitespace_program)
+binary_program = ass.convertArrayAssemblyToBinary(no_whitespace_program)
 cmptr.load_program(binary_program)
 
 

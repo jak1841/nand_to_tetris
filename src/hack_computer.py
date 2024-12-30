@@ -18,6 +18,11 @@ class computer:
 
 
     """
+    PUSH_D_INSTRUCTION = 0b1000000000000000
+    POP_D_INSTRUCTION = 0b1000000000000001
+    CALL_INSTRUCTION = 0b1100000000000000 
+    RET_INSTRUCTION = 0b1000000000000010
+
     def __init__(self):
         self.data_memory = Ram_n(32768, 16) # in: 15 bit address, out: 16 bit address
         self.instruction_memory = Ram_n(32768, 16) # in: 15 bit address, out: 16 bit address
@@ -35,13 +40,100 @@ class computer:
         A_register_value = self.cpu.A_register.register_16_bit(0000000000000000, 0)
         self.inM = self.data_memory.do_operation(0000000000000000, A_register_value & 0x7FFF, 0)
 
+    def isExtendedInstruction(self, instruction):
+        if (instruction == computer.POP_D_INSTRUCTION):
+            return True
+        if (instruction & 0xE000 == computer.CALL_INSTRUCTION):
+            return True
+        if (instruction == computer.RET_INSTRUCTION):
+            return True
+        return instruction == computer.PUSH_D_INSTRUCTION
+
+    def executeExtendedInstruction(self, instruction):
+        if (instruction == computer.PUSH_D_INSTRUCTION):
+            self.executePushDInstruction()
+        elif (instruction == computer.POP_D_INSTRUCTION):
+            self.executePopDInstruction()
+        elif (instruction & 0xE000 == computer.CALL_INSTRUCTION):
+            self.executeCallInstruction(instruction)
+        elif (instruction == computer.RET_INSTRUCTION):
+            self.executeRetInstruction()
+        else:
+            raise Exception("Unknown Extended instruction " + instruction)
+        self.cpu.PC.PC_counter_16_bit(0000000000000000, 1, 0, 0) 
+
+    def executePushDInstruction(self):
+        spAddress = 0
+        memory = self.data_memory.memory
+        SP_value = memory[spAddress]
+        D_value = self.cpu.D_register.register_16_bit(0, 0)
+        memory[SP_value] = D_value
+        memory[spAddress] = (SP_value + 1) & 0xFFFF
+
+    def executePopDInstruction(self):
+        spAddress = 0
+        memory = self.data_memory.memory
+        memory[spAddress] = (memory[spAddress] - 1) & 0xFFFF
+        SP_value = memory[spAddress]
+        self.cpu.D_register.register_16_bit(memory[SP_value], 1)
+
+    def executeCallInstruction(self, instruction):
+        def pushMemoryAddressValueToStack(memoryAddress):
+            spAddress = 0
+            memory = self.data_memory.memory
+            SP_value = memory[spAddress]
+            memory[SP_value] = memory[memoryAddress]
+            memory[spAddress] = (SP_value + 1) & 0xFFFF
+        
+        spAddress = 0
+        lclAddress = 1
+        argAddress = 2
+        thisAddress = 3
+        thatAddress = 4
+
+        pushMemoryAddressValueToStack(lclAddress)
+        pushMemoryAddressValueToStack(argAddress)
+        pushMemoryAddressValueToStack(thisAddress)
+        pushMemoryAddressValueToStack(thatAddress)
+
+        memory = self.data_memory.memory
+        memory[lclAddress] = memory[spAddress]
+
+        memory[argAddress] = memory[spAddress] - 5 - (instruction & 0x1FFF)
+
+    def executeRetInstruction(self):
+        def popArg0():
+            argValue = memory[argAddress]
+            memory[spAddress] = (memory[spAddress] - 1) & 0xFFFF
+            SP_value = memory[spAddress]
+            memory[argValue] = memory[SP_value]
+
+        memory = self.data_memory.memory
+        spAddress = 0
+        lclAddress = 1
+        argAddress = 2
+        thisAddress = 3
+        thatAddress = 4
+
+        frame = memory[lclAddress] 
+        ret = (memory[frame - 5] - 1) & 0xFFFF
+        popArg0()
+        memory[spAddress] = memory[argAddress] + 1
+        memory[thatAddress] = memory[frame - 1]
+        memory[thisAddress] = memory[frame - 2]
+        memory[argAddress] = memory[frame - 3]
+        memory[lclAddress] = memory[frame - 4]
+        self.cpu.PC.PC_counter_16_bit(ret, 0, 1, 0)
+
 
 
     # Runs one instruction from instructions memory starting from address 0
     def run_a_instruction(self, reset):
-
         PC_value = self.cpu.PC.PC_counter_16_bit(0000000000000000, 0, 0, 0) & 0x7FFF  # 15 bit is needed
         instruction = self.instruction_memory.do_operation(0000000000000000, PC_value, 0)
+        if (self.isExtendedInstruction(instruction)):
+            self.executeExtendedInstruction(instruction)
+            return
         result_alu, writeM, addressM, PC_address = self.cpu.execute_instruction(self.inM, instruction, reset)
 
         self.inM = self.data_memory.do_operation(result_alu, addressM & 0x7FFF, writeM)

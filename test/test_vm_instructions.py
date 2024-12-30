@@ -29,7 +29,7 @@ class Test(unittest.TestCase):
         ]
         
         hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
         cmptr.run_N_number_instructions(1000)
 
@@ -59,7 +59,7 @@ class Test(unittest.TestCase):
         ]
         
         hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
         cmptr.run_N_number_instructions(1000)
 
@@ -73,7 +73,7 @@ class Test(unittest.TestCase):
         ]
         
         hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
         cmptr.run_N_number_instructions(1000)
 
@@ -111,7 +111,7 @@ class Test(unittest.TestCase):
                                  ]
 
         hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
         cmptr.run_N_number_instructions(1000)
 
@@ -142,7 +142,7 @@ class Test(unittest.TestCase):
             "div",
         ]
         hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
         cmptr.run_N_number_instructions(1000)
 
@@ -162,7 +162,7 @@ class Test(unittest.TestCase):
 
         
         hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
         cmptr.run_N_number_instructions(1000)
 
@@ -182,7 +182,7 @@ class Test(unittest.TestCase):
         ]
 
         hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
         cmptr.run_N_number_instructions(1000)
         self.assertEqual(0b1111111111111111, cmptr.peek_stack())
@@ -195,7 +195,7 @@ class Test(unittest.TestCase):
             "eq"
         ]
         hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
         cmptr.run_N_number_instructions(1000)
         self.assertEqual(0b1111111111111111, cmptr.data_memory.memory[256])
@@ -207,7 +207,7 @@ class Test(unittest.TestCase):
             "eq"
         ]
         hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
         cmptr.run_N_number_instructions(1000)
         self.assertEqual(0000000000000000, cmptr.data_memory.memory[256])
@@ -219,7 +219,7 @@ class Test(unittest.TestCase):
             "gt"
         ]
         hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
         cmptr.run_N_number_instructions(1000)
         self.assertEqual(0b1111111111111111, cmptr.data_memory.memory[256])
@@ -230,7 +230,7 @@ class Test(unittest.TestCase):
             "gt"
         ]
         hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
         cmptr.run_N_number_instructions(1000)
         self.assertEqual(0000000000000000, cmptr.data_memory.memory[256])
@@ -241,7 +241,7 @@ class Test(unittest.TestCase):
             "gt"
         ]
         hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
         cmptr.run_N_number_instructions(1000)
         self.assertEqual(0000000000000000, cmptr.data_memory.memory[256])
@@ -253,7 +253,7 @@ class Test(unittest.TestCase):
             "lt"
         ]
         hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
         cmptr.run_N_number_instructions(1000)
         self.assertEqual(0b1111111111111111, cmptr.data_memory.memory[256])
@@ -265,7 +265,7 @@ class Test(unittest.TestCase):
             "lt"
         ]
         hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
         cmptr.run_N_number_instructions(1000)
         self.assertEqual(0000000000000000, cmptr.data_memory.memory[256])
@@ -277,7 +277,7 @@ class Test(unittest.TestCase):
             "lt"
         ]
         hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
         cmptr.run_N_number_instructions(1000)
         self.assertEqual(0000000000000000, cmptr.data_memory.memory[256])
@@ -294,7 +294,7 @@ class Test(unittest.TestCase):
             "and"
         ]
         hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
         cmptr.run_N_number_instructions(1000)
         self.assertEqual(0b0000001000000000, cmptr.data_memory.memory[256])
@@ -306,7 +306,7 @@ class Test(unittest.TestCase):
             "or"
         ]
         hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
         cmptr.run_N_number_instructions(1000)
         self.assertEqual(0b0100111001111011, cmptr.data_memory.memory[256])
@@ -317,7 +317,7 @@ class Test(unittest.TestCase):
             "not"
         ]
         hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
         cmptr.run_N_number_instructions(1000)
         self.assertEqual(0b1100001011110101, cmptr.data_memory.memory[256])
@@ -333,7 +333,7 @@ class Test(unittest.TestCase):
 
         hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
 
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
 
 
@@ -349,7 +349,7 @@ class Test(unittest.TestCase):
 
         hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
 
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
 
 
@@ -371,7 +371,7 @@ class Test(unittest.TestCase):
 
         hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
 
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
 
 
@@ -388,7 +388,7 @@ class Test(unittest.TestCase):
         vm_instructions_array += ["push static " + str(239 - x) for x in range(240)]
         hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
 
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
 
 
@@ -434,7 +434,7 @@ class Test(unittest.TestCase):
 
 
 
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
 
         # init the values inside the registers 
@@ -486,7 +486,7 @@ class Test(unittest.TestCase):
 
 
 
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
 
         # init the values inside the registers 
@@ -526,7 +526,7 @@ class Test(unittest.TestCase):
 
 
 
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
 
 
@@ -554,7 +554,7 @@ class Test(unittest.TestCase):
 
 
 
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
 
 
@@ -599,7 +599,7 @@ class Test(unittest.TestCase):
 
 
 
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
 
         self.assertEqual([0, 0, 0, 0, 0, 0, 0, 0], cmptr.data_memory.memory[5:13])
@@ -644,7 +644,7 @@ class Test(unittest.TestCase):
 
 
 
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
 
         self.assertEqual([0, 0, 0, 0, 0, 0, 0, 0], cmptr.data_memory.memory[5:13])
@@ -703,7 +703,7 @@ class Test(unittest.TestCase):
 
 
 
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
 
         for x in range(9000):
@@ -780,7 +780,7 @@ class Test(unittest.TestCase):
 
 
 
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
 
         for x in range(12000):
@@ -856,7 +856,7 @@ class Test(unittest.TestCase):
             "return"
         ]
         hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
 
         cmptr.run_N_number_instructions(15000)
@@ -904,7 +904,7 @@ class Test(unittest.TestCase):
             
         ]
         hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
 
         cmptr.run_N_number_instructions(25000)
@@ -964,7 +964,7 @@ class Test(unittest.TestCase):
 
         ]
         hack_assembly_instructions_array = vm.get_hack_assembly_instructions_from_VM_instructions(vm_instructions_array)
-        binary_program = ass.array_hack_assembly_instruction_to_binary_instruction(hack_assembly_instructions_array)
+        binary_program = ass.convertArrayAssemblyToBinary(hack_assembly_instructions_array)
         cmptr.load_program(binary_program)
 
         cmptr.run_N_number_instructions(15000)

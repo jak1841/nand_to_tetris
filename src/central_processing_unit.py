@@ -29,7 +29,7 @@ class cpu_16_bit:
         self.A_register = sequential()
         self.PC = sequential()
     
-    
+       
     def execute_instruction(self, inM, instruction, reset):
         result_alu, zr, ng = self.do_alu_operation(instruction, inM)
         writeM = self.do_store_alu_result_operation(instruction, result_alu)

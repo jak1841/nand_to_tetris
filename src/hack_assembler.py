@@ -6,15 +6,13 @@
     DEST=COMP;JUMP
 """
 from arithemtic_logic_unit import alu
+from hack_computer import computer
 class assembler:
     def __init__(self):
         self.init_comp_hashmap()
         self.init_dest_hashmap()
         self.init_jump_hashmap()
         
-
-    # Makes an hashmap which maps a symbol computation to its 
-    # binary representation prepended with a bit
     def init_comp_hashmap(self):
         self.comp_hashmap = {}
 
@@ -54,8 +52,6 @@ class assembler:
         self.comp_hashmap["D*M"] = "1" + "100001"   # Multiplication for fast computation
         self.comp_hashmap["D/M"] = "1" + "000001"   # Division for fast computation
 
-    # makes an hashmap which maps symbol dest to its 
-    # binary representation
     def init_dest_hashmap(self):
         self.dest_hashmap = {}
         
@@ -68,8 +64,6 @@ class assembler:
         self.dest_hashmap["AD"] = "110"
         self.dest_hashmap["AMD"] = "111"
 
-
-    # Makes an hashmap which maps symbols jump to its binary representation 
     def init_jump_hashmap(self):
         self.jump_hashmap = {}
         self.jump_hashmap["null"] = "000"
@@ -81,52 +75,66 @@ class assembler:
         self.jump_hashmap["JLE"] = "110"
         self.jump_hashmap["JMP"] = "111"
 
-    # Input:        Hack assembly instruction 
-    # Output:       binary instruction 
-    def hack_assembly_instruction_to_binary_instruction(self, assembly_instruction):
-        instruction = ""
-        # A instruction 
-        if (assembly_instruction[0] == "@"):
+    def isAInstruction(self, assemblyInstruction):
+        return assemblyInstruction[0] == "@"
+
+    def convertAInstructionToBinary(self, assembly_instruction):
             result = list(str(bin(int(assembly_instruction[1:])))[2:])
             empty_instruction = ["0" for x in range(16)]
             for x in range(min(len(result), 15)):
                 empty_instruction[-x - 1] = result[-x - 1]
             
-            instruction = ''.join(empty_instruction)
-        # C instruction
-        else:
-            # Tokenize the instruction 
-            equal_index = assembly_instruction.find("=")
-            semi_colon_index = assembly_instruction.find(";")
+            return int(''.join(empty_instruction).strip(), 2)
+
+    def convertCInstructionToBinary(self, assembly_instruction):
+        # Tokenize the instruction 
+        equal_index = assembly_instruction.find("=")
+        semi_colon_index = assembly_instruction.find(";")
 
 
-            dest_token = assembly_instruction[:equal_index]
-            comp_token = assembly_instruction
-            jump_token = assembly_instruction[semi_colon_index+1:]
+        dest_token = assembly_instruction[:equal_index]
+        comp_token = assembly_instruction
+        jump_token = assembly_instruction[semi_colon_index+1:]
 
-            dest_binary = "000"
-            jump_binary = "000"
+        dest_binary = "000"
+        jump_binary = "000"
 
-            if (dest_token in self.dest_hashmap):
-                dest_binary = self.dest_hashmap[dest_token]
-                comp_token = comp_token[equal_index+1:]
-            
-            if (jump_token in self.jump_hashmap):
-                semi_colon_index = comp_token.find(";")
-                jump_binary = self.jump_hashmap[jump_token]
-                comp_token = comp_token[:semi_colon_index]
+        if (dest_token in self.dest_hashmap):
+            dest_binary = self.dest_hashmap[dest_token]
+            comp_token = comp_token[equal_index+1:]
+        
+        if (jump_token in self.jump_hashmap):
+            semi_colon_index = comp_token.find(";")
+            jump_binary = self.jump_hashmap[jump_token]
+            comp_token = comp_token[:semi_colon_index]
 
-            instruction = "111" + self.comp_hashmap[comp_token] + dest_binary + jump_binary
+        instruction = "111" + self.comp_hashmap[comp_token] + dest_binary + jump_binary
         return int(instruction.strip(), 2)
 
-    # Input:        Array of Hack assembly instruction 
-    # Output:       Array of binary instructions translated 
-    def array_hack_assembly_instruction_to_binary_instruction(self, array_instructions):
+    def convertAssemblyToBinary(self, assembly_instruction):
+        if (self.isPopInstruction(assembly_instruction)):
+            return self.convertPopInstructionToBinary(assembly_instruction)
+
+        if (self.isPushInstruction(assembly_instruction)):
+            return self.convertPushInstructionToBinary(assembly_instruction)
+        
+        if (self.isCallInstruction(assembly_instruction)):
+            return self.convertCallInstructionToBinary(assembly_instruction)
+        
+        if (self.isRetInstruction(assembly_instruction)):
+            return self.convertRetInstructionToBinary()
+
+        if (self.isAInstruction(assembly_instruction)):
+            return self.convertAInstructionToBinary(assembly_instruction)
+
+        return self.convertCInstructionToBinary(assembly_instruction)
+            
+    def convertArrayAssemblyToBinary(self, array_instructions):
         ret = []
         symbol_table = {}
-        self.add_predefined_symbols_to_symbol_table(symbol_table)
+        self.addPredefinedSymbolsToSymbolTable(symbol_table)
 
-        array_instructions = self.remove_comment_and_whitespace_from_array_assembly_instruction(array_instructions)
+        array_instructions = self.removeCommentAndWhitespaceFromArrayAssemblyInstruction(array_instructions)
 
         a = alu()
         position = 0000000000000000
@@ -164,12 +172,11 @@ class assembler:
             elif (x[0] == "(" and x [-1] == ")"):
                 pass
             else: 
-                ret.append(self.hack_assembly_instruction_to_binary_instruction(x))
+                ret.append(self.convertAssemblyToBinary(x))
                 
         return ret
 
-    # Removes all lines of code that contain comments and empty whitespace from array
-    def remove_comment_and_whitespace_from_array_assembly_instruction(self, array_instructions):
+    def removeCommentAndWhitespaceFromArrayAssemblyInstruction(self, array_instructions):
         ret = []
         for x in array_instructions:
             if (x == ""):
@@ -181,8 +188,7 @@ class assembler:
         
         return ret
 
-    # Adds the predefined symbols to the given symbol table refering to the apporpiate positions in data memory
-    def add_predefined_symbols_to_symbol_table(self, symboltable):
+    def addPredefinedSymbolsToSymbolTable(self, symboltable):
         symboltable["SP"] = 0000000000000000 
         symboltable["LCL"] = 0b0000000000000001 
         symboltable["ARG"] = 0b0000000000000010 
@@ -208,14 +214,28 @@ class assembler:
 
         symboltable["SCREEN"] = 0b0100000000000001 
 
+    def isPushInstruction(self, assemblyInstruction):
+        return assemblyInstruction.startswith("PUSH")
 
-
-
-
-
-   
-
-        
-
-
-        
+    def convertPushInstructionToBinary(self, assemblyInstruction):
+        if (assemblyInstruction == "PUSH D"):
+            return computer.PUSH_D_INSTRUCTION
+    
+    def isPopInstruction(self, assemblyInstruction):
+        return assemblyInstruction.startswith("POP")
+    
+    def convertPopInstructionToBinary(self, assemblyInstruction):
+        if (assemblyInstruction == "POP D"):
+            return computer.POP_D_INSTRUCTION
+    
+    def isCallInstruction(self, assemblyInstruction):
+        return assemblyInstruction.startswith("CALL")
+    
+    def convertCallInstructionToBinary(self, assemblyInstruction):
+        return computer.CALL_INSTRUCTION + int(assemblyInstruction[4:])
+ 
+    def isRetInstruction(self, assemblyInstruction):
+        return assemblyInstruction == "RET"
+    
+    def convertRetInstructionToBinary(self):
+        return computer.RET_INSTRUCTION

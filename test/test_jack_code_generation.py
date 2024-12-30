@@ -29,7 +29,7 @@ class Test(unittest.TestCase):
 
         assembly_instructions= vm.get_hack_assembly_instructions_from_VM_instructions(lol.vm_program.VM_commands_list)
         ass = assembler()
-        return ass.array_hack_assembly_instruction_to_binary_instruction(assembly_instructions)
+        return ass.convertArrayAssemblyToBinary(assembly_instructions)
 
     def translate_jack_program_to_binary_with_libraries(self, program):
         lol = comp_engine(program)
@@ -38,7 +38,7 @@ class Test(unittest.TestCase):
         vm = Vm()
         assembly_instructions= vm.get_hack_assembly_instructions_from_VM_instructions(lol.vm_program.VM_commands_list)
         ass = assembler()
-        return ass.array_hack_assembly_instruction_to_binary_instruction(assembly_instructions)
+        return ass.convertArrayAssemblyToBinary(assembly_instructions)
 
     def test_conditionals(self):
         program = """
