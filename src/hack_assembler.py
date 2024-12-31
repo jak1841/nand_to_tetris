@@ -220,14 +220,52 @@ class assembler:
     def convertPushInstructionToBinary(self, assemblyInstruction):
         if (assemblyInstruction == "PUSH D"):
             return computer.PUSH_D_INSTRUCTION
-    
+        else:
+            return self.convertPushMemorySegmentToBinary(assemblyInstruction)
+                    
+    def convertPushMemorySegmentToBinary(self, assemblyInstruction):
+        splitAssemblyInstruction = assemblyInstruction.split() 
+        memorySegment = splitAssemblyInstruction[1]
+        index = 0
+
+        if (len(splitAssemblyInstruction) == 3):
+            index = int(splitAssemblyInstruction[2])
+
+        availableMemorySegments = [
+            "LCL", 
+            "ARG", 
+            "THIS", 
+            "THAT"
+        ]
+        memorySegmentAddress = availableMemorySegments.index(memorySegment) + 1
+        return (computer.PUSH_MEMORY_SEGMENT_INSTRUCTION + (memorySegmentAddress << 8) + int(index)) & 0xFFFF
+
     def isPopInstruction(self, assemblyInstruction):
         return assemblyInstruction.startswith("POP")
     
     def convertPopInstructionToBinary(self, assemblyInstruction):
         if (assemblyInstruction == "POP D"):
             return computer.POP_D_INSTRUCTION
+        else:
+            return self.convertPopMemorySegmentToBinary(assemblyInstruction)
     
+    def convertPopMemorySegmentToBinary(self, assemblyInstruction):
+        splitAssemblyInstruction = assemblyInstruction.split() 
+        memorySegment = splitAssemblyInstruction[1]
+        index = 0
+
+        if (len(splitAssemblyInstruction) == 3):
+            index = int(splitAssemblyInstruction[2])
+
+        availableMemorySegments = [
+            "LCL", 
+            "ARG", 
+            "THIS", 
+            "THAT"
+        ]
+        memorySegmentAddress = availableMemorySegments.index(memorySegment) + 1
+        return (computer.POP_MEMORY_SEGMENT_INSTRUCTION + (memorySegmentAddress << 8) + int(index)) & 0xFFFF
+
     def isCallInstruction(self, assemblyInstruction):
         return assemblyInstruction.startswith("CALL")
     

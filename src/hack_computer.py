@@ -18,7 +18,9 @@ class computer:
 
 
     """
-    PUSH_D_INSTRUCTION = 0b1000000000000000
+    PUSH_D_INSTRUCTION = 0b1000000000000011
+    PUSH_MEMORY_SEGMENT_INSTRUCTION = 0b1010000000000000
+    POP_MEMORY_SEGMENT_INSTRUCTION = 0b1011000000000000 
     POP_D_INSTRUCTION = 0b1000000000000001
     CALL_INSTRUCTION = 0b1100000000000000 
     RET_INSTRUCTION = 0b1000000000000010
@@ -33,8 +35,6 @@ class computer:
 
         # Keyboard code will be using the default python so kinda cheating but idk
         self.init_inM()
-        
-
 
     def init_inM(self):
         A_register_value = self.cpu.A_register.register_16_bit(0000000000000000, 0)
@@ -47,6 +47,10 @@ class computer:
             return True
         if (instruction == computer.RET_INSTRUCTION):
             return True
+        if (instruction & 0xF000 == computer.PUSH_MEMORY_SEGMENT_INSTRUCTION):
+            return True
+        if (instruction & 0xF000 == computer.POP_MEMORY_SEGMENT_INSTRUCTION):
+            return True
         return instruction == computer.PUSH_D_INSTRUCTION
 
     def executeExtendedInstruction(self, instruction):
@@ -58,6 +62,10 @@ class computer:
             self.executeCallInstruction(instruction)
         elif (instruction == computer.RET_INSTRUCTION):
             self.executeRetInstruction()
+        elif (instruction & 0xF000 == computer.PUSH_MEMORY_SEGMENT_INSTRUCTION):
+            self.executePushMemorySegmentInstruction(instruction)
+        elif (instruction & 0xF000 == computer.POP_MEMORY_SEGMENT_INSTRUCTION):
+            self.executePopMemorySegmentInstruction(instruction)
         else:
             raise Exception("Unknown Extended instruction " + instruction)
         self.cpu.PC.PC_counter_16_bit(0000000000000000, 1, 0, 0) 
@@ -98,7 +106,6 @@ class computer:
 
         memory = self.data_memory.memory
         memory[lclAddress] = memory[spAddress]
-
         memory[argAddress] = memory[spAddress] - 5 - (instruction & 0x1FFF)
 
     def executeRetInstruction(self):
@@ -125,6 +132,27 @@ class computer:
         memory[lclAddress] = memory[frame - 4]
         self.cpu.PC.PC_counter_16_bit(ret, 0, 1, 0)
 
+    def executePushMemorySegmentInstruction(self, instruction):
+        spAddress = 0
+        index = instruction & 0x00FF
+        memorySegmentAddress = (instruction & 0x0F00) >> 8
+        memory = self.data_memory.memory
+        memoryAddress = memory[memorySegmentAddress]
+        SP_value = memory[spAddress]
+        memory[SP_value] = memory[memoryAddress + index]
+        memory[spAddress] = (SP_value + 1) & 0xFFFF
+
+    def executePopMemorySegmentInstruction(self, instruction):
+        spAddress = 0
+        memory = self.data_memory.memory
+        memory[spAddress] = (memory[spAddress] - 1) & 0xFFFF
+        SP_value = memory[spAddress]
+
+        index = instruction & 0x00FF
+        memorySegmentAddress = (instruction & 0x0F00) >> 8
+
+        memoryAddress = memory[memorySegmentAddress]
+        memory[memoryAddress + index] = memory[SP_value]
 
 
     # Runs one instruction from instructions memory starting from address 0
@@ -137,7 +165,6 @@ class computer:
         result_alu, writeM, addressM, PC_address = self.cpu.execute_instruction(self.inM, instruction, reset)
 
         self.inM = self.data_memory.do_operation(result_alu, addressM & 0x7FFF, writeM)
-        
 
     # Loads the program into instructions memory to be ready to executre
     def load_program(self, array_instruction):
@@ -154,7 +181,6 @@ class computer:
             self.instruction_memory.do_operation(binary_instruction, position, 1)
             position = a.adder_16_bit(0x1, position)
 
-
     def convertTo16BitBinaryString(self, value):
         # Convert the unsigned integer to a binary string and remove the '0b' prefix
         binary_str = bin(value)[2:]
@@ -163,7 +189,6 @@ class computer:
         binary_str = binary_str.zfill(16)
         
         return binary_str
-
         
     # Prints the RAM contents to the screen 
     def display_screen(self):
@@ -190,7 +215,6 @@ class computer:
         
         print(pixel_screen)
 
-
     def clear_screen(self):
         for x in range(30):
             sys.stdout.write('\x1b[1A')
@@ -202,7 +226,6 @@ class computer:
         for x in range(N):
             self.run_a_instruction(0)
 
-
     # Gets the SP value 
     def get_sp_value(self):
         return self.data_memory.memory[0]
@@ -212,7 +235,3 @@ class computer:
         a = alu()
         top_stack_address = a.alu_n_bit_operation(0b1111111111111111, self.get_sp_value(), a.ADD)[0]
         return self.data_memory.do_operation(top_stack_address, top_stack_address,  0)
-        
-
-
-

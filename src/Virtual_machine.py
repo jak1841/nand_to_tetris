@@ -416,22 +416,8 @@ class Vm:
         elif (memory_segment in ["LCL", "THIS", "THAT", "ARG"]):
             # Store the address of where to store popped value from stack into R13
             self.assembly_instructions+= [
-                "@" + memory_segment, 
-                "D=M", 
-                "@" + str(index), 
-                "D=D+A",
-                "@R13", 
-                "M=D", 
+                "POP " + memory_segment + " " + str(index), 
             ]
-
-            self.add_pop_value_from_stack_to_register_d_hack_assembly()
-
-            self.assembly_instructions += [
-                "@R13", 
-                "A=M", 
-                "M=D"
-            ]
-            
         elif (memory_segment == "PTR"):
             self.add_pop_value_from_stack_to_register_d_hack_assembly()
             self.assembly_instructions+= [
@@ -469,14 +455,8 @@ class Vm:
             self.add_push_d_register_value_to_stack_hack_assembly()
         elif (memory_segment in ["LCL", "THIS", "THAT", "ARG"]):
             self.assembly_instructions+= [
-                "@" + memory_segment, 
-                "D=M", 
-                "@" + str(index), 
-                "D=D+A",
-                "A=D",
-                "D=M", 
+                "PUSH " + memory_segment + " " + str(index), 
             ]
-            self.add_push_d_register_value_to_stack_hack_assembly()
         elif (memory_segment == "PTR"):
             self.assembly_instructions+= [
             "@" + str(3 + index), 
