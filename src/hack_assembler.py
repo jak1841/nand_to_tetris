@@ -217,9 +217,17 @@ class assembler:
     def isPushInstruction(self, assemblyInstruction):
         return assemblyInstruction.startswith("PUSH")
 
+    def isPushConstantInstruction(self, assemblyInstruction):
+        arguments = assemblyInstruction.split()
+        if (len(arguments) == 2 and arguments[1].isdigit()):
+            return True
+        return False
+
     def convertPushInstructionToBinary(self, assemblyInstruction):
         if (assemblyInstruction == "PUSH D"):
             return computer.PUSH_D_INSTRUCTION
+        elif (self.isPushConstantInstruction(assemblyInstruction)):
+            return computer.PUSH_CONSTANT_INSTRUCTION + int(assemblyInstruction.split()[1])
         else:
             return self.convertPushMemorySegmentToBinary(assemblyInstruction)
                     

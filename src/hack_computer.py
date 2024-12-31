@@ -24,6 +24,7 @@ class computer:
     POP_D_INSTRUCTION = 0b1000000000000001
     CALL_INSTRUCTION = 0b1100000000000000 
     RET_INSTRUCTION = 0b1000000000000010
+    PUSH_CONSTANT_INSTRUCTION = 0b10000000000000000000 
 
     def __init__(self):
         self.data_memory = Ram_n(32768, 16) # in: 15 bit address, out: 16 bit address
@@ -41,6 +42,8 @@ class computer:
         self.inM = self.data_memory.do_operation(0000000000000000, A_register_value & 0x7FFF, 0)
 
     def isExtendedInstruction(self, instruction):
+        if (instruction & 0xF0000 == computer.PUSH_CONSTANT_INSTRUCTION):
+            return True
         if (instruction == computer.POP_D_INSTRUCTION):
             return True
         if (instruction & 0xE000 == computer.CALL_INSTRUCTION):
@@ -54,7 +57,9 @@ class computer:
         return instruction == computer.PUSH_D_INSTRUCTION
 
     def executeExtendedInstruction(self, instruction):
-        if (instruction == computer.PUSH_D_INSTRUCTION):
+        if (instruction & 0xF0000 == computer.PUSH_CONSTANT_INSTRUCTION):
+            self.executePushConstantInstruction(instruction)
+        elif (instruction == computer.PUSH_D_INSTRUCTION):
             self.executePushDInstruction()
         elif (instruction == computer.POP_D_INSTRUCTION):
             self.executePopDInstruction()
@@ -154,6 +159,13 @@ class computer:
         memoryAddress = memory[memorySegmentAddress]
         memory[memoryAddress + index] = memory[SP_value]
 
+    def executePushConstantInstruction(self, instruction):
+        constant = instruction & 0x7FFF
+        spAddress = 0
+        memory = self.data_memory.memory
+        SP_value = memory[spAddress]
+        memory[SP_value] = constant
+        memory[spAddress] = (SP_value + 1) & 0xFFFF
 
     # Runs one instruction from instructions memory starting from address 0
     def run_a_instruction(self, reset):

@@ -386,6 +386,7 @@ def translate_jack_program_to_binary_with_libraries(program):
     lol.add_all_libraries_to_tokens()
     lol.match_jack_program()
     vm = Vm()
+    print(len(lol.vm_program.VM_commands_list))
     assembly_instructions= vm.get_hack_assembly_instructions_from_VM_instructions(lol.vm_program.VM_commands_list)
     ass = assembler()
     return ass.convertArrayAssemblyToBinary(assembly_instructions)

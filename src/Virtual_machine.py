@@ -87,12 +87,8 @@ class Vm:
     # Input:            Decimal between 0-2^15
     # Output:           appends all instructions which put the constant onto the stack
     def add_push_constant_hack_assembly(self, constant):
-        self.assembly_instructions += ["@" + str(constant), 
-                            "D=A"]
+        self.assembly_instructions += ["PUSH "+ str(constant)]
         
-        self.add_push_d_register_value_to_stack_hack_assembly()
-                            
-    
     # appends all instructions which set value at sp memory address to 256
     def add_set_sp_hack_assembly(self):
         self.assembly_instructions += ["@256", 
